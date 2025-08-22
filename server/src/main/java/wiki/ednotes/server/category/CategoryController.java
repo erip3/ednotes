@@ -66,7 +66,7 @@ public class CategoryController {
      * @param id the ID of the category
      * @return the parent category, if found
      */
-    @GetMapping("/parent/{id}")
+    @GetMapping("/{id}/parent")
     public ResponseEntity<Optional<Category>> getParentCategory(@PathVariable Long id) {
         return categoryRepository.findById(id)
                 .map(category -> categoryRepository.findById(category.getParentId()))

@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import CategoryCard from "../components/CategoryCard";
 
+// Category interface represents a single category.
 interface Category {
   id: number;
   name: string;
@@ -11,10 +13,12 @@ interface Category {
  * @returns JSX.Element
  */
 function Home() {
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [categories, setCategories] = useState<Category[]>([]); // State to hold categories
+  const [loading, setLoading] = useState(true); // State to track loading status
+  const [error, setError] = useState<string | null>(null); // State to track error messages
+  const navigate = useNavigate(); // Hook to programmatically navigate
 
+  // Fetch categories from API
   useEffect(() => {
     fetch("/api/categories/top-level")
       .then((res) => (res.ok ? res.json() : Promise.reject("No response")))
@@ -23,17 +27,20 @@ function Home() {
       .finally(() => setLoading(false));
   }, []);
 
+  // Render loading state or categories
   return (
     <div>
       <h1>EdNotes</h1>
       <p style={{ color: "#888" }}>Choose a category to get started:</p>
       {loading && <p>Loading categories...</p>}
       {error && <p style={{ color: "red" }}>{error}</p>}
-      <div
-        style={{ display: "flex", flexWrap: "wrap", gap: 16, marginTop: 24 }}
-      >
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 16, marginTop: 24 }}>
         {categories.map((cat) => (
-          <CategoryCard key={cat.id} name={cat.name} />
+          <CategoryCard 
+            key={cat.id} 
+            name={cat.name} 
+            onClick={() => navigate(`/category/${cat.id}`)}
+          />
         ))}
       </div>
     </div>

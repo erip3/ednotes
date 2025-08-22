@@ -6,6 +6,8 @@
   --color-accent-dark: #009a18;
   --color-link: #00da24;
   --color-link-hover: #00b31a;
+  --color-shadow: #aaaaaa;
+  --color-shadow-hover: #24be0560;
 
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;

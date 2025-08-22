@@ -1,6 +1,6 @@
 import React from "react";
 
-// Simple SVG icon (folder)
+// Simple folder SVG icon
 const DefaultIcon = () => (
   <svg
     width="32"
@@ -16,13 +16,16 @@ const DefaultIcon = () => (
   </svg>
 );
 
+// Props for the CategoryCard component
 interface CategoryCardProps {
   name: string;
+  onClick?: () => void;
 }
 
 // CategoryCard component displays a single category.
-const CategoryCard: React.FC<CategoryCardProps> = ({ name }) => (
+const CategoryCard: React.FC<CategoryCardProps> = ({ name, onClick }) => (
   <div
+    onClick={onClick}
     style={{
       display: "flex",
       flexDirection: "column",
@@ -31,11 +34,16 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ name }) => (
       padding: 24,
       minWidth: 160,
       minHeight: 140,
-      boxShadow: "0 5px 15px var(--color-accent, #00da24)",
+      boxShadow: "0 5px 15px var(--color-shadow, #404140ff)",
       background: "var(--color-bg-card, #303c32)",
       margin: 8,
       cursor: "pointer",
       transition: "box-shadow 0.2s",
+    }}
+    tabIndex={0}
+    role="button"
+    onKeyDown={(e) => {
+      if (e.key === "Enter" && onClick) onClick();
     }}
   >
     <DefaultIcon />
