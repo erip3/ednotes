@@ -43,16 +43,8 @@ public class CategoryController {
     }
 
     /**
-     * Get all top-level categories.
-     * @return a list of top-level categories
-     */
-    @GetMapping("/top-level")
-    public List<Category> getTopLevelCategories() {
-        return categoryRepository.findByParentId(null);
-    }
-
-    /**
      * Get all child categories of a specific category.
+     * 
      * @param id the ID of the parent category
      * @return a list of child categories
      */
@@ -63,6 +55,7 @@ public class CategoryController {
 
     /**
      * Get the parent category of a specific category.
+     * 
      * @param id the ID of the category
      * @return the parent category, if found
      */
@@ -72,6 +65,15 @@ public class CategoryController {
                 .map(category -> categoryRepository.findById(category.getParentId()))
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    /**
+     * Get all top-level categories.
+     * @return a list of top-level categories
+     */
+    @GetMapping("/top-level")
+    public List<Category> getTopLevelCategories() {
+        return categoryRepository.findByParentId(null);
     }
 
     /**

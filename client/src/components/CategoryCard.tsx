@@ -1,10 +1,11 @@
 import React from "react";
+import styles from "./CategoryCard.module.css";
 
 // Simple folder SVG icon
 const DefaultIcon = () => (
   <svg
-    width="32"
-    height="32"
+    width="48"
+    height="48"
     viewBox="0 0 24 24"
     fill="none"
     stroke="currentColor"
@@ -25,21 +26,8 @@ interface CategoryCardProps {
 // CategoryCard component displays a single category.
 const CategoryCard: React.FC<CategoryCardProps> = ({ name, onClick }) => (
   <div
+    className={styles["category-card"]}
     onClick={onClick}
-    style={{
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
-      justifyContent: "center",
-      padding: 24,
-      minWidth: 160,
-      minHeight: 140,
-      boxShadow: "0 5px 15px var(--color-shadow, #404140ff)",
-      background: "var(--color-bg-card, #303c32)",
-      margin: 8,
-      cursor: "pointer",
-      transition: "box-shadow 0.2s",
-    }}
     tabIndex={0}
     role="button"
     onKeyDown={(e) => {

@@ -1,0 +1,55 @@
+package wiki.ednotes.server.navigation.dto;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class CategoryTreeNode {
+    private Long id;
+    private String name;
+    private List<CategoryTreeNode> children;
+    private List<ArticleSummary> articles;
+
+    public CategoryTreeNode() {
+        this.children = new ArrayList<>();
+        this.articles = new ArrayList<>();
+    }
+
+    public CategoryTreeNode(Long id, String name) {
+        this.id = id;
+        this.name = name;
+        this.children = new ArrayList<>();
+        this.articles = new ArrayList<>();
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public List<CategoryTreeNode> getChildren() {
+        return children;
+    }
+
+    public void setChildren(List<CategoryTreeNode> children) {
+        this.children = children;
+    }
+
+    public List<ArticleSummary> getArticles() {
+        return articles;
+    }
+
+    public void setArticles(List<ArticleSummary> articles) {
+        this.articles = articles;
+    }
+}

@@ -29,7 +29,13 @@ function Home() {
 
   // Render loading state or categories
   return (
-    <div>
+    <div style={{
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      justifyContent: "center",
+      minHeight: "80vh"
+    }}>
       <h1>EdNotes</h1>
       <p style={{ color: "#888" }}>Choose a category to get started:</p>
       {loading && <p>Loading categories...</p>}

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import CategoryCard from "../components/CategoryCard";
+import ArticleListing from "../components/ArticleListing";
 
 // Category interface represents a single category.
 interface Category {
@@ -16,7 +17,6 @@ function Category() {
   const { id } = useParams<{ id: string }>();
   const [categoryName, setCategoryName] = useState<string | null>(null);
   const [subcategories, setSubcategories] = useState<Category[]>([]);
-  const [articles, setArticles] = useState<{ title: string; id: number }[]>([]);
   const navigate = useNavigate(); // Hook to programmatically navigate
 
   useEffect(() => {
@@ -24,12 +24,10 @@ function Category() {
     Promise.all([
       fetch(`/api/categories/${id}`).then((res) => res.json()),
       fetch(`/api/categories/${id}/children`).then((res) => res.json()),
-      fetch(`/api/articles/category/${id}`).then((res) => res.json()),
     ])
-      .then(([cat, subcats, arts]) => {
+      .then(([cat, subcats]) => {
         setCategoryName(cat.name);
         setSubcategories(subcats);
-        setArticles(arts);
       })
       .catch((err) => {
         console.error("Error fetching category data:", err);
@@ -37,7 +35,15 @@ function Category() {
   }, [id]);
 
   return (
-    <div>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        minHeight: "80vh",
+      }}
+    >
       <h1>{categoryName}</h1>
       <h2>Subcategories</h2>
       <div
@@ -57,18 +63,7 @@ function Category() {
         ))}
       </div>
       <h2>Articles</h2>
-      <div
-        style={{
-          display: "flex",
-          flexWrap: "wrap",
-          gap: 16,
-          justifyContent: "center",
-        }}
-      >
-        {articles.map((article) => (
-          <h3 key={article.id}>{article.title}</h3>
-        ))}
-      </div>
+      <ArticleListing />
     </div>
   );
 }
