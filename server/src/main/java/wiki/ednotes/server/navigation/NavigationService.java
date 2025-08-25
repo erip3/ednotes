@@ -11,16 +11,28 @@ import wiki.ednotes.server.navigation.dto.ArticleSummary;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * Service for managing navigation-related operations.
+ */
 @Service
 public class NavigationService {
-    private final CategoryRepository categoryRepository;
-    private final ArticleRepository articleRepository;
+    private final CategoryRepository categoryRepository; // Repository for category data
+    private final ArticleRepository articleRepository; // Repository for article data
 
+    /**
+     * Constructor for NavigationService.
+     * @param categoryRepository
+     * @param articleRepository
+     */
     public NavigationService(CategoryRepository categoryRepository, ArticleRepository articleRepository) {
         this.categoryRepository = categoryRepository;
         this.articleRepository = articleRepository;
     }
 
+    /**
+     * Get the navigation tree structure.
+     * @return A list of root categories with their subcategories and articles.
+     */
     public List<CategoryTreeNode> getNavigationTree() {
         List<Category> allCategories = categoryRepository.findAll();
         List<Article> allArticles = articleRepository.findAll();
@@ -29,7 +41,7 @@ public class NavigationService {
         Map<Long, List<ArticleSummary>> articlesByCategory = allArticles.stream()
                 .collect(Collectors.groupingBy(
                         a -> a.getCategoryId() != null ? a.getCategoryId() : null,
-                        Collectors.mapping(a -> new ArticleSummary(a.getId(), a.getTitle()), Collectors.toList())));
+                        Collectors.mapping(a -> new ArticleSummary(a.getId(), a.getTitle(), a.getAuthor(), a.getCreatedAt(), a.getUpdatedAt(), a.getIsPublished() != null && a.getIsPublished()), Collectors.toList())));
 
         // Map categoryId -> list of child categories
         Map<Long, List<Category>> childrenByParent = allCategories.stream()
@@ -40,13 +52,36 @@ public class NavigationService {
         List<CategoryTreeNode> roots = allCategories.stream()
                 .filter(c -> c.getParentId() == null)
                 .map(c -> buildNode(c, childrenByParent, articlesByCategory))
+                .filter(Objects::nonNull)
                 .collect(Collectors.toList());
 
         return roots;
     }
 
+    /**
+     * 
+     * @param categoryId
+     * @return
+     */
+    public List<ArticleSummary> getArticleSummariesByCategory(Long categoryId) {
+        List<Article> articles = articleRepository.findByCategoryId(categoryId);
+        return articles.stream()
+                .map(a -> new ArticleSummary(a.getId(), a.getTitle(), a.getAuthor(), a.getCreatedAt(), a.getUpdatedAt(), a.getIsPublished() != null && a.getIsPublished()))
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Get the article summaries for a specific category.
+     * @param cat
+     * @param childrenByParent
+     * @param articlesByCategory
+     * @return CategoryTreeNode
+     */
     private CategoryTreeNode buildNode(Category cat, Map<Long, List<Category>> childrenByParent,
-            Map<Long, List<ArticleSummary>> articlesByCategory) {
+        Map<Long, List<ArticleSummary>> articlesByCategory) {
+        if (cat.isComingSoon()) {
+                return null; // Skip "coming soon" categories
+        }
         CategoryTreeNode node = new CategoryTreeNode();
         node.setId(cat.getId());
         node.setName(cat.getName());
@@ -54,8 +89,10 @@ public class NavigationService {
                 childrenByParent.getOrDefault(cat.getId(), Collections.emptyList())
                         .stream()
                         .map(child -> buildNode(child, childrenByParent, articlesByCategory))
+                        .filter(Objects::nonNull)
                         .collect(Collectors.toList()));
         node.setArticles(articlesByCategory.getOrDefault(cat.getId(), Collections.emptyList()));
+        node.setComingSoon(false);
         return node;
     }
 }

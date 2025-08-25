@@ -6,6 +6,7 @@ import CategoryCard from "../components/CategoryCard";
 interface Category {
   id: number;
   name: string;
+  comingSoon?: boolean;
 }
 
 /**
@@ -42,10 +43,11 @@ function Home() {
       {error && <p style={{ color: "red" }}>{error}</p>}
       <div style={{ display: "flex", flexWrap: "wrap", gap: 16, marginTop: 24 }}>
         {categories.map((cat) => (
-          <CategoryCard 
-            key={cat.id} 
-            name={cat.name} 
-            onClick={() => navigate(`/category/${cat.id}`)}
+          <CategoryCard
+            key={cat.id}
+            name={cat.name}
+            comingSoon={cat.comingSoon}
+            onClick={cat.comingSoon ? undefined : () => navigate(`/category/${cat.id}`)}
           />
         ))}
       </div>

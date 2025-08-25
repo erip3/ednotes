@@ -8,10 +8,12 @@ public class CategoryTreeNode {
     private String name;
     private List<CategoryTreeNode> children;
     private List<ArticleSummary> articles;
+    private boolean comingSoon;
 
     public CategoryTreeNode() {
         this.children = new ArrayList<>();
         this.articles = new ArrayList<>();
+        this.comingSoon = false;
     }
 
     public CategoryTreeNode(Long id, String name) {
@@ -51,5 +53,13 @@ public class CategoryTreeNode {
 
     public void setArticles(List<ArticleSummary> articles) {
         this.articles = articles;
+    }
+
+    public boolean isComingSoon() {
+        return comingSoon;
+    }
+
+    public void setComingSoon(boolean comingSoon) {
+        this.comingSoon = comingSoon;
     }
 }

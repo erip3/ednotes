@@ -25,7 +25,7 @@
     justify-content: left;
 }
 .sidebar .category .article {
-    margin-left: 16px;
+    margin-left: 0;
 }
 
 .sidebarTop {
@@ -59,7 +59,6 @@
 
 .categoryContainer {
   padding: 4px 0;
-  border-bottom: 1px solid #333;
 }
 
 .arrow {
@@ -72,7 +71,7 @@
 }
 
 .category {
-  margin-left: 4px;
+  margin-left: 0;
   color: #fff;
   text-decoration: none;
   font-weight: 500;
@@ -85,23 +84,20 @@
 }
 
 .children {
-  margin-left: 18px;
-  border-left: 1px solid #444;
-  padding-left: 8px;
-}
-
-.article {
-  margin: 2px 0 2px 0;
-  padding-left: 8px;
-  border-left: 2px solid #555;
+  margin-left: 0;
 }
 
 .article a {
   color: #bbb;
-  text-decoration: none;
   font-size: 0.97em;
 }
 
 .article a:hover {
   color: #fff;
+}
+
+.articleLabel {
+  font-weight: bold;
+  margin-bottom: 4px;
+  display: block;
 }

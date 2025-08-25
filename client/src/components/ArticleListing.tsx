@@ -2,6 +2,11 @@ import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import styles from "./ArticleListing.module.css";
 
+// Props for the ArticleListing component
+interface ArticleListingProps {
+  onHasArticles?: (has: boolean) => void;
+}
+
 // Article interface representing a blog article
 interface Article {
   id: number;
@@ -28,49 +33,50 @@ function formatDate(dateString?: string) {
  * ArticleListing component displays a list of articles.
  * @returns JSX.Element
  */
-function ArticleListing() {
-    const { id: categoryId } = useParams<{ id: string }>();
-    const [articles, setArticles] = useState<Article[]>([]); // Initialize articles state
-    const [loading, setLoading] = useState(true);
+function ArticleListing({ onHasArticles }: ArticleListingProps) {
+  const { id: categoryId } = useParams<{ id: string }>();
+  const [articles, setArticles] = useState<Article[]>([]); // Initialize articles state
+  const [loading, setLoading] = useState(true);
 
-    // Fetch articles from API
-    useEffect(() => {
-        setLoading(true);
-        fetch(`/api/articles/category/${categoryId}`)
-            .then((res) => (res.ok ? res.json() : Promise.reject("No response")))
-            .then(setArticles)
-            .catch((err) => console.error("Failed to load articles:", err))
-            .finally(() => setLoading(false));
-    }, [categoryId]);
+  // Fetch articles from API
+  useEffect(() => {
+    setLoading(true);
+    fetch(`/api/navigation/article-summaries/${categoryId}`)
+      .then((res) => (res.ok ? res.json() : Promise.reject("No response")))
+      .then((data) => {
+        setArticles(data);
+        onHasArticles?.(data.length > 0);
+      })
+      .catch((err) => console.error("Failed to load articles:", err))
+      .finally(() => setLoading(false));
+  }, [categoryId, onHasArticles]);
 
-    if (loading) return <p>Loading articles...</p>;
+  if (loading) return <p>Loading articles...</p>;
 
-    if (articles.length === 0) return <p>No articles in this category yet.</p>;
-
-    // Render the article listing
-    return (
-      <div className={styles.container}>
-        {articles.map((article) => (
-          <div key={article.id} className={styles.entry}>
-            <span className={styles.title}>
-              <Link to={`/article/${article.id}`}>{article.title}</Link>
-            </span>
-            {/* <span className={styles.author}>{article.author}</span> */}
-            <span className={styles.date}>
-              Published on {formatDate(article.createdAt)}
-              {article.updatedAt && article.updatedAt !== article.createdAt
-                ? ` (Updated ${formatDate(article.updatedAt)})`
-                : ""}
-            </span>
-            <span className={styles.status}>
-                {!article.isPublished && (
-                <span className={styles["draft-label"]}>Draft</span>
-                )}
-            </span>
-          </div>
-        ))}
-      </div>
-    );
+  // Render the article listing
+  return (
+    <div className={styles.container}>
+      {articles.map((article) => (
+        <div key={article.id} className={styles.entry}>
+          <span className={styles.title}>
+            <Link to={`/article/${article.id}`}>{article.title}</Link>
+          </span>
+          {/* <span className={styles.author}>{article.author}</span> */}
+          <span className={styles.date}>
+            Published on {formatDate(article.createdAt)}
+            {article.updatedAt && article.updatedAt !== article.createdAt
+              ? ` (Updated ${formatDate(article.updatedAt)})`
+              : ""}
+          </span>
+          <span className={styles.status}>
+            {!article.isPublished && (
+              <span className={styles["draft-label"]}>Draft</span>
+            )}
+          </span>
+        </div>
+      ))}
+    </div>
+  );
 }
 
 export default ArticleListing;

@@ -21,21 +21,37 @@ const DefaultIcon = () => (
 interface CategoryCardProps {
   name: string;
   onClick?: () => void;
+  comingSoon?: boolean;
 }
 
 // CategoryCard component displays a single category.
-const CategoryCard: React.FC<CategoryCardProps> = ({ name, onClick }) => (
+const CategoryCard: React.FC<CategoryCardProps> = ({
+  name,
+  onClick,
+  comingSoon,
+}) => (
   <div
-    className={styles["category-card"]}
+    className={styles.categoryCard + (comingSoon ? ` ${styles.comingSoon}` : "")}
     onClick={onClick}
     tabIndex={0}
     role="button"
-    onKeyDown={(e) => {
-      if (e.key === "Enter" && onClick) onClick();
+    aria-disabled={comingSoon}
+    style={{
+      cursor: comingSoon ? "not-allowed" : "pointer",
+      pointerEvents: comingSoon ? "none" : "auto",
+      opacity: comingSoon ? 0.5 : 1,
+    }}
+    onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) => {
+      if (!comingSoon && e.key === "Enter" && onClick) onClick();
     }}
   >
     <DefaultIcon />
-    <span style={{ marginTop: 12, fontWeight: 500, fontSize: 18 }}>{name}</span>
+    <span className={styles.categoryLabel}>
+      {name}
+      {comingSoon && (
+        <span className={styles.comingSoonLabel}>Coming Soon</span>
+      )}
+    </span>
   </div>
 );
 
