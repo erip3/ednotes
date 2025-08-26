@@ -4,12 +4,14 @@ import styles from "./Sidebar.module.css";
 interface SidebarArticleProps {
   id: number;
   title: string;
-  depth?: number;
 }
 
-export default function SidebarArticle({ id, title, depth }: SidebarArticleProps) {
+export default function SidebarArticle({ id, title }: SidebarArticleProps) {
   return (
-    <div style={{ paddingLeft: depth ? depth * 16 : 0 }}>
+    <div
+      className={styles.articleHeader}
+    >
+      <span className={styles.arrow} /> {/* empty for alignment */}
       <Link to={`/article/${id}`}>{title}</Link>
     </div>
   );

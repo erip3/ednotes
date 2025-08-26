@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import CategoryCard from "../components/CategoryCard";
-import ArticleListing from "../components/ArticleListing";
+import CategoryCard from "../components/CategoryCard/CategoryCard";
+import ArticleListing from "../components/ArticleListing/ArticleListing";
 import styles from "./Category.module.css";
 
 // Category interface represents a single category.
@@ -49,7 +49,11 @@ function Category() {
                 key={cat.id}
                 name={cat.name}
                 comingSoon={cat.comingSoon}
-                onClick={cat.comingSoon ? undefined : () => navigate(`/category/${cat.id}`)}
+                onClick={
+                  cat.comingSoon
+                    ? undefined
+                    : () => navigate(`/category/${cat.id}`)
+                }
               />
             ))}
           </div>

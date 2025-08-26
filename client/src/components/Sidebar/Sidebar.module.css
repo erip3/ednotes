@@ -15,17 +15,15 @@
     border-right: 1.5px solid #333;
     padding: 16px 0 16px 16px;
 }
+
 .sidebar h2 {
     margin-top: 0;
     justify-content: left;
 }
+
 .sidebar .category {
-    margin-left: 12px;
     display: flex;
     justify-content: left;
-}
-.sidebar .category .article {
-    margin-left: 0;
 }
 
 .sidebarTop {
@@ -46,15 +44,10 @@
   align-items: center;
 }
 
-.home {
-  display: flex;
-  align-items: center;
-  margin-left: 8px;
-}
-
 .categoryHeader {
   display: flex;
   align-items: center;
+  padding-left: calc(var(--depth, 0) * 8px);
 }
 
 .categoryContainer {
@@ -63,15 +56,15 @@
 
 .arrow {
   cursor: pointer;
-  width: 18px;
+  width: 26px;
   display: inline-block;
   color: #aaa;
   font-size: 14px;
   user-select: none;
+  text-align: center;
 }
 
 .category {
-  margin-left: 0;
   color: #fff;
   text-decoration: none;
   font-weight: 500;
@@ -83,10 +76,6 @@
   color: #ffd700;
 }
 
-.children {
-  margin-left: 0;
-}
-
 .article a {
   color: #bbb;
   font-size: 0.97em;
@@ -96,8 +85,26 @@
   color: #fff;
 }
 
-.articleLabel {
-  font-weight: bold;
-  margin-bottom: 4px;
-  display: block;
+.articleHeader {
+  display: flex;
+  align-items: center;
+  padding-left: calc(var(--depth, 0) * 8px);
+}
+
+.sidebarList {
+  padding-left: calc(var(--depth, 0) * 8px);
+  padding-top: 4px;
+}
+
+.sidebarList label {
+  border-radius: 1px;
+  color: #aaa;
+}
+
+.sidebarDivider {
+  border: none;
+  border-top: 1px solid #444;
+  margin: 8px 0;
+  height: 0;
+  width: 100%;
 }

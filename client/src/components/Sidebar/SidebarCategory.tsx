@@ -1,7 +1,8 @@
-import { Link, useLocation } from "react-router-dom";
-import SidebarArticle from "./SidebarArticle";
-import styles from "./Sidebar.module.css";
 import { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+import SubcategoryList from "./SubcategoryList";
+import ArticleList from "./ArticleList";
+import styles from "./Sidebar.module.css";
 
 interface Article {
   id: number;
@@ -29,14 +30,15 @@ export default function SidebarCategory({
 
   const hasChildren = category.children && category.children.length > 0;
   const hasArticles = category.articles && category.articles.length > 0;
-  const isExpandable = (hasChildren || hasArticles)
+  const isExpandable = hasChildren || hasArticles;
 
   return (
-    <div
-      className={styles.categoryContainer}
-      style={{ paddingLeft: depth * 8 }}
-    >
-      <div className={styles.categoryHeader}>
+    <div className={styles.categoryContainer}>
+      <div
+        className={styles.categoryHeader}
+        style={{ "--depth": depth } as React.CSSProperties}
+      >
+        {/* Expansion Arrow */}
         <span
           className={styles.arrow}
           onClick={(e) => {
@@ -46,6 +48,8 @@ export default function SidebarCategory({
         >
           {isExpandable ? (expanded ? "▼" : "▶") : ""}
         </span>
+
+        {/* Category Link */}
         <Link
           to={`/category/${category.id}`}
           className={`${styles.category} ${
@@ -57,29 +61,15 @@ export default function SidebarCategory({
           {category.name}
         </Link>
       </div>
+
+      {/* Subcategories and Articles */}
       {expanded && (
         <div className={styles.children}>
           {hasChildren && (
-            <div style={{ paddingLeft: depth * 8 }}>
-              {category.children!.map((child) => (
-                <SidebarCategory
-                  key={child.id}
-                  category={child}
-                  depth={depth + 1}
-                />
-              ))}
-            </div>
+            <SubcategoryList children={category.children} depth={depth + 1} />
           )}
           {hasArticles && (
-            <div style={{ paddingLeft: depth * 8 }}>
-              {category.articles!.map((article) => (
-                <SidebarArticle
-                  key={article.id}
-                  {...article}
-                  depth={depth + 1}
-                />
-              ))}
-            </div>
+            <ArticleList articles={category.articles} depth={depth + 1} />
           )}
         </div>
       )}

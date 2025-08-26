@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import CategoryCard from "../components/CategoryCard";
+import CategoryCard from "../components/CategoryCard/CategoryCard";
 
 // Category interface represents a single category.
 interface Category {
@@ -30,24 +30,30 @@ function Home() {
 
   // Render loading state or categories
   return (
-    <div style={{
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
-      justifyContent: "center",
-      minHeight: "80vh"
-    }}>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        minHeight: "80vh",
+      }}
+    >
       <h1>EdNotes</h1>
       <p style={{ color: "#888" }}>Choose a category to get started:</p>
       {loading && <p>Loading categories...</p>}
       {error && <p style={{ color: "red" }}>{error}</p>}
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 16, marginTop: 24 }}>
+      <div
+        style={{ display: "flex", flexWrap: "wrap", gap: 16, marginTop: 24 }}
+      >
         {categories.map((cat) => (
           <CategoryCard
             key={cat.id}
             name={cat.name}
             comingSoon={cat.comingSoon}
-            onClick={cat.comingSoon ? undefined : () => navigate(`/category/${cat.id}`)}
+            onClick={
+              cat.comingSoon ? undefined : () => navigate(`/category/${cat.id}`)
+            }
           />
         ))}
       </div>
