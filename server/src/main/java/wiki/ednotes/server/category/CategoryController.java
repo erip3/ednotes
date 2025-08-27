@@ -44,18 +44,16 @@ public class CategoryController {
 
     /**
      * Get all child categories of a specific category.
-     * 
      * @param id the ID of the parent category
      * @return a list of child categories
      */
     @GetMapping("/{id}/children")
     public List<Category> getChildCategories(@PathVariable Long id) {
-        return categoryRepository.findByParentId(id);
+        return categoryRepository.findByParentIdOrderByOrderInParentAsc(id);
     }
 
     /**
      * Get the parent category of a specific category.
-     * 
      * @param id the ID of the category
      * @return the parent category, if found
      */
@@ -72,8 +70,11 @@ public class CategoryController {
      * @return a list of top-level categories
      */
     @GetMapping("/top-level")
-    public List<Category> getTopLevelCategories() {
-        return categoryRepository.findByParentId(null);
+    public List<Category> getTopLevelCategories(@RequestParam(defaultValue = "true") boolean includeComingSoon) {
+        if (includeComingSoon) {
+            return categoryRepository.findByParentIdOrderByOrderInParentAsc(null);
+        }
+        return categoryRepository.findByParentIdAndComingSoonIsFalseOrderByOrderInParentAsc(null);
     }
 
     /**

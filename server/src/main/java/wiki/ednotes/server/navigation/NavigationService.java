@@ -64,7 +64,7 @@ public class NavigationService {
      * @return
      */
     public List<ArticleSummary> getArticleSummariesByCategory(Long categoryId) {
-        List<Article> articles = articleRepository.findByCategoryId(categoryId);
+        List<Article> articles = articleRepository.findByCategoryIdOrderByOrderInCategoryAsc(categoryId);
         return articles.stream()
                 .map(a -> new ArticleSummary(a.getId(), a.getTitle(), a.getAuthor(), a.getCreatedAt(), a.getUpdatedAt(), a.getIsPublished() != null && a.getIsPublished()))
                 .collect(Collectors.toList());

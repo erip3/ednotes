@@ -14,24 +14,17 @@ interface Category {
 }
 
 interface SubcategoryListProps {
-  children?: Category[];
-  depth?: number;
+  categories?: Category[];
 }
-
+  
 export default function SubcategoryList({
-  children,
-  depth = 0,
+  categories,
 }: SubcategoryListProps) {
   return (
-    <div
-      className={styles.sidebarList}
-      style={{ "--depth": depth } as React.CSSProperties}
-    >
-      <hr className={styles.sidebarDivider} />
-      <span className={styles.arrow} /> {/* empty, just for alignment */}
+    <div className={styles.sidebarList}>
       <label>Subcategories</label>
-      {children!.map((child) => (
-        <SidebarCategory key={child.id} category={child} depth={depth + 1} />
+      {categories!.map((child) => (
+        <SidebarCategory key={child.id} category={child} />
       ))}
     </div>
   );

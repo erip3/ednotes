@@ -31,6 +31,9 @@ public class Article {
     @Column(name = "is_published")
     private Boolean isPublished;
 
+    @Column(name = "order_in_category")
+    private Integer orderInCategory;
+
     public Long getId() {
         return id;
     }
@@ -93,5 +96,13 @@ public class Article {
 
     public void setIsPublished(Boolean isPublished) {
         this.isPublished = isPublished;
+    }
+
+    public Integer getOrderInCategory() {
+        return orderInCategory;
+    }
+
+    public void setOrderInCategory(Integer orderInCategory) {
+        this.orderInCategory = orderInCategory;
     }
 }

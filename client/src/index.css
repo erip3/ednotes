@@ -1,11 +1,13 @@
 :root {
   --color-bg: #242424;
   --color-bg-card: #474747;
+  --color-bg-header: #1b1b1b;
   --color-bg-sidebar: #1e1e1e;
   --color-border-sidebar: #474747;
-  --color-text: #ffffff;
+  --color-text: #ebebeb;
   --color-accent: #00da2465;
   --color-accent-dark: #009a18;
+  --color-selected: #51ff00;
   --color-link: #eaffee;
   --color-link-hover: #b0e6b8;
   --color-shadow: #aaaaaa;

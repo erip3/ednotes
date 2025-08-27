@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
-import { Outlet } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Outlet, useLocation } from "react-router-dom";
+import { useCategoryContext } from "../context/useCategoryContext";
 import Header from "./Header/Header";
 import Sidebar from "./Sidebar/Sidebar";
 
@@ -8,28 +9,46 @@ import Sidebar from "./Sidebar/Sidebar";
  * @returns JSX.Element
  */
 function Layout() {
-  const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(
-    null
-  );
+  const location = useLocation();
+  const {
+    setSelectedCategory,
+    selectedTopic,
+    setSelectedTopic,
+  } = useCategoryContext();
+
+  const [isTopic, setIsTopic] = useState(false);
 
   useEffect(() => {
-    fetch("/api/categories/top-level")
-      .then((res) => res.json())
-      .then((categories) => {
-        if (categories.length > 0) setSelectedCategoryId(categories[0].id);
-      });
-  }, []);
+    // Extract category/article ID from the URL
+    const match = location.pathname.match(/\/(category|article)\/(\d+)/);
+    if (match) {
+      const id = Number(match[2]);
+      setSelectedCategory(id);
+
+      // Fetch the topic ancestor for this category/article
+      fetch(`/api/categories/${id}`)
+        .then((res) => res.json())
+        .then((category) => {
+          setSelectedTopic(category?.topicId ?? null); // Set selected topic based on category data
+          setIsTopic(category?.isTopic ?? false); // Set isTopic based on category data
+        });
+    } else {
+      setSelectedCategory(null);
+      setSelectedTopic(null);
+      setIsTopic(false);
+    }
+  }, [location.pathname, setSelectedCategory, setSelectedTopic]);
+
+  // If there is a selected topic or the selected category is a topic, show the sidebar
+  const showSidebar = selectedTopic !== null || isTopic;
 
   return (
     <div>
-      <Header
-        onSelectCategory={setSelectedCategoryId}
-        selectedCategoryId={selectedCategoryId}
-      />
-      <Sidebar parentCategoryId={selectedCategoryId} />
+      <Header />
+      {showSidebar && <Sidebar />}
       <main
         style={{
-          marginLeft: 260, // same as sidebar width
+          marginLeft: showSidebar ? 260 : 0,
           padding: 32,
           background: "var(--color-bg)",
         }}

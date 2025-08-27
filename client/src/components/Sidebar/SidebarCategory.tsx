@@ -1,7 +1,5 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import SubcategoryList from "./SubcategoryList";
-import ArticleList from "./ArticleList";
 import styles from "./Sidebar.module.css";
 
 interface Article {
@@ -18,12 +16,10 @@ interface Category {
 
 interface SidebarCategoryProps {
   category: Category;
-  depth?: number;
 }
 
 export default function SidebarCategory({
   category,
-  depth = 0,
 }: SidebarCategoryProps) {
   const [expanded, setExpanded] = useState(false);
   const location = useLocation();
@@ -36,7 +32,6 @@ export default function SidebarCategory({
     <div className={styles.categoryContainer}>
       <div
         className={styles.categoryHeader}
-        style={{ "--depth": depth } as React.CSSProperties}
       >
         {/* Expansion Arrow */}
         <span
@@ -61,18 +56,6 @@ export default function SidebarCategory({
           {category.name}
         </Link>
       </div>
-
-      {/* Subcategories and Articles */}
-      {expanded && (
-        <div className={styles.children}>
-          {hasChildren && (
-            <SubcategoryList children={category.children} depth={depth + 1} />
-          )}
-          {hasArticles && (
-            <ArticleList articles={category.articles} depth={depth + 1} />
-          )}
-        </div>
-      )}
     </div>
   );
 }

@@ -48,7 +48,7 @@ public class ArticleController {
      */
     @GetMapping("/category/{categoryId}")
     public List<Article> getArticlesByCategoryId(@PathVariable Long categoryId) {
-        return articleRepository.findByCategoryId(categoryId);
+        return articleRepository.findByCategoryIdOrderByOrderInCategoryAsc(categoryId);
     }
 
     /**
