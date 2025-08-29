@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Outlet, useLocation } from "react-router-dom";
+import { Outlet, useMatch } from "react-router-dom";
 import { useCategoryContext } from "../context/useCategoryContext";
 import Header from "./Header/Header";
 import Sidebar from "./Sidebar/Sidebar";
@@ -9,35 +9,35 @@ import Sidebar from "./Sidebar/Sidebar";
  * @returns JSX.Element
  */
 function Layout() {
-  const location = useLocation();
-  const {
-    setSelectedCategory,
-    selectedTopic,
-    setSelectedTopic,
-  } = useCategoryContext();
+  // Get the category or article ID from the URL if present
+  const categoryMatch = useMatch("/category/:id");
+  const articleMatch = useMatch("/article/:id");
+  const id = categoryMatch?.params.id || articleMatch?.params.id;
 
-  const [isTopic, setIsTopic] = useState(false);
+  const { setSelectedCategory, selectedTopic, setSelectedTopic } =
+    useCategoryContext(); // Get the category context
 
+  const [isTopic, setIsTopic] = useState(false); // Track if the current category is a topic
+
+  // Update the selected category and topic when the ID changes
   useEffect(() => {
-    // Extract category/article ID from the URL
-    const match = location.pathname.match(/\/(category|article)\/(\d+)/);
-    if (match) {
-      const id = Number(match[2]);
-      setSelectedCategory(id);
+    if (id) {
+      const numId = Number(id);
+      setSelectedCategory(numId);
 
-      // Fetch the topic ancestor for this category/article
-      fetch(`/api/categories/${id}`)
+      // Fetch category details to determine if it's a topic and get its topic ID
+      fetch(`/api/categories/${numId}`)
         .then((res) => res.json())
         .then((category) => {
-          setSelectedTopic(category?.topicId ?? null); // Set selected topic based on category data
-          setIsTopic(category?.isTopic ?? false); // Set isTopic based on category data
+          setSelectedTopic(category?.topicId ?? null);
+          setIsTopic(category?.isTopic);
         });
     } else {
       setSelectedCategory(null);
       setSelectedTopic(null);
       setIsTopic(false);
     }
-  }, [location.pathname, setSelectedCategory, setSelectedTopic]);
+  }, [id, setSelectedCategory, setSelectedTopic]);
 
   // If there is a selected topic or the selected category is a topic, show the sidebar
   const showSidebar = selectedTopic !== null || isTopic;

@@ -1,9 +1,15 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useParams } from "react-router-dom";
 import { CategoryProvider } from "./context/CategoryProvider";
 import Layout from "./components/Layout";
 import Home from "./pages/Home";
 import Category from "./pages/Category";
 import Article from "./pages/Article";
+
+// Helper component:
+function CategoryWithKey() {
+  const { id } = useParams();
+  return <Category key={id} />;
+}
 
 /**
  * Main application component.
@@ -16,7 +22,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Layout />}>
             <Route index element={<Home />} />
-            <Route path="/category/:id" element={<Category />} />
+            <Route path="/category/:id" element={<CategoryWithKey />} />
             <Route path="/article/:id" element={<Article />} />
           </Route>
         </Routes>

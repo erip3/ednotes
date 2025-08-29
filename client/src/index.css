@@ -13,6 +13,7 @@
   --color-shadow: #aaaaaa;
   --color-shadow-hover: #24be0560;
   --color-icon: #ffffff;
+
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   color-scheme: light dark;
 }
@@ -21,6 +22,7 @@ a {
   color: var(--color-link);
   text-decoration: inherit;
 }
+
 a:hover {
   color: var(--color-link-hover);
 }
