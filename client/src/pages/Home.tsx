@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState} from "react";
 import { useNavigate } from "react-router-dom";
+import { useLoadingContext } from "../context/useLoadingContext";
 import CategoryCard from "../components/CategoryCard/CategoryCard";
 import PageLoader from "../components/PageLoader/PageLoader";
 
@@ -15,23 +16,24 @@ interface Category {
  * @returns JSX.Element
  */
 function Home() {
+  const { registerLoader, setLoaderDone, isLoading } = useLoadingContext();
   const [categories, setCategories] = useState<Category[]>([]); // State to hold categories
-  const [loading, setLoading] = useState(true); // State to track loading status
   const [error, setError] = useState<string | null>(null); // State to track error messages
   const navigate = useNavigate(); // Hook to programmatically navigate
 
   // Fetch categories from API
   useEffect(() => {
+    const loaderId = registerLoader();
     fetch("/api/categories/top-level")
       .then((res) => (res.ok ? res.json() : Promise.reject("No response")))
       .then(setCategories)
       .catch(() => setError("Could not load categories."))
-      .finally(() => setLoading(false));
-  }, []);
+      .finally(() => setLoaderDone(loaderId));
+  }, [registerLoader, setLoaderDone]);
 
   // Render loading state or categories
   return (
-    <PageLoader loading={loading}>
+    <PageLoader loading={isLoading}>
       <div
         style={{
           display: "flex",
@@ -43,7 +45,6 @@ function Home() {
       >
         <h1>EdNotes</h1>
         <p style={{ color: "#888" }}>Choose a category to get started:</p>
-        {loading && <p>Loading categories...</p>}
         {error && <p style={{ color: "red" }}>{error}</p>}
         <div
           style={{ display: "flex", flexWrap: "wrap", gap: 16, marginTop: 24 }}

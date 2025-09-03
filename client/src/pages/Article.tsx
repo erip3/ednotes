@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+import { useLoadingContext } from "../context/useLoadingContext";
 import PageLoader from "../components/PageLoader/PageLoader";
+import ContentRenderer from "../components/ContentRenderer/ContentRenderer";
 
 // Article interface represents the structure of an article object.
 interface Article {
@@ -30,20 +32,23 @@ function formatDate(dateString?: string) {
  * @returns JSX.Element
  */
 function Article() {
+  const { registerLoader, setLoaderDone, isLoading } = useLoadingContext();
   const { id } = useParams<{ id: string }>();
   const [article, setArticle] = useState<Article | null>(null);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const loaderId = registerLoader();
     Promise.all([fetch(`/api/articles/${id}`)])
       .then(([res]) => (res.ok ? res.json() : Promise.reject("No response")))
       .then(setArticle)
       .catch((err) => console.error("Failed to load article:", err))
-      .finally(() => setLoading(false));
-  }, [id]);
+      .finally(() => setLoaderDone(loaderId));
+  }, [id, registerLoader, setLoaderDone]);
+
+  if (isLoading) return <PageLoader loading={isLoading} />;
 
   return (
-    <PageLoader loading={loading}>
+    <PageLoader loading={isLoading}>
       {article && (
         <div>
           <h1>{article.title}</h1>
@@ -51,7 +56,15 @@ function Article() {
           {article.updatedAt && article.updatedAt !== article.createdAt && (
             <p>Updated on {formatDate(article.updatedAt)}</p>
           )}
-          <p>{article.content}</p>
+          <div className="article-page">
+            <ContentRenderer
+              blocks={
+                typeof article.content === "string"
+                  ? JSON.parse(article.content)
+                  : article.content
+              }
+            />
+          </div>
         </div>
       )}
     </PageLoader>

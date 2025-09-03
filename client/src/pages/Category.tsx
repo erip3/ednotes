@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { useLoadingContext } from "../context/useLoadingContext";
 import CategoryCard from "../components/CategoryCard/CategoryCard";
 import ArticleListing from "../components/ArticleListing/ArticleListing";
 import PageLoader from "../components/PageLoader/PageLoader";
@@ -18,14 +19,26 @@ interface Category {
  * @returns JSX.Element
  */
 function Category() {
+  const { setLoaderDone, registerLoader, isLoading } = useLoadingContext();
   const { id } = useParams<{ id: string }>();
   const [categoryName, setCategoryName] = useState<string | null>(null);
   const [subcategories, setSubcategories] = useState<Category[]>([]);
   const [hasArticles, setHasArticles] = useState<boolean>(false);
-  const [loading, setLoading] = useState(true);
   const navigate = useNavigate(); // Hook to programmatically navigate
 
+  const handleHasArticles = useCallback((has: boolean) => {
+    setHasArticles(has);
+  }, []);
+
   useEffect(() => {
+    console.log("Category mounted");
+    return () => console.log("Category unmounted");
+  }, []);
+
+  useEffect(() => {
+    if (!id) return; // Don't run if id is not available yet
+
+    const loaderId = registerLoader();
     // Fetch subcategories and articles based on category ID
     Promise.all([
       fetch(`/api/categories/${id}`).then((res) => res.json()),
@@ -34,15 +47,19 @@ function Category() {
       .then(([cat, subcats]) => {
         setCategoryName(cat.name);
         setSubcategories(subcats);
-        setLoading(false);
       })
       .catch((err) => {
-        console.error("Error fetching category data:", err);
+        if (err.name !== "AbortError") {
+          console.error("Error fetching category data:", err);
+        }
+      })
+      .finally(() => {
+        setLoaderDone(loaderId);
       });
-  }, [id]);
+  }, [id, registerLoader, setLoaderDone]);
 
   return (
-    <PageLoader loading={loading}>
+    <PageLoader loading={isLoading}>
       <div className={styles.category}>
         <div className={styles.topSection}>
           <h1>{categoryName}</h1>
@@ -73,7 +90,7 @@ function Category() {
         </div>
         <div className={styles.articlesSection}>
           {hasArticles && <h2>Articles</h2>}
-          <ArticleListing onHasArticles={setHasArticles} />
+          <ArticleListing categoryId={id ?? ""} onHasArticles={handleHasArticles} />
         </div>
       </div>
     </PageLoader>

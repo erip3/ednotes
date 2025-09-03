@@ -3,7 +3,7 @@ import styles from "./PageLoader.module.css";
 
 interface PageLoaderProps {
   loading: boolean;
-  children: React.ReactNode;
+  children?: React.ReactNode;
 }
 
 export default function PageLoader({ loading, children }: PageLoaderProps) {
