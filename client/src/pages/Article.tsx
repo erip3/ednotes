@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useLoadingContext } from "../context/useLoadingContext";
-import PageLoader from "../components/PageLoader/PageLoader";
+import PageLoader from "../components/PageLoader";
 import ContentRenderer from "../components/ContentRenderer/ContentRenderer";
 
 // Article interface represents the structure of an article object.

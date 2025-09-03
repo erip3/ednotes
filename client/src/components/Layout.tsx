@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Outlet, useMatch } from "react-router-dom";
-import { useLoadingContext } from "../context/useLoadingContext";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 import { useCategoryContext } from "../context/useCategoryContext";
 import Header from "./Header/Header";
 import Sidebar from "./Sidebar/Sidebar";
@@ -9,9 +10,7 @@ import Sidebar from "./Sidebar/Sidebar";
  * Layout component that wraps the main content with a sidebar.
  * @returns JSX.Element
  */
-function Layout() {
-  const { registerLoader, setLoaderDone } = useLoadingContext(); // Get loading context
-
+export default function Layout() {
   // Get the category or article ID from the URL if present
   const categoryMatch = useMatch("/category/:id");
   const articleMatch = useMatch("/article/:id");
@@ -22,11 +21,38 @@ function Layout() {
 
   const [isTopic, setIsTopic] = useState(false); // Track if the current category is a topic
 
-  useEffect(() => {
-    const id = Math.random();
-    console.log("Layout mounted", { id });
-    return () => console.log("Layout unmounted", { id });
-  }, []);
+  // Fetch category if on a category route
+  const { data: categoryData, isSuccess: isCategorySuccess } = useQuery({
+    queryKey: ["category", id],
+    queryFn: async () => {
+      const res = await axios.get(`/api/categories/${id}`);
+      return res.data;
+    },
+    enabled: !!(id && categoryMatch),
+  });
+
+  // Fetch article if on an article route
+  const { data: articleData, isSuccess: isArticleSuccess } = useQuery({
+    queryKey: ["article", id],
+    queryFn: async () => {
+      const res = await axios.get(`/api/articles/${id}`);
+      return res.data;
+    },
+    enabled: !!(id && articleMatch),
+  });
+
+  // Fetch category for article's categoryId if on article route and articleData is loaded
+  const { data: articleCategoryData, isSuccess: isArticleCategorySuccess } =
+    useQuery({
+      queryKey: ["category", articleData?.categoryId],
+      queryFn: async () => {
+        const res = await axios.get(
+          `/api/categories/${articleData.categoryId}`
+        );
+        return res.data;
+      },
+      enabled: !!(articleData?.categoryId && articleMatch && isArticleSuccess),
+    });
 
   // Update the selected category and topic when the ID changes
   useEffect(() => {
@@ -38,44 +64,39 @@ function Layout() {
       return;
     }
 
-    const numId = Number(id);
-
-    if (categoryMatch) {
+    if (categoryMatch && isCategorySuccess && categoryData) {
       // If the current match is a category, set the selected category
-      setSelectedCategory(numId);
-
-      // Fetch category details to determine if it's a topic and get its topic ID
-      const loaderId = registerLoader();
-      fetch(`/api/categories/${numId}`)
-        .then((res) => res.json())
-        .then((category) => {
-          setSelectedTopic(category?.topicId ?? null);
-          setIsTopic(category?.isTopic);
-        })
-        .finally(() => setLoaderDone(loaderId));
-    } else if (articleMatch) {
+      setSelectedCategory(Number(id));
+      setSelectedTopic(categoryData?.topicId ?? null);
+      setIsTopic(categoryData?.isTopic ?? false);
+    } else if (articleMatch && isArticleSuccess && articleData) {
       // If the current match is an article, set the selected topic
-      const loaderId = registerLoader();
-      fetch(`/api/articles/${numId}`)
-        .then((res) => res.json())
-        .then((article) => {
-          if (article?.categoryId) {
-            setSelectedCategory(article.categoryId);
-            return fetch(`/api/categories/${article.categoryId}`)
-              .then((res) => res.json())
-              .then((category) => {
-                setSelectedTopic(category?.topicId ?? null);
-                setIsTopic(category?.isTopic);
-              });
-          } else {
-            setSelectedCategory(null);
-            setSelectedTopic(null);
-            setIsTopic(false);
-          }
-        })
-        .finally(() => setLoaderDone(loaderId));
+      if (articleData?.categoryId) {
+        setSelectedCategory(articleData.categoryId);
+        if (isArticleCategorySuccess && articleCategoryData) {
+          setSelectedTopic(articleCategoryData?.topicId ?? null);
+          setIsTopic(articleCategoryData?.isTopic ?? false);
+        }
+      } else {
+        setSelectedCategory(null);
+        setSelectedTopic(null);
+        setIsTopic(false);
+      }
     }
-  }, []);
+    // eslint-disable-next-line
+  }, [
+    id,
+    categoryMatch,
+    isCategorySuccess,
+    categoryData,
+    articleMatch,
+    isArticleSuccess,
+    articleData,
+    isArticleCategorySuccess,
+    articleCategoryData,
+    setSelectedCategory,
+    setSelectedTopic,
+  ]);
 
   // If there is a selected topic or the selected category is a topic, show the sidebar
   const showSidebar = selectedTopic !== null || isTopic;
@@ -96,5 +117,3 @@ function Layout() {
     </div>
   );
 }
-
-export default Layout;

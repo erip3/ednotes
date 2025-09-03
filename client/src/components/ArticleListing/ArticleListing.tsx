@@ -1,6 +1,7 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
-import { useLoadingContext } from "../../context/useLoadingContext";
+import axios from "axios";
+import { useQuery } from "@tanstack/react-query";
 import styles from "./ArticleListing.module.css";
 
 // Props for the ArticleListing component
@@ -35,37 +36,40 @@ function formatDate(dateString?: string) {
  * ArticleListing component displays a list of articles.
  * @returns JSX.Element
  */
-export default function ArticleListing({ categoryId, onHasArticles }: ArticleListingProps) {
-  const { registerLoader, setLoaderDone } = useLoadingContext();
-  const [articles, setArticles] = useState<Article[]>([]); // Initialize articles state
+export default function ArticleListing({
+  categoryId,
+  onHasArticles,
+}: ArticleListingProps) {
   const onHasArticlesRef = useRef(onHasArticles);
 
+  // Fetch articles
+  const {
+    data: articles = [],
+    isLoading,
+    isError,
+  } = useQuery<Article[]>({
+    queryKey: ["articles", categoryId],
+    queryFn: async () => {
+      const res = await axios.get<Article[]>(
+        `/api/navigation/article-summaries/${categoryId}`
+      );
+      return res.data;
+    },
+    enabled: !!categoryId,
+  });
+
+  // Notify parent if articles exist
   useEffect(() => {
-    const id = Math.random();
-    console.log("AL mounted", { id });
-    return () => console.log("AL unmounted", { id });
-  }, []);
+    onHasArticlesRef.current?.(articles.length > 0);
+  }, [articles]);
 
+  if (isLoading) {
+    return <div className={styles.container}>Loading articles...</div>;
+  }
 
-  // Fetch articles from API
-  useEffect(() => {
-    if (!categoryId) return; // <-- Prevents fetch if categoryId is undefined
-
-    console.log("Effect ran", { categoryId });
-    const loaderId = registerLoader();
-    fetch(`/api/navigation/article-summaries/${categoryId}`)
-      .then((res) => (res.ok ? res.json() : Promise.reject("No response")))
-      .then((data) => {
-        console.log("Fetched", data);
-        setArticles(data);
-        onHasArticlesRef.current?.(data.length > 0);
-      })
-      .catch((err) => console.error("Failed to load articles:", err))
-      .finally(() => {
-        console.log("Loader done", loaderId);
-        setLoaderDone(loaderId);
-      });
-  }, [categoryId, registerLoader, setLoaderDone]);
+  if (isError) {
+    return <div className={styles.container}>Failed to load articles.</div>;
+  }
 
   // Render the article listing
   return (

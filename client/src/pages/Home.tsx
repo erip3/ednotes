@@ -1,8 +1,8 @@
-import { useEffect, useState} from "react";
 import { useNavigate } from "react-router-dom";
-import { useLoadingContext } from "../context/useLoadingContext";
+import axios from "axios";
+import { useQuery } from "@tanstack/react-query";
 import CategoryCard from "../components/CategoryCard/CategoryCard";
-import PageLoader from "../components/PageLoader/PageLoader";
+import PageLoader from "../components/PageLoader";
 
 // Category interface represents a single category.
 interface Category {
@@ -15,56 +15,47 @@ interface Category {
  * Home component displays the top-level categories.
  * @returns JSX.Element
  */
-function Home() {
-  const { registerLoader, setLoaderDone, isLoading } = useLoadingContext();
-  const [categories, setCategories] = useState<Category[]>([]); // State to hold categories
-  const [error, setError] = useState<string | null>(null); // State to track error messages
+export default function Home() {
   const navigate = useNavigate(); // Hook to programmatically navigate
 
   // Fetch categories from API
-  useEffect(() => {
-    const loaderId = registerLoader();
-    fetch("/api/categories/top-level")
-      .then((res) => (res.ok ? res.json() : Promise.reject("No response")))
-      .then(setCategories)
-      .catch(() => setError("Could not load categories."))
-      .finally(() => setLoaderDone(loaderId));
-  }, [registerLoader, setLoaderDone]);
+  const {
+    data: categories,
+    isLoading,
+    error,
+  } = useQuery<Category[]>({
+    queryKey: ["categories", "top-level"],
+    queryFn: async () => {
+      const res = await axios.get<Category[]>("/api/categories/top-level");
+      return res.data;
+    },
+  });
 
   // Render loading state or categories
   return (
-    <PageLoader loading={isLoading}>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          minHeight: "80vh",
-        }}
-      >
-        <h1>EdNotes</h1>
-        <p style={{ color: "#888" }}>Choose a category to get started:</p>
-        {error && <p style={{ color: "red" }}>{error}</p>}
-        <div
-          style={{ display: "flex", flexWrap: "wrap", gap: 16, marginTop: 24 }}
-        >
-          {categories.map((cat) => (
-            <CategoryCard
-              key={cat.id}
-              name={cat.name}
-              comingSoon={cat.comingSoon}
-              onClick={
-                cat.comingSoon
-                  ? undefined
-                  : () => navigate(`/category/${cat.id}`)
-              }
-            />
-          ))}
+    <div className="bg-bg">
+      <PageLoader loading={isLoading}>
+        <div className="flex flex-col items-center justify-center min-h-[80vh] bg-bg text-text">
+          <h1 className="text-3xl font-bold">EdNotes</h1>
+          <p className="text-gray-400">Choose a category to get started:</p>
+          {error && <p className="text-red-500">Error loading categories.</p>}
+          <div className="flex flex-wrap gap-4 mt-6">
+            {categories &&
+              categories.map((cat) => (
+                <CategoryCard
+                  key={cat.id}
+                  name={cat.name}
+                  comingSoon={cat.comingSoon}
+                  onClick={
+                    cat.comingSoon
+                      ? undefined
+                      : () => navigate(`/category/${cat.id}`)
+                  }
+                />
+              ))}
+          </div>
         </div>
-      </div>
-    </PageLoader>
+      </PageLoader>
+    </div>
   );
 }
-
-export default Home;

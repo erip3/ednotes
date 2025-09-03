@@ -1,32 +1,31 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { LoadingProvider } from "./context/LoadingProvider";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { CategoryProvider } from "./context/CategoryProvider";
 import Layout from "./components/Layout";
 import Home from "./pages/Home";
 import Category from "./pages/Category";
 import Article from "./pages/Article";
 
+const queryClient = new QueryClient();
+
 /**
  * Main application component.
  * @returns JSX.Element
  */
-function App() {
-  console.log("App rendered");
+export default function App() {
   return (
-    <BrowserRouter>
-      <LoadingProvider>
+    <QueryClientProvider client={queryClient}>
+      <BrowserRouter>
         <CategoryProvider>
-            <Routes>
-              <Route path="/" element={<Layout />}>
-                <Route index element={<Home />} />
-                <Route path="/category/:id" element={<Category />} />
-                <Route path="/article/:id" element={<Article />} />
-              </Route>
-            </Routes>
+          <Routes>
+            <Route path="/" element={<Layout />}>
+              <Route index element={<Home />} />
+              <Route path="/category/:id" element={<Category />} />
+              <Route path="/article/:id" element={<Article />} />
+            </Route>
+          </Routes>
         </CategoryProvider>
-      </LoadingProvider>
-    </BrowserRouter>
+      </BrowserRouter>
+    </QueryClientProvider>
   );
 }
-
-export default App;
