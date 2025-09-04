@@ -53,12 +53,12 @@ export default function Article() {
     <PageLoader loading={isLoading}>
       {article && !error && (
         <div>
-          <h1>{article.title}</h1>
-          <p>Published on {formatDate(article.createdAt)}</p>
+          <h1 className="text-5xl font-bold">{article.title}</h1>
+          {article.createdAt && <p>Published on {formatDate(article.createdAt)}</p>}
           {article.updatedAt && article.updatedAt !== article.createdAt && (
             <p>Updated on {formatDate(article.updatedAt)}</p>
           )}
-          <div className="article-page">
+          <div className="py-8">
             <ContentRenderer
               blocks={
                 typeof article.content === "string"

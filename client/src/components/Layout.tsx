@@ -102,17 +102,21 @@ export default function Layout() {
   const showSidebar = selectedTopic !== null || isTopic;
 
   return (
-    <div>
-      <Header />
+    <div className="min-h-screen bg-[var(--color-bg)]">
+      {/* Fixed header */}
+      <div className="fixed top-0 left-0 w-full z-50">
+        <Header />
+      </div>
+      {/* Sidebar (not fixed) */}
       {showSidebar && <Sidebar />}
+      {/* Main content, with top padding to avoid header overlap */}
       <main
-        style={{
-          marginLeft: showSidebar ? 260 : 0,
-          padding: 32,
-          background: "var(--color-bg)",
-        }}
+        className={`pt-16 ${showSidebar ? "ml-[260px]" : ""} px-8`}
+        // pt-16 assumes your header is 64px tall; adjust as needed
       >
-        <Outlet />
+        <div className="py-8">
+          <Outlet />
+        </div>
       </main>
     </div>
   );

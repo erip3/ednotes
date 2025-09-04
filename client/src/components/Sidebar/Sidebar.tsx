@@ -76,7 +76,7 @@ export default function Sidebar() {
 
   return (
     <aside
-      className={`fixed top-14 left-0 bottom-0 w-64 bg-bg text-text p-4 border-r border-gray-700 overflow-y-auto transition-transform duration-300 ease-in-out transform ${slideClasses} z-20`}
+      className={`fixed top-14 left-0 bottom-0 w-64 bg-neutral-900 p-4 border-r border-gray-700 overflow-y-auto transition-transform duration-300 ease-in-out transform ${slideClasses} z-20`}
     >
       {isLoading ? (
         <div>Loading...</div>
