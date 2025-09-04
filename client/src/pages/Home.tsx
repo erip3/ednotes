@@ -33,29 +33,32 @@ export default function Home() {
 
   // Render loading state or categories
   return (
-    <div className="bg-bg">
-      <PageLoader loading={isLoading}>
-        <div className="flex flex-col items-center justify-center min-h-[80vh] bg-bg text-text">
-          <h1 className="text-3xl font-bold">EdNotes</h1>
-          <p className="text-gray-400">Choose a category to get started:</p>
-          {error && <p className="text-red-500">Error loading categories.</p>}
-          <div className="flex flex-wrap gap-4 mt-6">
-            {categories &&
-              categories.map((cat) => (
-                <CategoryCard
-                  key={cat.id}
-                  name={cat.name}
-                  comingSoon={cat.comingSoon}
-                  onClick={
-                    cat.comingSoon
-                      ? undefined
-                      : () => navigate(`/category/${cat.id}`)
-                  }
-                />
-              ))}
-          </div>
+    <PageLoader loading={isLoading}>
+      <div className="flex flex-col items-center justify-center min-h-[80vh]">
+        {/* Title */}
+        <h1 className="text-5xl font-bold">EdNotes</h1>
+        <p className="text-lg text-neutral-400 top py-4">
+          Choose a category to get started:
+        </p>
+        {error && <p className="text-red-500">Error loading categories.</p>}
+
+        {/* Category Cards */}
+        <div className="flex flex-wrap gap-4 mt-6">
+          {categories &&
+            categories.map((cat) => (
+              <CategoryCard
+                key={cat.id}
+                name={cat.name}
+                comingSoon={cat.comingSoon}
+                onClick={
+                  cat.comingSoon
+                    ? undefined
+                    : () => navigate(`/category/${cat.id}`)
+                }
+              />
+            ))}
         </div>
-      </PageLoader>
-    </div>
+      </div>
+    </PageLoader>
   );
 }

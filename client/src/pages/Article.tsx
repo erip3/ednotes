@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { useLoadingContext } from "../context/useLoadingContext";
+import axios from "axios";
+import { useQuery } from "@tanstack/react-query";
 import PageLoader from "../components/PageLoader";
 import ContentRenderer from "../components/ContentRenderer/ContentRenderer";
 
@@ -31,25 +31,27 @@ function formatDate(dateString?: string) {
  * Article component displays a single article.
  * @returns JSX.Element
  */
-function Article() {
-  const { registerLoader, setLoaderDone, isLoading } = useLoadingContext();
+export default function Article() {
   const { id } = useParams<{ id: string }>();
-  const [article, setArticle] = useState<Article | null>(null);
 
-  useEffect(() => {
-    const loaderId = registerLoader();
-    Promise.all([fetch(`/api/articles/${id}`)])
-      .then(([res]) => (res.ok ? res.json() : Promise.reject("No response")))
-      .then(setArticle)
-      .catch((err) => console.error("Failed to load article:", err))
-      .finally(() => setLoaderDone(loaderId));
-  }, [id, registerLoader, setLoaderDone]);
+  // Fetch article data
+  const {
+    data: article,
+    isLoading,
+    error,
+  } = useQuery<Article>({
+    queryKey: ["article", id],
+    queryFn: async () => {
+      const res = await axios.get<Article>(`/api/articles/${id}`);
+      return res.data;
+    },
+  });
 
   if (isLoading) return <PageLoader loading={isLoading} />;
 
   return (
     <PageLoader loading={isLoading}>
-      {article && (
+      {article && !error && (
         <div>
           <h1>{article.title}</h1>
           <p>Published on {formatDate(article.createdAt)}</p>
@@ -70,5 +72,3 @@ function Article() {
     </PageLoader>
   );
 }
-
-export default Article;
