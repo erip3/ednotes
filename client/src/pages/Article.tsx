@@ -53,10 +53,10 @@ export default function Article() {
     <PageLoader loading={isLoading}>
       {article && !error && (
         <div>
-          <h1 className="text-5xl font-bold">{article.title}</h1>
-          {article.createdAt && <p>Published on {formatDate(article.createdAt)}</p>}
+          <h1 className="text-5xl font-bold pb-1">{article.title}</h1>
+          {article.createdAt && <p className="text-gray-500">Published on {formatDate(article.createdAt)}</p>}
           {article.updatedAt && article.updatedAt !== article.createdAt && (
-            <p>Updated on {formatDate(article.updatedAt)}</p>
+            <p className="text-gray-500">Updated on {formatDate(article.updatedAt)}</p>
           )}
           <div className="py-8">
             <ContentRenderer
