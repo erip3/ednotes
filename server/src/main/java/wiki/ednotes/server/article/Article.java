@@ -1,6 +1,5 @@
 package wiki.ednotes.server.article;
 
-import java.time.OffsetDateTime;
 import jakarta.persistence.*;
 
 @Entity
@@ -18,15 +17,6 @@ public class Article {
 
     @Column(name = "category_id")
     private Long categoryId;
-
-    @Column(name = "author")
-    private String author;
-
-    @Column(name = "created_at")
-    private OffsetDateTime createdAt;
-
-    @Column(name = "updated_at")
-    private OffsetDateTime updatedAt;
 
     @Column(name = "is_published")
     private Boolean isPublished;
@@ -64,30 +54,6 @@ public class Article {
 
     public void setCategoryId(Long categoryId) {
         this.categoryId = categoryId;
-    }
-
-    public String getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(String author) {
-        this.author = author;
-    }
-
-    public OffsetDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(OffsetDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public OffsetDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(OffsetDateTime updatedAt) {
-        this.updatedAt = updatedAt;
     }
 
     public Boolean getIsPublished() {

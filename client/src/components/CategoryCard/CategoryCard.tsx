@@ -1,4 +1,4 @@
-import React, { useState, type JSX } from "react";
+import React, { type JSX } from "react";
 import DefaultIcon from "./Icons/DefaultIcon";
 import CategoryLabel from "./CategoryLabel";
 
@@ -19,8 +19,6 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
   icon,
   accentColor,
 }) => {
-  const [hovered, setHovered] = useState(false);
-
   return (
     <div
       className={`flex flex-col items-center justify-center p-6 w-52 h-44 rounded-xl m-2
@@ -39,11 +37,9 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
       onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) => {
         if (!comingSoon && e.key === "Enter" && onClick) onClick();
       }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
     >
       {icon ? icon() : <DefaultIcon />}
-      <CategoryLabel name={name} comingSoon={comingSoon} hovered={hovered} />
+      <CategoryLabel name={name} />
     </div>
   );
 };

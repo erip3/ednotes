@@ -1,5 +1,5 @@
+import BackButton from "./BackButton";
 import HomeButton from "./HomeButton";
-import styles from "./Header.module.css";
 
 /**
  * Header component displays the top navigation bar.
@@ -7,7 +7,8 @@ import styles from "./Header.module.css";
  */
 export default function Header() {
   return (
-    <header className={styles.header}>
+    <header className="flex items-center h-14 px-4 bg-neutral-900 border-b border-neutral-700">
+      <BackButton />
       <HomeButton />
     </header>
   );

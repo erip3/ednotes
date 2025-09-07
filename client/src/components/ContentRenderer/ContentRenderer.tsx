@@ -1,5 +1,12 @@
 import React, { type JSX } from "react";
 import type { ArticleBlock } from "./article";
+import BubbleSortDemo from "../../demos/BubbleSortDemo";
+
+const demoRegistry: Record<string, React.ComponentType> = {
+  bubbleSort: BubbleSortDemo,
+  // quickSort: QuickSortDemo,
+  // ...add more demos here
+};
 
 interface ContentRendererProps {
   blocks: ArticleBlock[];
@@ -24,14 +31,14 @@ export default function ContentRenderer({ blocks }: ContentRendererProps) {
                     : block.level === 3
                     ? "text-xl"
                     : "text-lg"
-                }`
+                }`,
               },
               block.content
             );
           }
           case "paragraph":
             return (
-              <p key={i} className="mb-4 text-base leading-relaxed">
+              <p key={i} className="mb-4 text-lg leading-relaxed">
                 {block.content}
               </p>
             );
@@ -39,7 +46,7 @@ export default function ContentRenderer({ blocks }: ContentRendererProps) {
             return (
               <pre
                 key={i}
-                className="mb-4 bg-gray-100 rounded p-4 overflow-x-auto text-sm"
+                className="mb-4 bg-neutral-950 rounded p-4 overflow-x-auto text-sm"
               >
                 <code className={`language-${block.language}`}>
                   {block.content}
@@ -85,6 +92,24 @@ export default function ContentRenderer({ blocks }: ContentRendererProps) {
                 {block.content}
               </div>
             );
+          case "demo": {
+            const DemoComponent = demoRegistry[block.demoType];
+            if (!DemoComponent) {
+              return (
+                <div
+                  key={i}
+                  className="mb-4 p-4 bg-red-100 text-red-700 rounded"
+                >
+                  Demo "{block.demoType}" not found.
+                </div>
+              );
+            }
+            return (
+              <div key={i} className="mb-4">
+                <DemoComponent />
+              </div>
+            );
+          }
           default:
             return null;
         }

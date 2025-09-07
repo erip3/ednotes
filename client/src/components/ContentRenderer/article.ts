@@ -26,4 +26,8 @@ export type ArticleBlock =
   | {
       type: "equation";
       content: string; // could later refine to a MathJax/LaTeX AST
+    }
+  | {
+      type: "demo";
+      demoType: string;
     };

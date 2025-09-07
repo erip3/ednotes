@@ -83,7 +83,6 @@ export default function Layout() {
         setIsTopic(false);
       }
     }
-    // eslint-disable-next-line
   }, [
     id,
     categoryMatch,
@@ -107,8 +106,10 @@ export default function Layout() {
       <div className="fixed top-0 left-0 w-full z-50">
         <Header />
       </div>
+
       {/* Sidebar (not fixed) */}
-      {showSidebar && <Sidebar />}
+      <Sidebar />
+      
       {/* Main content, with top padding to avoid header overlap */}
       <main
         className={`pt-16 ${showSidebar ? "ml-[260px]" : ""} px-8`}

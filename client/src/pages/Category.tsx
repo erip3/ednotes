@@ -1,11 +1,11 @@
-import { useCallback, useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useCategoryContext } from "../context/useCategoryContext";
 import CategoryCard from "../components/CategoryCard/CategoryCard";
 import { categoryVisuals } from "../components/CategoryCard/categoryVisual";
-import ArticleListing from "../components/ArticleListing/ArticleListing";
+import ArticleListing from "../components/ArticleListing";
 import PageLoader from "../components/PageLoader";
 
 // Category interface represents a single category.
@@ -16,13 +16,15 @@ interface Category {
   isTopic: boolean;
 }
 
-/**
- * Category page displays articles and subcategories for a specific category.
- * @returns JSX.Element
- */
+interface Article {
+  id: number;
+  title: string;
+  isPublished: boolean;
+  createdAt?: string;
+}
+
 function Category() {
   const { id } = useParams<Record<string, string>>();
-  const [hasArticles, setHasArticles] = useState<boolean>(false);
   const navigate = useNavigate();
   const { setSelectedTopic } = useCategoryContext();
 
@@ -30,6 +32,7 @@ function Category() {
   const {
     data: categoryData,
     isLoading: isCategoryLoading,
+    isFetching: isCategoryFetching,
     error: categoryError,
   } = useQuery<Category>({
     queryKey: ["category", id],
@@ -43,7 +46,7 @@ function Category() {
   // Update selectedTopic in context whenever id changes
   useEffect(() => {
     if (id && categoryData && categoryData.isTopic) {
-      setSelectedTopic(Number(id)); // Convert to number (context expects number)
+      setSelectedTopic(Number(id));
     }
   }, [id, setSelectedTopic, categoryData]);
 
@@ -51,6 +54,7 @@ function Category() {
   const {
     data: subcategories,
     isLoading: isSubcategoriesLoading,
+    isFetching: isSubcategoriesFetching,
     error: subcategoriesError,
   } = useQuery<Category[]>({
     queryKey: ["subcategories", id],
@@ -61,15 +65,44 @@ function Category() {
     enabled: !!id,
   });
 
-  // Callback to handle whether articles exist in the category
-  const handleHasArticles = useCallback((has: boolean) => {
-    setHasArticles(has);
-  }, []);
+  // Fetch articles for this category
+  const {
+    data: articles = [],
+    isLoading: isArticlesLoading,
+    isFetching: isArticlesFetching,
+    error: articlesError,
+  } = useQuery<Article[]>({
+    queryKey: ["articles", id],
+    queryFn: async () => {
+      const res = await axios.get<Article[]>(
+        `/api/navigation/article-summaries/${id}`
+      );
+      return res.data;
+    },
+    enabled: !!id,
+  });
+
+  // Combine loading/error states
+  const loading =
+    isCategoryLoading || isSubcategoriesLoading || isArticlesLoading;
+  const isRetrying =
+    (isCategoryFetching && !!categoryError) ||
+    (isSubcategoriesFetching && !!subcategoriesError) ||
+    (isArticlesFetching && !!articlesError);
+  const error =
+    categoryError?.message ||
+    subcategoriesError?.message ||
+    articlesError?.message ||
+    null;
 
   return (
-    <PageLoader loading={isCategoryLoading || isSubcategoriesLoading}>
+    <PageLoader
+      loading={loading}
+      error={error ?? undefined}
+      isRetrying={isRetrying}
+    >
       <div className="flex flex-col items-center justify-center min-h-[80vh]">
-        <div className="flex flex-col items-center justify-center w-full box-border bg-inherit z-10">
+        <div className="flex flex-col items-center justify-center w-full box-border bg-inherit z-10 pb-16">
           <h1 className="text-5xl font-bold">{categoryData?.name ?? ""}</h1>
 
           {/* If subcategories exist, display them */}
@@ -103,22 +136,13 @@ function Category() {
 
         {/* Articles Section */}
         <div className="flex flex-col items-center justify-center">
-          {hasArticles && (
+          {articles.length > 0 && (
             <h2 className="text-lg text-neutral-400 top py-4">Articles</h2>
           )}
           <ArticleListing
-            categoryId={id ?? ""}
-            onHasArticles={handleHasArticles}
+            articles={articles}
           />
         </div>
-
-        {/* Error Messages */}
-        {categoryError && (
-          <div className="text-red-500">Error loading category info.</div>
-        )}
-        {subcategoriesError && (
-          <div className="text-red-500">Error loading subcategories.</div>
-        )}
       </div>
     </PageLoader>
   );

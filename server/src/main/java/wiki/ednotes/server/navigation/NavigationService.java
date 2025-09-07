@@ -41,7 +41,7 @@ public class NavigationService {
         Map<Long, List<ArticleSummary>> articlesByCategory = allArticles.stream()
                 .collect(Collectors.groupingBy(
                         a -> a.getCategoryId() != null ? a.getCategoryId() : null,
-                        Collectors.mapping(a -> new ArticleSummary(a.getId(), a.getTitle(), a.getAuthor(), a.getCreatedAt(), a.getUpdatedAt(), a.getIsPublished() != null && a.getIsPublished()), Collectors.toList())));
+                        Collectors.mapping(a -> new ArticleSummary(a.getId(), a.getTitle(), a.getIsPublished() != null && a.getIsPublished()), Collectors.toList())));
 
         // Map categoryId -> list of child categories
         Map<Long, List<Category>> childrenByParent = allCategories.stream()
@@ -66,7 +66,7 @@ public class NavigationService {
     public List<ArticleSummary> getArticleSummariesByCategory(Long categoryId) {
         List<Article> articles = articleRepository.findByCategoryIdOrderByOrderInCategoryAsc(categoryId);
         return articles.stream()
-                .map(a -> new ArticleSummary(a.getId(), a.getTitle(), a.getAuthor(), a.getCreatedAt(), a.getUpdatedAt(), a.getIsPublished() != null && a.getIsPublished()))
+                .map(a -> new ArticleSummary(a.getId(), a.getTitle(), a.getIsPublished() != null && a.getIsPublished()))
                 .collect(Collectors.toList());
     }
 

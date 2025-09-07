@@ -9,22 +9,7 @@ interface Article {
   id: number;
   title: string;
   content: string;
-  author: string;
-  createdAt: string;
-  updatedAt: string;
   isPublished: boolean;
-}
-
-/**
- * Formats a date string into a more readable format.
- * @param dateString The date string to format.
- * @returns The formatted date string.
- */
-function formatDate(dateString?: string) {
-  if (!dateString) return "";
-  const date = new Date(dateString);
-  if (isNaN(date.getTime())) return "";
-  return date.toLocaleDateString();
 }
 
 /**
@@ -38,6 +23,7 @@ export default function Article() {
   const {
     data: article,
     isLoading,
+    isFetching,
     error,
   } = useQuery<Article>({
     queryKey: ["article", id],
@@ -50,14 +36,14 @@ export default function Article() {
   if (isLoading) return <PageLoader loading={isLoading} />;
 
   return (
-    <PageLoader loading={isLoading}>
+    <PageLoader
+      loading={isLoading}
+      error={error ? "Failed to load data. Retrying..." : undefined}
+      isRetrying={isFetching && !!error}
+    >
       {article && !error && (
         <div>
-          <h1 className="text-5xl font-bold pb-1">{article.title}</h1>
-          {article.createdAt && <p className="text-gray-500">Published on {formatDate(article.createdAt)}</p>}
-          {article.updatedAt && article.updatedAt !== article.createdAt && (
-            <p className="text-gray-500">Updated on {formatDate(article.updatedAt)}</p>
-          )}
+          <h1 className="text-5xl font-bold pb-4">{article.title}</h1>
           <div className="py-8">
             <ContentRenderer
               blocks={

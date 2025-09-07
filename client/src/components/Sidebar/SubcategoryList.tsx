@@ -1,5 +1,4 @@
 import SidebarCategory from "./SidebarCategory";
-import styles from "./Sidebar.module.css";
 
 interface Article {
   id: number;
@@ -15,17 +14,28 @@ interface Category {
 
 interface SubcategoryListProps {
   categories?: Category[];
+  subcategoryArticlesMap?: Record<number, Article[]>;
 }
-  
+
 export default function SubcategoryList({
   categories,
+  subcategoryArticlesMap = {},
 }: SubcategoryListProps) {
   return (
-    <div className={styles.sidebarList}>
-      <label>Subcategories</label>
-      {categories!.map((child) => (
-        <SidebarCategory key={child.id} category={child} />
-      ))}
+    <div className="mb-4">
+      <label className="block text-xs uppercase tracking-wider text-neutral-400 mb-2 px-2">
+        Subcategories
+      </label>
+      <div className="flex flex-col gap-1">
+        {categories &&
+          categories.map((child) => (
+            <SidebarCategory
+              key={child.id}
+              category={child}
+              articles={subcategoryArticlesMap[child.id] ?? []}
+            />
+          ))}
+      </div>
     </div>
   );
 }

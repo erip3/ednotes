@@ -1,6 +1,7 @@
-import styles from "./Header.module.css";
-
-// HomeIcon component renders a home icon.
+/**
+ * HomeIcon component renders an svg home icon.
+ * @returns JSX.Element
+ */
 const HomeIcon = () => (
   <svg
     width="22"
@@ -25,7 +26,11 @@ const HomeIcon = () => (
  */
 export default function HomeButton() {
   return (
-    <button className={styles.homeButton} onClick={() => window.location.href = "/"}>
+    <button
+      className="mr-2 p-2 rounded hover:bg-gray-700 transition"
+      onClick={() => (window.location.href = "/")}
+      aria-label="Home"
+    >
       <HomeIcon />
     </button>
   );

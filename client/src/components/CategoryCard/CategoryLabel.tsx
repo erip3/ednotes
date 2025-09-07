@@ -1,62 +1,27 @@
-import { useEffect, useRef, useState } from "react";
-import styles from "./CategoryCard.module.css";
-
 interface CategoryLabelProps {
   name: string;
   comingSoon?: boolean;
-  hovered?: boolean;
 }
 
-export default function CategoryLabel({
-  name,
-  comingSoon,
-  hovered
-}: CategoryLabelProps) {
-  const outerRef = useRef<HTMLDivElement>(null);
-  const innerRef = useRef<HTMLSpanElement>(null);
-  const [shouldScroll, setShouldScroll] = useState(false);
-  const [scrollDistance, setScrollDistance] = useState(0);
-
-  useEffect(() => {
-    const outer = outerRef.current;
-    const inner = innerRef.current;
-    if (outer && inner) {
-      if (inner.scrollWidth > outer.clientWidth) {
-        setShouldScroll(true);
-        setScrollDistance(inner.scrollWidth - outer.clientWidth);
-      } else {
-        setShouldScroll(false);
-        setScrollDistance(0);
-      }
-    }
-  }, [name]);
-
-  // Animation duration: 50px/sec, min 2s, max 6s
-  const duration = Math.min(Math.max(scrollDistance / 50, 2), 6);
-
+// CategoryLabel component displays the category name, truncating if too long.
+export default function CategoryLabel({ name }: CategoryLabelProps) {
   return (
-    <span className={styles.categoryLabel}>
-      <div ref={outerRef} className={styles.categoryNameWrapper}>
-        <span
-          ref={innerRef}
-          className={`${styles.categoryName} ${
-            shouldScroll && hovered ? styles.scrolling : ""
-          }`}
-          style={
-            shouldScroll && hovered
-              ? ({
-                  "--scroll-distance": `-${scrollDistance}px`,
-                  "--scroll-duration": `${duration}s`,
-                } as React.CSSProperties)
-              : undefined
-          }
-        >
-          {name}
-        </span>
-      </div>
-      {comingSoon && (
-        <span className={styles.comingSoonLabel}>Unavailable</span>
-      )}
+    <span className="w-full flex flex-col items-center mt-3 font-medium">
+      <span
+        className="
+        w-full
+        text-center
+        overflow-hidden
+        [font-size:clamp(0.75rem,2vw,1rem)]
+        leading-tight
+        px-1
+        break-words
+        max-h-12
+        "
+        title={name}
+      >
+        {name}
+      </span>
     </span>
   );
 }

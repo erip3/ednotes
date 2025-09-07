@@ -22,7 +22,8 @@ export default function Home() {
   const {
     data: categories,
     isLoading,
-    error,
+    isFetching,
+    error
   } = useQuery<Category[]>({
     queryKey: ["categories", "top-level"],
     queryFn: async () => {
@@ -33,14 +34,17 @@ export default function Home() {
 
   // Render loading state or categories
   return (
-    <PageLoader loading={isLoading}>
+    <PageLoader
+      loading={isLoading}
+      error={error ? "Failed to load categories." : undefined}
+      isRetrying={isFetching && !!error}
+    >
       <div className="flex flex-col items-center justify-center min-h-[80vh]">
         {/* Title */}
         <h1 className="text-5xl font-bold">EdNotes</h1>
         <p className="text-lg text-neutral-400 top py-4">
           Choose a category to get started:
         </p>
-        {error && <p className="text-red-500">Error loading categories.</p>}
 
         {/* Category Cards */}
         <div className="flex flex-wrap gap-4 mt-6">
