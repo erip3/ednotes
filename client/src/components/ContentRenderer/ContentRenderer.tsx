@@ -1,6 +1,9 @@
 import React, { type JSX } from "react";
 import type { ArticleBlock } from "./article";
 import BubbleSortDemo from "../../demos/BubbleSortDemo";
+import { BlockMath } from "react-katex";
+import "katex/dist/katex.min.css";
+import ReactMarkdown from "react-markdown";
 
 const demoRegistry: Record<string, React.ComponentType> = {
   bubbleSort: BubbleSortDemo,
@@ -39,7 +42,13 @@ export default function ContentRenderer({ blocks }: ContentRendererProps) {
           case "paragraph":
             return (
               <p key={i} className="mb-4 text-lg leading-relaxed">
-                {block.content}
+                <ReactMarkdown
+                  components={{
+                    p: React.Fragment, // Prevent extra <p> inside <p>
+                  }}
+                >
+                  {block.content}
+                </ReactMarkdown>
               </p>
             );
           case "code":
@@ -87,9 +96,9 @@ export default function ContentRenderer({ blocks }: ContentRendererProps) {
             return (
               <div
                 key={i}
-                className="mb-4 p-4 bg-green-50 border-l-4 border-green-400 text-green-800 rounded font-mono"
+                className="mb-4 p-4 bg-neutral-100 border-l-4 border-green-400 text-green-800 rounded font-mono"
               >
-                {block.content}
+                <BlockMath math={block.content} />
               </div>
             );
           case "demo": {

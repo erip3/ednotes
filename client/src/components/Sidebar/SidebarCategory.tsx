@@ -38,22 +38,22 @@ export default function SidebarCategory({
       <div className="flex items-center">
         {/* Arrow button */}
         <button
-          className={`mr-1 p-1 rounded hover:bg-gray-700 transition ${
+          className={`mr-1 p-1 rounded hover:bg-neutral-700 transition ${
             hasArticles
               ? ""
-              : "transparent cursor-default pointer-events-none opacity-50"
+              : "transparent cursor-default pointer-events-none opacity-25"
           }`}
           onClick={() => setExpanded((v) => !v)}
           aria-label={expanded ? "Collapse articles" : "Expand articles"}
           tabIndex={hasArticles ? 0 : -1}
         >
           <span
-            className="inline-block transition-transform"
+            className="inline-block transition-transform duration-500"
             style={{
               transform: expanded ? "rotate(90deg)" : "rotate(0deg)",
             }}
           >
-            ▶
+            🠞
           </span>
         </button>
 

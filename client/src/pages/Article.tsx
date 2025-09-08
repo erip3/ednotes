@@ -33,8 +33,6 @@ export default function Article() {
     },
   });
 
-  if (isLoading) return <PageLoader loading={isLoading} />;
-
   return (
     <PageLoader
       loading={isLoading}
@@ -42,7 +40,7 @@ export default function Article() {
       isRetrying={isFetching && !!error}
     >
       {article && !error && (
-        <div>
+        <div className="max-w-3xl mx-auto my-8 px-4">
           <h1 className="text-5xl font-bold pb-4">{article.title}</h1>
           <div className="py-8">
             <ContentRenderer
