@@ -1,14 +1,14 @@
 import React, { type JSX } from "react";
 import type { ArticleBlock } from "./article";
 import BubbleSortDemo from "../../demos/BubbleSortDemo";
+import ImageTo3DSurface from "../../demos/ImageSurface";
 import { BlockMath } from "react-katex";
 import "katex/dist/katex.min.css";
 import ReactMarkdown from "react-markdown";
 
 const demoRegistry: Record<string, React.ComponentType> = {
   bubbleSort: BubbleSortDemo,
-  // quickSort: QuickSortDemo,
-  // ...add more demos here
+  imageToSurface: ImageTo3DSurface,
 };
 
 interface ContentRendererProps {

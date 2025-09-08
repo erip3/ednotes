@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 // Props for the ArticleListing component
 interface ArticleListingProps {
@@ -14,13 +14,6 @@ interface Article {
   createdAt?: string;
 }
 
-function formatDate(dateString?: string) {
-  if (!dateString) return "";
-  const date = new Date(dateString);
-  if (isNaN(date.getTime())) return "";
-  return date.toLocaleDateString();
-}
-
 /**
  * ArticleListing component displays a list of articles.
  * @returns JSX.Element
@@ -28,20 +21,20 @@ function formatDate(dateString?: string) {
 export default function ArticleListing({
   articles,
 }: ArticleListingProps) {
+  const navigate = useNavigate();
 
   // Render the article listing
   return (
-    <div className="flex flex-col items-stretch px-6">
+    <div className="flex flex-col items-stretch px-6 gap-3">
       {articles.map((article) => (
-        <div
+        <button
           key={article.id}
-          className="flex flex-row items-center w-full border-b border-gray-700 py-3 gap-6"
+          type="button"
+          onClick={() => navigate(`/article/${article.id}`)}
+          className="flex flex-row items-center w-full rounded-lg bg-neutral-800 hover:bg-neutral-700 focus:bg-neutral-700 border border-neutral-700 py-4 px-6 gap-6 transition-colors duration-150 shadow-sm text-left outline-none focus:ring-2 focus:ring-blue-400"
         >
           <span className="flex-[2_1_0%] text-base font-semibold text-text min-w-[120px]">
-            <Link to={`/article/${article.id}`}>{article.title}</Link>
-          </span>
-          <span className="flex-1 my-0 text-sm text-gray-400">
-            Published on {formatDate(article.createdAt)}
+            {article.title}
           </span>
           <span className="flex-1 my-0 text-sm text-gray-400 text-right">
             {!article.isPublished && (
@@ -50,7 +43,7 @@ export default function ArticleListing({
               </span>
             )}
           </span>
-        </div>
+        </button>
       ))}
     </div>
   );
