@@ -30,4 +30,11 @@ export type ArticleBlock =
   | {
       type: "demo";
       demoType: string;
+      imageId?: string; // ID of the associated image resource
+    }
+  | {
+      type: "imageResource";
+      id: string;
+      src: string;
+      alt?: string;
     };

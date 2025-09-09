@@ -1,21 +1,52 @@
-import React, { type JSX } from "react";
+import React, { useState, type JSX } from "react";
 import type { ArticleBlock } from "./article";
-import BubbleSortDemo from "../../demos/BubbleSortDemo";
-import ImageTo3DSurface from "../../demos/ImageSurface";
 import { BlockMath } from "react-katex";
 import "katex/dist/katex.min.css";
 import ReactMarkdown from "react-markdown";
+import BubbleSortDemo from "../../demos/BubbleSortDemo";
+import ImageTo3DSurface from "../../demos/ImageSurface";
+import ImageResource from "./ImageResource";
 
-const demoRegistry: Record<string, React.ComponentType> = {
+// Props for demo components
+type DemoComponentProps = {
+  imageSrc?: string;
+};
+
+// Registry of demo components
+const demoRegistry: Record<string, React.ComponentType<DemoComponentProps>> = {
   bubbleSort: BubbleSortDemo,
   imageToSurface: ImageTo3DSurface,
 };
 
+// Props for ContentRenderer component
 interface ContentRendererProps {
   blocks: ArticleBlock[];
 }
 
+/**
+ * ContentRenderer component renders article blocks with appropriate styling and behavior.
+ * @param ContentRendererProps - Props for the component
+ * @returns JSX.Element
+ */
 export default function ContentRenderer({ blocks }: ContentRendererProps) {
+  // Map of image IDs to sources
+  const initialImages: Record<string, string> = {};
+
+  // Initialize image resources from blocks
+  blocks.forEach((block) => {
+    if (block.type === "imageResource" && block.id) {
+      initialImages[block.id] = block.src;
+    }
+  });
+
+  // State for image resources
+  const [imageResources, setImageResources] = useState(initialImages);
+
+  // Handler to update an image resource
+  function handleUpdateImage(id: string, newSrc: string) {
+    setImageResources((prev) => ({ ...prev, [id]: newSrc }));
+  }
+
   return (
     <div className="article-content mx-auto max-w-3xl px-4">
       {blocks.map((block, i) => {
@@ -39,6 +70,7 @@ export default function ContentRenderer({ blocks }: ContentRendererProps) {
               block.content
             );
           }
+
           case "paragraph":
             return (
               <p key={i} className="mb-4 text-lg leading-relaxed">
@@ -51,6 +83,7 @@ export default function ContentRenderer({ blocks }: ContentRendererProps) {
                 </ReactMarkdown>
               </p>
             );
+
           case "code":
             return (
               <pre
@@ -62,6 +95,7 @@ export default function ContentRenderer({ blocks }: ContentRendererProps) {
                 </code>
               </pre>
             );
+
           case "note":
             return (
               <div
@@ -79,6 +113,7 @@ export default function ContentRenderer({ blocks }: ContentRendererProps) {
                 {block.content}
               </div>
             );
+
           case "figure":
             return (
               <figure key={i} className="mb-4 flex flex-col items-center">
@@ -92,6 +127,7 @@ export default function ContentRenderer({ blocks }: ContentRendererProps) {
                 </figcaption>
               </figure>
             );
+
           case "equation":
             return (
               <div
@@ -101,6 +137,18 @@ export default function ContentRenderer({ blocks }: ContentRendererProps) {
                 <BlockMath math={block.content} />
               </div>
             );
+
+          case "imageResource":
+            return (
+              <ImageResource
+                key={block.id}
+                id={block.id}
+                src={imageResources[block.id]}
+                alt={block.alt}
+                onUpdate={handleUpdateImage}
+              />
+            );
+
           case "demo": {
             const DemoComponent = demoRegistry[block.demoType];
             if (!DemoComponent) {
@@ -113,9 +161,19 @@ export default function ContentRenderer({ blocks }: ContentRendererProps) {
                 </div>
               );
             }
+            let imageSrc: string | undefined = undefined;
+            if ("imageId" in block && block.imageId) {
+              imageSrc = imageResources[block.imageId];
+            } else {
+              const imageResourceIds = Object.keys(imageResources);
+              imageSrc =
+                imageResourceIds.length > 0
+                  ? imageResources[imageResourceIds[0]]
+                  : undefined;
+            }
             return (
               <div key={i} className="mb-4">
-                <DemoComponent />
+                <DemoComponent imageSrc={imageSrc} />
               </div>
             );
           }
