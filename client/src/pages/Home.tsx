@@ -32,6 +32,10 @@ export default function Home() {
     },
   });
 
+  // Find and filter out the "personal" category
+  const personalCategory = categories?.find(cat => cat.name.toLowerCase() === "personal");
+  const otherCategories = categories?.filter(cat => cat.name.toLowerCase() !== "personal");
+
   // Render loading state or categories
   return (
     <PageLoader
@@ -48,8 +52,19 @@ export default function Home() {
 
         {/* Category Cards */}
         <div className="flex flex-wrap gap-4 mt-6">
-          {categories &&
-            categories.map((cat) => (
+          {/* Special card for "Personal" */}
+          {personalCategory && (
+            <CategoryCard
+              key={personalCategory.id}
+              name="Personal"
+              comingSoon={personalCategory.comingSoon}
+              onClick={() => navigate("/personal")}
+            />
+          )}
+
+          {/* Render all categories except "personal" */}
+          {otherCategories &&
+            otherCategories.map((cat) => (
               <CategoryCard
                 key={cat.id}
                 name={cat.name}

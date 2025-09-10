@@ -111,7 +111,7 @@ function Category() {
               <h2 className="text-lg text-neutral-400 top py-4">
                 Subcategories
               </h2>
-              <div className="flex flex-wrap gap-4 mt-6">
+              <div className="flex flex-wrap gap-4 mt-6 justify-center">
                 {subcategories.map((cat: Category) => {
                   const visuals = categoryVisuals[cat.id] || {};
                   return (

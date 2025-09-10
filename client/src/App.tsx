@@ -5,6 +5,7 @@ import Layout from "./components/Layout";
 import Home from "./pages/Home";
 import Category from "./pages/Category";
 import Article from "./pages/Article";
+import Personal from "./pages/Personal";
 
 const queryClient = new QueryClient();
 
@@ -20,6 +21,7 @@ export default function App() {
           <Routes>
             <Route path="/" element={<Layout />}>
               <Route index element={<Home />} />
+              <Route path="/personal" element={<Personal />} />
               <Route path="/category/:id" element={<Category />} />
               <Route path="/article/:id" element={<Article />} />
             </Route>

@@ -73,15 +73,20 @@ export default function ContentRenderer({ blocks }: ContentRendererProps) {
 
           case "paragraph":
             return (
-              <p key={i} className="mb-4 text-lg leading-relaxed">
+              <div key={i} className="mb-4 text-lg leading-relaxed">
                 <ReactMarkdown
                   components={{
-                    p: React.Fragment, // Prevent extra <p> inside <p>
+                    li: ({ children }) => (
+                      <li className="mb-2 pl-2 list-disc">{children}</li>
+                    ),
+                    ul: ({ children }) => (
+                      <ul className="ml-6">{children}</ul>
+                    ),
                   }}
                 >
                   {block.content}
                 </ReactMarkdown>
-              </p>
+              </div>
             );
 
           case "code":
