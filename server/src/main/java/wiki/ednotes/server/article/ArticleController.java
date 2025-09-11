@@ -35,7 +35,7 @@ public class ArticleController {
      * @return the article with the specified ID
      */
     @GetMapping("/{id}")
-    public ResponseEntity<Article> getArticleById(@PathVariable Long id) {
+    public ResponseEntity<Article> getArticleById(@PathVariable Integer id) {
         return articleRepository.findById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
@@ -47,7 +47,7 @@ public class ArticleController {
      * @return a list of articles in the specified category
      */
     @GetMapping("/category/{categoryId}")
-    public List<Article> getArticlesByCategoryId(@PathVariable Long categoryId) {
+    public List<Article> getArticlesByCategoryId(@PathVariable Integer categoryId) {
         return articleRepository.findByCategoryIdOrderByOrderInCategoryAsc(categoryId);
     }
 
@@ -68,7 +68,7 @@ public class ArticleController {
      * @return the updated article
      */
     @PutMapping("/{id}")
-    public ResponseEntity<Article> updateArticle(@PathVariable Long id, @RequestBody Article article) {
+    public ResponseEntity<Article> updateArticle(@PathVariable Integer id, @RequestBody Article article) {
         if (!articleRepository.existsById(id)) {
             return ResponseEntity.notFound().build();
         }
@@ -82,7 +82,7 @@ public class ArticleController {
      * @return a response indicating the result of the deletion
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteArticle(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteArticle(@PathVariable Integer id) {
         if (!articleRepository.existsById(id)) {
             return ResponseEntity.notFound().build();
         }

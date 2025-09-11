@@ -4,7 +4,6 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useCategoryContext } from "../context/useCategoryContext";
 import CategoryCard from "../components/CategoryCard/CategoryCard";
-import { categoryVisuals } from "../components/CategoryCard/categoryVisual";
 import ArticleListing from "../components/ArticleListing";
 import PageLoader from "../components/PageLoader";
 
@@ -113,14 +112,11 @@ function Category() {
               </h2>
               <div className="flex flex-wrap gap-4 mt-6 justify-center">
                 {subcategories.map((cat: Category) => {
-                  const visuals = categoryVisuals[cat.id] || {};
                   return (
                     <CategoryCard
                       key={cat.id}
                       name={cat.name}
                       comingSoon={cat.comingSoon}
-                      icon={visuals.icon}
-                      accentColor={visuals.accentColor}
                       onClick={
                         cat.comingSoon
                           ? undefined

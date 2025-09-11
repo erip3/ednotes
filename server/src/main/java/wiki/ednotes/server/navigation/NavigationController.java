@@ -22,7 +22,7 @@ public class NavigationController {
     }
 
     @GetMapping("/article-summaries/{categoryId}")
-    public ResponseEntity<List<ArticleSummary>> getArticleSummary(@PathVariable Long categoryId) {
+    public ResponseEntity<List<ArticleSummary>> getArticleSummary(@PathVariable Integer categoryId) {
         List<ArticleSummary> articles = navigationService.getArticleSummariesByCategory(categoryId);
         return ResponseEntity.ok(articles);
     }

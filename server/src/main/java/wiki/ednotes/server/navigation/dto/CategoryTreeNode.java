@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CategoryTreeNode {
-    private Long id;
+    private Integer id;
     private String name;
     private List<CategoryTreeNode> children;
     private List<ArticleSummary> articles;
@@ -16,18 +16,18 @@ public class CategoryTreeNode {
         this.comingSoon = false;
     }
 
-    public CategoryTreeNode(Long id, String name) {
+    public CategoryTreeNode(Integer id, String name) {
         this.id = id;
         this.name = name;
         this.children = new ArrayList<>();
         this.articles = new ArrayList<>();
     }
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

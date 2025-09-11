@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 
@@ -21,27 +21,49 @@ const BackIcon = () => (
 );
 
 /**
- * BackButton component navigates to the parent category or home if no parent exists.
- * @returns JSX.Element
+ * BackButton component navigates to the parent category, or /personal if no parent exists.
+ * Supports both category and article pages.
  */
 export default function BackButton() {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
+  const location = useLocation();
 
-  // Fetch parentId for current category
-  const { data } = useQuery<{ parentId?: number }>({
-    queryKey: ["category", id],
-    queryFn: async () => (await axios.get(`/api/categories/${id}`)).data,
-    enabled: !!id,
-  });
+  const isPersonal = location.pathname === "/personal";
+  const isArticle = location.pathname.startsWith("/article");
 
-  const target = data?.parentId ? `/category/${data.parentId}` : "/";
+  // Always call hooks!
+  const { data } = useQuery<{ parentId?: number; categoryId?: number }>(
+    {
+      queryKey: [isArticle ? "article" : "category", id],
+      queryFn: async () => {
+        if (isArticle) {
+          return await axios.get(`/api/articles/${id}`).then((res) => ({
+            parentId: res.data.categoryId,
+          }));
+        } else {
+          return await axios.get(`/api/categories/${id}`).then((res) => ({
+            parentId: res.data.parentId,
+          }));
+        }
+      },
+      enabled: !!id && !isPersonal, // Don't run query on /personal
+    }
+  );
+
+  // Decide target after hooks
+  let target = "/personal";
+  if (isPersonal) {
+    target = "/";
+  } else if (data?.parentId) {
+    target = `/category/${data.parentId}`;
+  }
 
   return (
     <button
       className="mr-2 p-2 rounded hover:bg-gray-700 transition"
       onClick={() => navigate(target)}
-      aria-label="Back to parent category"
+      aria-label="Back"
     >
       <BackIcon />
     </button>

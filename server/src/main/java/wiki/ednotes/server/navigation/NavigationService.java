@@ -38,13 +38,13 @@ public class NavigationService {
         List<Article> allArticles = articleRepository.findAll();
 
         // Map categoryId -> list of articles
-        Map<Long, List<ArticleSummary>> articlesByCategory = allArticles.stream()
+        Map<Integer, List<ArticleSummary>> articlesByCategory = allArticles.stream()
                 .collect(Collectors.groupingBy(
                         a -> a.getCategoryId() != null ? a.getCategoryId() : null,
                         Collectors.mapping(a -> new ArticleSummary(a.getId(), a.getTitle(), a.getIsPublished() != null && a.getIsPublished()), Collectors.toList())));
 
         // Map categoryId -> list of child categories
-        Map<Long, List<Category>> childrenByParent = allCategories.stream()
+        Map<Integer, List<Category>> childrenByParent = allCategories.stream()
                 .filter(c -> c.getParentId() != null)
                 .collect(Collectors.groupingBy(Category::getParentId));
 
@@ -63,7 +63,7 @@ public class NavigationService {
      * @param categoryId
      * @return
      */
-    public List<ArticleSummary> getArticleSummariesByCategory(Long categoryId) {
+    public List<ArticleSummary> getArticleSummariesByCategory(Integer categoryId) {
         List<Article> articles = articleRepository.findByCategoryIdOrderByOrderInCategoryAsc(categoryId);
         return articles.stream()
                 .map(a -> new ArticleSummary(a.getId(), a.getTitle(), a.getIsPublished() != null && a.getIsPublished()))
@@ -77,8 +77,8 @@ public class NavigationService {
      * @param articlesByCategory
      * @return CategoryTreeNode
      */
-    private CategoryTreeNode buildNode(Category cat, Map<Long, List<Category>> childrenByParent,
-        Map<Long, List<ArticleSummary>> articlesByCategory) {
+    private CategoryTreeNode buildNode(Category cat, Map<Integer, List<Category>> childrenByParent,
+        Map<Integer, List<ArticleSummary>> articlesByCategory) {
         if (cat.isComingSoon()) {
                 return null; // Skip "coming soon" categories
         }

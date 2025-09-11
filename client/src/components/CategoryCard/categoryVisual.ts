@@ -2,12 +2,12 @@ import React, { type JSX } from "react";
 import ReactIcon from "./Icons/ReactIcon";
 
 export const categoryVisuals: Record<
-  number,
+  string,
   { icon: () => JSX.Element; accentColor: string }
 > = {
-  7: {
-    // React
+  react: {
     icon: () => React.createElement(ReactIcon),
     accentColor: "#2196f3",
   },
+  // Add more categories as needed
 };

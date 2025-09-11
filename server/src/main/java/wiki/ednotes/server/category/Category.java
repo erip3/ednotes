@@ -10,13 +10,13 @@ import jakarta.persistence.*;
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     @Column(name = "name", nullable = false, unique = true)
     private String name;
 
     @Column(name = "parent_id")
-    private Long parentId;
+    private Integer parentId;
 
     @Column(name = "coming_soon", nullable = false)
     private boolean comingSoon;
@@ -28,11 +28,11 @@ public class Category {
     private boolean isTopic;
 
     @Column(name = "topic_id")
-    private Long topicId;
+    private Integer topicId;
 
     protected Category() {}
 
-    public Category(Long id, String name, Long parentId, boolean comingSoon, Integer orderInParent, boolean isTopic) {
+    public Category(Integer id, String name, Integer parentId, boolean comingSoon, Integer orderInParent, boolean isTopic) {
         this.id = id;
         this.name = name;
         this.parentId = parentId;
@@ -41,11 +41,11 @@ public class Category {
         this.isTopic = isTopic;
     }
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -57,11 +57,11 @@ public class Category {
         this.name = name;
     }
 
-    public Long getParentId() {
+    public Integer getParentId() {
         return parentId;
     }
 
-    public void setParentId(Long parentId) {
+    public void setParentId(Integer parentId) {
         this.parentId = parentId;
     }
 
@@ -89,11 +89,11 @@ public class Category {
         return isTopic;
     }
 
-    public Long getTopicId() {
+    public Integer getTopicId() {
         return topicId;
     }
 
-    public void setTopicId(Long topicId) {
+    public void setTopicId(Integer topicId) {
         this.topicId = topicId;
     }
 }

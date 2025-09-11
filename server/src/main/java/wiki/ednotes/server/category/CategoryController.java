@@ -36,7 +36,7 @@ public class CategoryController {
      * @return the category, if found
      */
     @GetMapping("/{id}")
-    public ResponseEntity<Category> getCategoryById(@PathVariable Long id) {
+    public ResponseEntity<Category> getCategoryById(@PathVariable Integer id) {
         return categoryRepository.findById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
@@ -48,7 +48,7 @@ public class CategoryController {
      * @return a list of child categories
      */
     @GetMapping("/{id}/children")
-    public List<Category> getChildCategories(@PathVariable Long id) {
+    public List<Category> getChildCategories(@PathVariable Integer id) {
         return categoryRepository.findByParentIdOrderByOrderInParentAsc(id);
     }
 
@@ -58,7 +58,7 @@ public class CategoryController {
      * @return the parent category, if found
      */
     @GetMapping("/{id}/parent")
-    public ResponseEntity<Optional<Category>> getParentCategory(@PathVariable Long id) {
+    public ResponseEntity<Optional<Category>> getParentCategory(@PathVariable Integer id) {
         return categoryRepository.findById(id)
                 .map(category -> categoryRepository.findById(category.getParentId()))
                 .map(ResponseEntity::ok)
@@ -94,7 +94,7 @@ public class CategoryController {
      * @return the updated category, if found
      */
     @PutMapping("/{id}")
-    public ResponseEntity<Category> updateCategory(@PathVariable Long id, @RequestBody Category category) {
+    public ResponseEntity<Category> updateCategory(@PathVariable Integer id, @RequestBody Category category) {
         if (!categoryRepository.existsById(id)) {
             return ResponseEntity.notFound().build();
         }
@@ -108,7 +108,7 @@ public class CategoryController {
      * @return a response indicating the result of the deletion
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCategory(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteCategory(@PathVariable Integer id) {
         if (!categoryRepository.existsById(id)) {
             return ResponseEntity.notFound().build();
         }

@@ -1,7 +1,7 @@
 package wiki.ednotes.server.navigation.dto;
 
 public class ArticleSummary {
-    private Long id;
+    private Integer id;
     private String title;
     private boolean isPublished;
 
@@ -9,17 +9,17 @@ public class ArticleSummary {
     public ArticleSummary() {
     }
 
-    public ArticleSummary(Long id, String title, boolean isPublished) {
+    public ArticleSummary(Integer id, String title, boolean isPublished) {
         this.id = id;
         this.title = title;
         this.isPublished = isPublished;
     }
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

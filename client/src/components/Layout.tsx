@@ -5,6 +5,7 @@ import axios from "axios";
 import { useCategoryContext } from "../context/useCategoryContext";
 import Header from "./Header/Header";
 import Sidebar from "./Sidebar/Sidebar";
+import Footer from "./Footer/Footer";
 
 /**
  * Layout component that wraps the main content with a sidebar.
@@ -101,7 +102,7 @@ export default function Layout() {
   const showSidebar = selectedTopic !== null || isTopic;
 
   return (
-    <div className="min-h-screen bg-[var(--color-bg)]">
+    <div className="min-h-screen bg-[var(--color-bg)] flex flex-col">
       {/* Fixed header */}
       <div className="fixed top-0 left-0 w-full z-50">
         <Header />
@@ -109,15 +110,14 @@ export default function Layout() {
 
       {/* Sidebar (not fixed) */}
       <Sidebar />
-      
-      {/* Main content, with top padding to avoid header overlap */}
-      <main
-        className={`pt-16 ${showSidebar ? "ml-[260px]" : ""} px-8`}
-        // pt-16 assumes your header is 64px tall; adjust as needed
-      >
-        <div className="py-8">
+
+      {/* Main content, with top padding to avoid header overlap and bottom padding for footer */}
+      <main className={`pt-16 ${showSidebar ? "ml-[260px]" : ""} px-8 flex-1`}>
+        <div className="py-8 pb-16">
           <Outlet />
         </div>
+        {/* Footer at the bottom of the document */}
+        <Footer />
       </main>
     </div>
   );
