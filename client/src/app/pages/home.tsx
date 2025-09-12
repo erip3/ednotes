@@ -1,8 +1,9 @@
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import { useQuery } from "@tanstack/react-query";
-import CategoryCard from "../components/CategoryCard/CategoryCard";
-import PageLoader from "../components/PageLoader";
+import { useQuery } from '@tanstack/react-query';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+
+import CategoryCard from '../components/CategoryCard/CategoryCard';
+import PageLoader from '../components/PageLoader';
 
 // Category interface represents a single category.
 interface Category {
@@ -23,42 +24,46 @@ export default function Home() {
     data: categories,
     isLoading,
     isFetching,
-    error
+    error,
   } = useQuery<Category[]>({
-    queryKey: ["categories", "top-level"],
+    queryKey: ['categories', 'top-level'],
     queryFn: async () => {
-      const res = await axios.get<Category[]>("/api/categories/top-level");
+      const res = await axios.get<Category[]>('/api/categories/top-level');
       return res.data;
     },
   });
 
   // Find and filter out the "personal" category
-  const personalCategory = categories?.find(cat => cat.name.toLowerCase() === "personal");
-  const otherCategories = categories?.filter(cat => cat.name.toLowerCase() !== "personal");
+  const personalCategory = categories?.find(
+    (cat) => cat.name.toLowerCase() === 'personal',
+  );
+  const otherCategories = categories?.filter(
+    (cat) => cat.name.toLowerCase() !== 'personal',
+  );
 
   // Render loading state or categories
   return (
     <PageLoader
       loading={isLoading}
-      error={error ? "Failed to load categories." : undefined}
+      error={error ? 'Failed to load categories.' : undefined}
       isRetrying={isFetching && !!error}
     >
-      <div className="flex flex-col items-center justify-center min-h-[80vh]">
+      <div className="flex min-h-[80vh] flex-col items-center justify-center">
         {/* Title */}
         <h1 className="text-5xl font-bold">EdNotes</h1>
-        <p className="text-lg text-neutral-400 top py-4">
+        <p className="top py-4 text-lg text-neutral-400">
           Choose a category to get started:
         </p>
 
         {/* Category Cards */}
-        <div className="flex flex-wrap gap-4 mt-6">
+        <div className="mt-6 flex flex-wrap gap-4">
           {/* Special card for "Personal" */}
           {personalCategory && (
             <CategoryCard
               key={personalCategory.id}
               name="Personal"
               comingSoon={personalCategory.comingSoon}
-              onClick={() => navigate("/personal")}
+              onClick={() => navigate('/personal')}
             />
           )}
 

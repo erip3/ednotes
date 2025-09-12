@@ -1,5 +1,6 @@
-import React, { useState } from "react";
-import { CategoryContext } from "./CategoryContext";
+import React, { useState } from 'react';
+
+import { CategoryContext } from './CategoryContext';
 
 export const CategoryProvider: React.FC<{ children: React.ReactNode }> = ({
   children,

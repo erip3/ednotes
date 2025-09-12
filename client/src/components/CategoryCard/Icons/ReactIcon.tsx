@@ -5,7 +5,7 @@ export default function ReactIcon() {
       height="48"
       viewBox="0 0 24 24"
       fill="none"
-      style={{ display: "block", margin: "0 auto" }}
+      style={{ display: 'block', margin: '0 auto' }}
     >
       <circle cx="12" cy="12" r="2.5" fill="#ffffffff" />
       <ellipse

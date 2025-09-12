@@ -12,7 +12,7 @@ const HomeIcon = () => (
     strokeWidth="2"
     strokeLinecap="round"
     strokeLinejoin="round"
-    style={{ display: "block" }}
+    style={{ display: 'block' }}
   >
     <path d="M3 12L12 4L21 12Z" />
     <rect x="6" y="12" width="12" height="8" />
@@ -27,8 +27,8 @@ const HomeIcon = () => (
 export default function HomeButton() {
   return (
     <button
-      className="mr-2 p-2 rounded hover:bg-gray-700 transition"
-      onClick={() => (window.location.href = "/")}
+      className="mr-2 rounded p-2 transition hover:bg-gray-700"
+      onClick={() => (window.location.href = '/')}
       aria-label="Home"
     >
       <HomeIcon />

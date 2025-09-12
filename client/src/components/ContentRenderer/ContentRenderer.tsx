@@ -1,11 +1,15 @@
-import React, { useState, type JSX } from "react";
-import type { ArticleBlock } from "./article";
-import { BlockMath } from "react-katex";
-import "katex/dist/katex.min.css";
-import ReactMarkdown from "react-markdown";
-import BubbleSortDemo from "../../demos/BubbleSortDemo";
-import ImageTo3DSurface from "../../demos/ImageSurface";
-import ImageResource from "./ImageResource";
+import React, { useState, type JSX } from 'react';
+
+import type { ArticleBlock } from './article';
+
+import { BlockMath } from 'react-katex';
+import 'katex/dist/katex.min.css';
+import ReactMarkdown from 'react-markdown';
+
+import BubbleSortDemo from '../../features/demos/BubbleSortDemo';
+import ImageTo3DSurface from '../../features/demos/ImageSurface';
+
+import ImageResource from './ImageResource';
 
 // Props for demo components
 type DemoComponentProps = {
@@ -34,7 +38,7 @@ export default function ContentRenderer({ blocks }: ContentRendererProps) {
 
   // Initialize image resources from blocks
   blocks.forEach((block) => {
-    if (block.type === "imageResource" && block.id) {
+    if (block.type === 'imageResource' && block.id) {
       initialImages[block.id] = block.src;
     }
   });
@@ -51,7 +55,7 @@ export default function ContentRenderer({ blocks }: ContentRendererProps) {
     <div className="article-content mx-auto max-w-3xl px-4">
       {blocks.map((block, i) => {
         switch (block.type) {
-          case "header": {
+          case 'header': {
             const Tag = `h${block.level}` as keyof JSX.IntrinsicElements;
             return React.createElement(
               Tag,
@@ -59,29 +63,27 @@ export default function ContentRenderer({ blocks }: ContentRendererProps) {
                 key: i,
                 className: `mt-8 mb-4 font-bold ${
                   block.level === 1
-                    ? "text-3xl"
+                    ? 'text-3xl'
                     : block.level === 2
-                    ? "text-2xl"
-                    : block.level === 3
-                    ? "text-xl"
-                    : "text-lg"
+                      ? 'text-2xl'
+                      : block.level === 3
+                        ? 'text-xl'
+                        : 'text-lg'
                 }`,
               },
-              block.content
+              block.content,
             );
           }
 
-          case "paragraph":
+          case 'paragraph':
             return (
               <div key={i} className="mb-4 text-lg leading-relaxed">
                 <ReactMarkdown
                   components={{
                     li: ({ children }) => (
-                      <li className="mb-2 pl-2 list-disc">{children}</li>
+                      <li className="mb-2 list-disc pl-2">{children}</li>
                     ),
-                    ul: ({ children }) => (
-                      <ul className="ml-6">{children}</ul>
-                    ),
+                    ul: ({ children }) => <ul className="ml-6">{children}</ul>,
                   }}
                 >
                   {block.content}
@@ -89,11 +91,11 @@ export default function ContentRenderer({ blocks }: ContentRendererProps) {
               </div>
             );
 
-          case "code":
+          case 'code':
             return (
               <pre
                 key={i}
-                className="mb-4 bg-neutral-950 rounded p-4 overflow-x-auto text-sm"
+                className="mb-4 overflow-x-auto rounded bg-neutral-950 p-4 text-sm"
               >
                 <code className={`language-${block.language}`}>
                   {block.content}
@@ -101,25 +103,25 @@ export default function ContentRenderer({ blocks }: ContentRendererProps) {
               </pre>
             );
 
-          case "note":
+          case 'note':
             return (
               <div
                 key={i}
-                className={`mb-4 p-4 rounded border-l-4 ${
-                  block.style === "info"
-                    ? "bg-blue-50 border-blue-400 text-blue-800"
-                    : block.style === "warning"
-                    ? "bg-yellow-50 border-yellow-400 text-yellow-800"
-                    : block.style === "error"
-                    ? "bg-red-50 border-red-400 text-red-800"
-                    : "bg-gray-50 border-gray-400 text-gray-800"
+                className={`mb-4 rounded border-l-4 p-4 ${
+                  block.style === 'info'
+                    ? 'border-blue-400 bg-blue-50 text-blue-800'
+                    : block.style === 'warning'
+                      ? 'border-yellow-400 bg-yellow-50 text-yellow-800'
+                      : block.style === 'error'
+                        ? 'border-red-400 bg-red-50 text-red-800'
+                        : 'border-gray-400 bg-gray-50 text-gray-800'
                 }`}
               >
                 {block.content}
               </div>
             );
 
-          case "figure":
+          case 'figure':
             return (
               <figure key={i} className="mb-4 flex flex-col items-center">
                 <img
@@ -133,17 +135,17 @@ export default function ContentRenderer({ blocks }: ContentRendererProps) {
               </figure>
             );
 
-          case "equation":
+          case 'equation':
             return (
               <div
                 key={i}
-                className="mb-4 p-4 bg-neutral-100 border-l-4 border-green-400 text-green-800 rounded font-mono"
+                className="mb-4 rounded border-l-4 border-green-400 bg-neutral-100 p-4 font-mono text-green-800"
               >
                 <BlockMath math={block.content} />
               </div>
             );
 
-          case "imageResource":
+          case 'imageResource':
             return (
               <ImageResource
                 key={block.id}
@@ -154,20 +156,20 @@ export default function ContentRenderer({ blocks }: ContentRendererProps) {
               />
             );
 
-          case "demo": {
+          case 'demo': {
             const DemoComponent = demoRegistry[block.demoType];
             if (!DemoComponent) {
               return (
                 <div
                   key={i}
-                  className="mb-4 p-4 bg-red-100 text-red-700 rounded"
+                  className="mb-4 rounded bg-red-100 p-4 text-red-700"
                 >
                   Demo "{block.demoType}" not found.
                 </div>
               );
             }
             let imageSrc: string | undefined = undefined;
-            if ("imageId" in block && block.imageId) {
+            if ('imageId' in block && block.imageId) {
               imageSrc = imageResources[block.imageId];
             } else {
               const imageResourceIds = Object.keys(imageResources);

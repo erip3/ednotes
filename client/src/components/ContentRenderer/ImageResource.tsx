@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef } from 'react';
 
 interface ImageResourceProps {
   id: string;
@@ -7,10 +7,7 @@ interface ImageResourceProps {
   onUpdate: (id: string, newSrc: string) => void;
 }
 
-export default function ImageResource({
-  id,
-  onUpdate,
-}: ImageResourceProps) {
+export default function ImageResource({ id, onUpdate }: ImageResourceProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
@@ -22,10 +19,12 @@ export default function ImageResource({
 
   return (
     <div className="mb-4 flex flex-col items-center">
-      <label className="mb-2 font-medium">This article uses an image. Use the default or upload your own here:</label>
+      <label className="mb-2 font-medium">
+        This article uses an image. Use the default or upload your own here:
+      </label>
       <button
         type="button"
-        className="mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+        className="mt-2 rounded bg-blue-600 px-4 py-2 text-white transition hover:bg-blue-700"
         onClick={() => fileInputRef.current?.click()}
       >
         Upload New Image

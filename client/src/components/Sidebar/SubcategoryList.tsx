@@ -1,4 +1,4 @@
-import SidebarCategory from "./SidebarCategory";
+import SidebarCategory from './SidebarCategory';
 
 interface Article {
   id: number;
@@ -23,7 +23,7 @@ export default function SubcategoryList({
 }: SubcategoryListProps) {
   return (
     <div className="mb-4">
-      <label className="block text-xs uppercase tracking-wider text-neutral-400 mb-2 px-2">
+      <label className="mb-2 block px-2 text-xs uppercase tracking-wider text-neutral-400">
         Subcategories
       </label>
       <div className="flex flex-col gap-1">

@@ -1,5 +1,6 @@
-import React, { type JSX } from "react";
-import ReactIcon from "./Icons/ReactIcon";
+import React, { type JSX } from 'react';
+
+import ReactIcon from './Icons/ReactIcon';
 
 export const categoryVisuals: Record<
   string,
@@ -7,7 +8,7 @@ export const categoryVisuals: Record<
 > = {
   react: {
     icon: () => React.createElement(ReactIcon),
-    accentColor: "#2196f3",
+    accentColor: '#2196f3',
   },
   // Add more categories as needed
 };

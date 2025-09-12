@@ -1,5 +1,5 @@
-import React, { useRef, useState } from "react";
-import Plot from "react-plotly.js";
+import React, { useRef, useState } from 'react';
+import Plot from 'react-plotly.js';
 
 /**
  * Image to 3D Surface component allows users to upload an image,
@@ -16,7 +16,7 @@ export default function ImageTo3DSurface({ imageSrc }: { imageSrc?: string }) {
     height?: number;
   } | null>(null);
   const [dragStart, setDragStart] = useState<{ x: number; y: number } | null>(
-    null
+    null,
   );
   const [dragEnd, setDragEnd] = useState<{ x: number; y: number } | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -54,7 +54,7 @@ export default function ImageTo3DSurface({ imageSrc }: { imageSrc?: string }) {
     // Extract area and set surfaceData
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const ctx = canvas.getContext("2d");
+    const ctx = canvas.getContext('2d');
     if (!ctx) return;
     const imgData = ctx.getImageData(sx, sy, width, height).data;
     const z: number[][] = [];
@@ -78,7 +78,7 @@ export default function ImageTo3DSurface({ imageSrc }: { imageSrc?: string }) {
     if (!img) return;
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const ctx = canvas.getContext("2d");
+    const ctx = canvas.getContext('2d');
     if (!ctx) return;
     // Always clear and redraw the image
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -91,14 +91,14 @@ export default function ImageTo3DSurface({ imageSrc }: { imageSrc?: string }) {
       const ex = dragEnd.x;
       const ey = dragEnd.y;
       ctx.save();
-      ctx.strokeStyle = "#0074D9";
+      ctx.strokeStyle = '#0074D9';
       ctx.lineWidth = 2;
       ctx.setLineDash([6, 4]);
       ctx.strokeRect(
         Math.min(sx, ex) + 0.5,
         Math.min(sy, ey) + 0.5,
         Math.abs(ex - sx),
-        Math.abs(ey - sy)
+        Math.abs(ey - sy),
       );
       ctx.restore();
     }
@@ -112,14 +112,14 @@ export default function ImageTo3DSurface({ imageSrc }: { imageSrc?: string }) {
       !dragEnd
     ) {
       ctx.save();
-      ctx.strokeStyle = "#0074D9";
+      ctx.strokeStyle = '#0074D9';
       ctx.lineWidth = 2;
       ctx.setLineDash([6, 4]);
       ctx.strokeRect(
         selection.x + 0.5,
         selection.y + 0.5,
         selection.width,
-        selection.height
+        selection.height,
       );
       ctx.restore();
     }
@@ -133,7 +133,7 @@ export default function ImageTo3DSurface({ imageSrc }: { imageSrc?: string }) {
         setImg(image);
         const canvas = canvasRef.current;
         if (!canvas) return;
-        const ctx = canvas.getContext("2d");
+        const ctx = canvas.getContext('2d');
         if (!ctx) return;
         canvas.width = image.width;
         canvas.height = image.height;
@@ -151,9 +151,9 @@ export default function ImageTo3DSurface({ imageSrc }: { imageSrc?: string }) {
         <canvas
           ref={canvasRef}
           style={{
-            border: "1px solid #ccc",
-            margin: "1rem 0",
-            cursor: img ? "crosshair" : "default",
+            border: '1px solid #ccc',
+            margin: '1rem 0',
+            cursor: img ? 'crosshair' : 'default',
           }}
           onMouseDown={handleCanvasMouseDown}
           onMouseMove={handleCanvasMouseMove}
@@ -164,14 +164,14 @@ export default function ImageTo3DSurface({ imageSrc }: { imageSrc?: string }) {
       {/* 3D Surface Plot */}
       {surfaceData && (
         <Plot
-          data={[{ z: surfaceData, type: "surface" }]}
-          layout={{ width: 500, height: 400, title: { text: "3D Surface" } }}
+          data={[{ z: surfaceData, type: 'surface' }]}
+          layout={{ width: 500, height: 400, title: { text: '3D Surface' } }}
         />
       )}
       <p className="mt-2 text-sm text-gray-500">
         {img
-          ? "Click on the image to select the top-left corner of a 15x15 area. The selected area will be outlined in blue."
-          : "Upload an image to begin."}
+          ? 'Click on the image to select the top-left corner of a 15x15 area. The selected area will be outlined in blue.'
+          : 'Upload an image to begin.'}
       </p>
     </div>
   );

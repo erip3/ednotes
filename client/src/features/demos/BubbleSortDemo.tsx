@@ -1,9 +1,9 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from 'react';
 
 function getRandomArray(size = 10) {
   // Give each bar a unique id for stable keys
   return Array.from({ length: size }, (_, i) => ({
-    id: i + "-" + Math.random().toString(36).slice(2, 8),
+    id: i + '-' + Math.random().toString(36).slice(2, 8),
     value: Math.floor(Math.random() * 100),
   }));
 }
@@ -62,7 +62,6 @@ export default function BubbleSortDemo() {
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isPlaying, isSorted, i, j, array, speed]);
 
   // Calculate positions for animation
@@ -95,16 +94,16 @@ export default function BubbleSortDemo() {
               key={bar.id}
               className={`
                 absolute
-                transition-transform duration-300
-                w-8
-                flex items-end justify-center rounded
-                text-white text-lg font-bold
+                flex w-8
+                items-end
+                justify-center rounded text-lg font-bold
+                text-white transition-transform duration-300
                 ${
                   bar.currIdx === j || bar.currIdx === j + 1
-                    ? "bg-yellow-400 text-black"
-                    : "bg-blue-400"
+                    ? 'bg-yellow-400 text-black'
+                    : 'bg-blue-400'
                 }
-                ${isSorted ? "bg-green-400" : ""}
+                ${isSorted ? 'bg-green-400' : ''}
               `}
               style={{
                 height: `${bar.value + 20}px`,
@@ -121,28 +120,28 @@ export default function BubbleSortDemo() {
       </div>
       <div className="flex gap-2">
         <button
-          className="px-4 py-2 bg-blue-600 text-white rounded"
+          className="rounded bg-blue-600 px-4 py-2 text-white"
           onClick={step}
           disabled={isSorted || isPlaying}
         >
           Step
         </button>
         <button
-          className={`px-4 py-2 rounded ${
-            isPlaying ? "bg-yellow-600" : "bg-green-600"
+          className={`rounded px-4 py-2 ${
+            isPlaying ? 'bg-yellow-600' : 'bg-green-600'
           } text-white`}
           onClick={() => setIsPlaying((p) => !p)}
           disabled={isSorted}
         >
-          {isPlaying ? "Pause" : "Play"}
+          {isPlaying ? 'Pause' : 'Play'}
         </button>
         <button
-          className="px-4 py-2 bg-gray-600 text-white rounded"
+          className="rounded bg-gray-600 px-4 py-2 text-white"
           onClick={reset}
         >
           Reset
         </button>
-        <label className="flex items-center gap-1 ml-2 text-sm">
+        <label className="ml-2 flex items-center gap-1 text-sm">
           Speed:
           <input
             type="range"
@@ -153,7 +152,7 @@ export default function BubbleSortDemo() {
             onChange={(e) => setSpeed(Number(e.target.value))}
             className="ml-2"
           />
-          <span className="w-10 inline-block">{speed}ms</span>
+          <span className="inline-block w-10">{speed}ms</span>
         </label>
       </div>
     </div>

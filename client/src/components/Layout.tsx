@@ -1,11 +1,12 @@
-import { useEffect, useState } from "react";
-import { Outlet, useMatch } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
-import { useCategoryContext } from "../context/useCategoryContext";
-import Header from "./Header/Header";
-import Sidebar from "./Sidebar/Sidebar";
-import Footer from "./Footer/Footer";
+import { useQuery } from '@tanstack/react-query';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
+import { Outlet, useMatch } from 'react-router-dom';
+
+import { useCategoryContext } from '../context/useCategoryContext';
+
+import Header from './Header/Header';
+import Sidebar from './Sidebar/Sidebar';
 
 /**
  * Layout component that wraps the main content with a sidebar.
@@ -13,8 +14,8 @@ import Footer from "./Footer/Footer";
  */
 export default function Layout() {
   // Get the category or article ID from the URL if present
-  const categoryMatch = useMatch("/category/:id");
-  const articleMatch = useMatch("/article/:id");
+  const categoryMatch = useMatch('/category/:id');
+  const articleMatch = useMatch('/article/:id');
   const id = categoryMatch?.params.id || articleMatch?.params.id;
 
   const { setSelectedCategory, selectedTopic, setSelectedTopic } =
@@ -24,7 +25,7 @@ export default function Layout() {
 
   // Fetch category if on a category route
   const { data: categoryData, isSuccess: isCategorySuccess } = useQuery({
-    queryKey: ["category", id],
+    queryKey: ['layout-category', id],
     queryFn: async () => {
       const res = await axios.get(`/api/categories/${id}`);
       return res.data;
@@ -34,7 +35,7 @@ export default function Layout() {
 
   // Fetch article if on an article route
   const { data: articleData, isSuccess: isArticleSuccess } = useQuery({
-    queryKey: ["article", id],
+    queryKey: ['layout-article', id],
     queryFn: async () => {
       const res = await axios.get(`/api/articles/${id}`);
       return res.data;
@@ -45,10 +46,10 @@ export default function Layout() {
   // Fetch category for article's categoryId if on article route and articleData is loaded
   const { data: articleCategoryData, isSuccess: isArticleCategorySuccess } =
     useQuery({
-      queryKey: ["category", articleData?.categoryId],
+      queryKey: ['layout-article-category', articleData?.categoryId],
       queryFn: async () => {
         const res = await axios.get(
-          `/api/categories/${articleData.categoryId}`
+          `/api/categories/${articleData.categoryId}`,
         );
         return res.data;
       },
@@ -102,9 +103,9 @@ export default function Layout() {
   const showSidebar = selectedTopic !== null || isTopic;
 
   return (
-    <div className="min-h-screen bg-[var(--color-bg)] flex flex-col">
+    <div className="flex min-h-screen flex-col bg-[var(--color-bg)]">
       {/* Fixed header */}
-      <div className="fixed top-0 left-0 w-full z-50">
+      <div className="fixed left-0 top-0 z-50 w-full">
         <Header />
       </div>
 
@@ -112,12 +113,10 @@ export default function Layout() {
       <Sidebar />
 
       {/* Main content, with top padding to avoid header overlap and bottom padding for footer */}
-      <main className={`pt-16 ${showSidebar ? "ml-[260px]" : ""} px-8 flex-1`}>
+      <main className={`pt-16 ${showSidebar ? 'ml-[260px]' : ''} flex-1 px-8`}>
         <div className="py-8 pb-16">
           <Outlet />
         </div>
-        {/* Footer at the bottom of the document */}
-        <Footer />
       </main>
     </div>
   );

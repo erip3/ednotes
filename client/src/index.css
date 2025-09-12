@@ -1,4 +1,6 @@
-@import 'tailwindcss';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 @keyframes fade-in {
   from { opacity: 0; }
@@ -6,4 +8,52 @@
 }
 .animate-fade-in {
   animation: fade-in 0.5s ease;
+}
+
+.bg-gradient-grid {
+  background-image: repeating-linear-gradient(
+      0deg,
+      rgba(255, 255, 255, 0.025) 0,
+      1px,
+      transparent 1px,
+      transparent 80px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.025) 0,
+      1px,
+      transparent 1px,
+      transparent 80px
+    ),
+    linear-gradient(135deg, #27272a 0%, #09090b 100%);
+}
+
+.scroll-fade-container::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2rem; /* Adjust height as needed */
+  background: linear-gradient(
+    to bottom,
+    rgba(38, 38, 38, 1),
+    rgba(38, 38, 38, 0)
+  ); /* Matches bg-neutral-800 */
+  pointer-events: none; /* Allows interaction with content below */
+}
+
+.scroll-fade-container::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2rem; /* Adjust height as needed */
+  background: linear-gradient(
+    to top,
+    rgba(38, 38, 38, 1),
+    rgba(38, 38, 38, 0)
+  ); /* Matches bg-neutral-800 */
+  pointer-events: none; /* Allows interaction with content below */
 }

@@ -1,4 +1,4 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation } from 'react-router-dom';
 
 interface SidebarArticleProps {
   id: number;
@@ -15,11 +15,11 @@ export default function SidebarArticle({ id, title }: SidebarArticleProps) {
       <span className="inline-block w-5" />
       <Link
         to={`/article/${id}`}
-        className={`flex-1 text-left px-3 py-2 rounded font-medium transition
+        className={`flex-1 rounded px-3 py-2 text-left font-medium transition
           ${
             isActive
-              ? "bg-green-800 text-white"
-              : "bg-neutral-800 text-gray-100 hover:bg-neutral-700"
+              ? 'bg-green-800 text-white'
+              : 'bg-neutral-800 text-gray-100 hover:bg-neutral-700'
           }
         `}
       >

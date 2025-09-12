@@ -1,4 +1,4 @@
-import { createContext } from "react";
+import { createContext } from 'react';
 
 interface CategoryContextType {
   selectedCategory: number | null;
@@ -8,6 +8,6 @@ interface CategoryContextType {
 }
 
 export const CategoryContext = createContext<CategoryContextType | undefined>(
-  undefined
+  undefined,
 );
 export type { CategoryContextType };

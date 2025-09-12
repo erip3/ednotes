@@ -1,5 +1,5 @@
-import { projectVisuals } from "./projectVisual";
-import NotesIcon from "./Icons/NotesIcon";
+import NotesIcon from './Icons/NotesIcon';
+import { projectVisuals } from './projectVisual';
 
 interface Project {
   id: number;
@@ -19,42 +19,42 @@ export default function ProjectListing(project: Project) {
 
   // Parse tech stack into array if it's a comma-separated string
   const techs = project.techStack
-    ? project.techStack.split(",").map((t) => t.trim())
+    ? project.techStack.split(',').map((t) => t.trim())
     : [];
 
   return (
-    <div className="border rounded p-4 flex flex-col md:flex-row gap-4 items-start">
+    <div className="flex flex-col items-start gap-4 rounded border p-4 md:flex-row">
       {project.imageUrl && (
         <img
           src={project.imageUrl}
           alt={project.name}
-          className="w-24 h-24 object-cover rounded shadow"
+          className="h-24 w-24 rounded object-cover shadow"
         />
       )}
       <div className="flex-1">
-        <h3 className="font-bold text-lg mb-1">{project.name}</h3>
+        <h3 className="mb-1 text-lg font-bold">{project.name}</h3>
         {project.description && (
-          <p className="text-sm text-neutral-600 mb-2">{project.description}</p>
+          <p className="mb-2 text-sm text-neutral-600">{project.description}</p>
         )}
         {techs.length > 0 && (
-          <div className="flex flex-wrap gap-2 mb-2">
+          <div className="mb-2 flex flex-wrap gap-2">
             {techs.map((tech) => (
               <span
                 key={tech}
-                className="bg-green-100 text-green-950 px-2 py-0.5 rounded text-xs"
+                className="rounded bg-green-100 px-2 py-0.5 text-xs text-green-950"
               >
                 {tech}
               </span>
             ))}
           </div>
         )}
-        <div className="flex flex-wrap gap-4 items-center">
+        <div className="flex flex-wrap items-center gap-4">
           {project.githubUrl && (
             <a
               href={project.githubUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-green-600 hover:underline text-sm"
+              className="text-sm text-green-600 hover:underline"
             >
               GitHub
             </a>
@@ -64,7 +64,7 @@ export default function ProjectListing(project: Project) {
               href={project.demoUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-green-600 hover:underline text-sm"
+              className="text-sm text-green-600 hover:underline"
             >
               Demo
             </a>
@@ -72,10 +72,10 @@ export default function ProjectListing(project: Project) {
         </div>
       </div>
       {/* More Details Button */}
-      <div className="flex items-center self-stretch ml-auto">
+      <div className="ml-auto flex items-center self-stretch">
         <a
           href={`/article/${project.articleId}`}
-          className="flex items-center gap-2 px-6 py-3 bg-neutral-700 text-white rounded-lg text-lg font-semibold shadow hover:bg-green-700 transition"
+          className="flex items-center gap-2 rounded-lg bg-neutral-700 px-6 py-3 text-lg font-semibold text-white shadow transition hover:bg-green-700"
         >
           <Icon />
           More Details

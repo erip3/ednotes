@@ -1,18 +1,19 @@
-import { useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
-import { useCategoryContext } from "../context/useCategoryContext";
-import CategoryCard from "../components/CategoryCard/CategoryCard";
-import ArticleListing from "../components/ArticleListing";
-import PageLoader from "../components/PageLoader";
+import { useQuery } from '@tanstack/react-query';
+import axios from 'axios';
+import { useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+
+import ArticleListing from '../components/ArticleListing';
+import CategoryCard from '../components/CategoryCard/CategoryCard';
+import PageLoader from '../components/PageLoader';
+import { useCategoryContext } from '../context/useCategoryContext';
 
 // Category interface represents a single category.
 interface Category {
   id: number;
   name: string;
   comingSoon?: boolean;
-  isTopic: boolean;
+  topic: boolean;
 }
 
 interface Article {
@@ -34,9 +35,10 @@ function Category() {
     isFetching: isCategoryFetching,
     error: categoryError,
   } = useQuery<Category>({
-    queryKey: ["category", id],
+    queryKey: ['category', id],
     queryFn: async () => {
       const res = await axios.get<Category>(`/api/categories/${id}`);
+      console.log('Category Data:', res.data);
       return res.data;
     },
     enabled: !!id,
@@ -44,7 +46,7 @@ function Category() {
 
   // Update selectedTopic in context whenever id changes
   useEffect(() => {
-    if (id && categoryData && categoryData.isTopic) {
+    if (id && categoryData && categoryData.topic) {
       setSelectedTopic(Number(id));
     }
   }, [id, setSelectedTopic, categoryData]);
@@ -56,9 +58,10 @@ function Category() {
     isFetching: isSubcategoriesFetching,
     error: subcategoriesError,
   } = useQuery<Category[]>({
-    queryKey: ["subcategories", id],
+    queryKey: ['subcategories', id],
     queryFn: async () => {
       const res = await axios.get<Category[]>(`/api/categories/${id}/children`);
+      console.log('Subcategories:', res.data);
       return res.data;
     },
     enabled: !!id,
@@ -71,10 +74,10 @@ function Category() {
     isFetching: isArticlesFetching,
     error: articlesError,
   } = useQuery<Article[]>({
-    queryKey: ["articles", id],
+    queryKey: ['articles', id],
     queryFn: async () => {
       const res = await axios.get<Article[]>(
-        `/api/navigation/article-summaries/${id}`
+        `/api/navigation/article-summaries/${id}`,
       );
       return res.data;
     },
@@ -91,8 +94,7 @@ function Category() {
   const error =
     categoryError?.message ||
     subcategoriesError?.message ||
-    articlesError?.message ||
-    null;
+    articlesError?.message;
 
   return (
     <PageLoader
@@ -100,17 +102,17 @@ function Category() {
       error={error ?? undefined}
       isRetrying={isRetrying}
     >
-      <div className="flex flex-col items-center justify-center min-h-[80vh]">
-        <div className="flex flex-col items-center justify-center w-full box-border bg-inherit z-10 pb-16">
-          <h1 className="text-5xl font-bold">{categoryData?.name ?? ""}</h1>
+      <div className="flex min-h-[80vh] flex-col items-center justify-center">
+        <div className="z-10 box-border flex w-full flex-col items-center justify-center bg-inherit pb-16">
+          <h1 className="text-5xl font-bold">{categoryData?.name}</h1>
 
           {/* If subcategories exist, display them */}
           {Array.isArray(subcategories) && subcategories.length > 0 && (
             <>
-              <h2 className="text-lg text-neutral-400 top py-4">
+              <h2 className="top py-4 text-lg text-neutral-400">
                 Subcategories
               </h2>
-              <div className="flex flex-wrap gap-4 mt-6 justify-center">
+              <div className="mt-6 flex flex-wrap justify-center gap-4">
                 {subcategories.map((cat: Category) => {
                   return (
                     <CategoryCard
@@ -133,11 +135,9 @@ function Category() {
         {/* Articles Section */}
         <div className="flex flex-col items-center justify-center">
           {articles.length > 0 && (
-            <h2 className="text-lg text-neutral-400 top py-4">Articles</h2>
+            <h2 className="top py-4 text-lg text-neutral-400">Articles</h2>
           )}
-          <ArticleListing
-            articles={articles}
-          />
+          <ArticleListing articles={articles} />
         </div>
       </div>
     </PageLoader>

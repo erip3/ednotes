@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 
 // Props for the PageLoader component
 interface PageLoaderProps {
@@ -14,7 +14,7 @@ interface PageLoaderProps {
  */
 function Spinner() {
   return (
-    <svg className="animate-spin h-24 w-24 text-gray-400" viewBox="0 0 24 24">
+    <svg className="h-24 w-24 animate-spin text-gray-400" viewBox="0 0 24 24">
       <circle
         className="opacity-25"
         cx="12"
@@ -45,24 +45,26 @@ export default function PageLoader({
   children,
 }: PageLoaderProps) {
   return (
-    <div className="flex flex-col items-center justify-center min-h-[400px] relative">
-      {loading ? (
-        <>
-          <Spinner />
-          {error && (
-            <div className="mt-4 text-red-500 text-center max-w-xs">
-              {error}
-              {isRetrying && (
-                <div className="text-gray-400 text-sm mt-2">Retrying...</div>
-              )}
-            </div>
-          )}
-        </>
-      ) : (
-        <div className="w-full transition-opacity duration-500 opacity-100 animate-fade-in">
-          {children}
-        </div>
-      )}
+    <div className="flex min-h-screen flex-col">
+      <div className="relative flex flex-1 flex-col items-center justify-center">
+        {loading ? (
+          <>
+            <Spinner />
+            {error && (
+              <div className="mt-4 max-w-xs text-center text-red-500">
+                {error}
+                {isRetrying && (
+                  <div className="mt-2 text-sm text-gray-400">Retrying...</div>
+                )}
+              </div>
+            )}
+          </>
+        ) : (
+          <div className="animate-fade-in w-full opacity-100 transition-opacity duration-500">
+            {children}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

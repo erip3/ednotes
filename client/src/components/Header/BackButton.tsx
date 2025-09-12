@@ -1,6 +1,6 @@
-import { useNavigate, useParams, useLocation } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
+import { useQuery } from '@tanstack/react-query';
+import axios from 'axios';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 
 /**
  * Simple left-arrow icon for navigation.
@@ -29,39 +29,37 @@ export default function BackButton() {
   const { id } = useParams<{ id: string }>();
   const location = useLocation();
 
-  const isPersonal = location.pathname === "/personal";
-  const isArticle = location.pathname.startsWith("/article");
+  const isPersonal = location.pathname === '/personal';
+  const isArticle = location.pathname.startsWith('/article');
 
   // Always call hooks!
-  const { data } = useQuery<{ parentId?: number; categoryId?: number }>(
-    {
-      queryKey: [isArticle ? "article" : "category", id],
-      queryFn: async () => {
-        if (isArticle) {
-          return await axios.get(`/api/articles/${id}`).then((res) => ({
-            parentId: res.data.categoryId,
-          }));
-        } else {
-          return await axios.get(`/api/categories/${id}`).then((res) => ({
-            parentId: res.data.parentId,
-          }));
-        }
-      },
-      enabled: !!id && !isPersonal, // Don't run query on /personal
-    }
-  );
+  const { data } = useQuery<{ parentId?: number; categoryId?: number }>({
+    queryKey: [isArticle ? 'back-article' : 'back-category', id],
+    queryFn: async () => {
+      if (isArticle) {
+        return await axios.get(`/api/articles/${id}`).then((res) => ({
+          parentId: res.data.categoryId,
+        }));
+      } else {
+        return await axios.get(`/api/categories/${id}`).then((res) => ({
+          parentId: res.data.parentId,
+        }));
+      }
+    },
+    enabled: !!id && !isPersonal, // Don't run query on /personal
+  });
 
   // Decide target after hooks
-  let target = "/personal";
-  if (isPersonal) {
-    target = "/";
+  let target = '/personal';
+  if (isPersonal || (!data?.parentId && !isArticle)) {
+    target = '/';
   } else if (data?.parentId) {
     target = `/category/${data.parentId}`;
   }
 
   return (
     <button
-      className="mr-2 p-2 rounded hover:bg-gray-700 transition"
+      className="mr-2 rounded p-2 transition hover:bg-gray-700"
       onClick={() => navigate(target)}
       aria-label="Back"
     >

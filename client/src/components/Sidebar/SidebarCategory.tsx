@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 
 interface Article {
   id: number;
@@ -38,19 +38,19 @@ export default function SidebarCategory({
       <div className="flex items-center">
         {/* Arrow button */}
         <button
-          className={`mr-1 p-1 rounded hover:bg-neutral-700 transition ${
+          className={`mr-1 rounded p-1 transition hover:bg-neutral-700 ${
             hasArticles
-              ? ""
-              : "transparent cursor-default pointer-events-none opacity-25"
+              ? ''
+              : 'transparent pointer-events-none cursor-default opacity-25'
           }`}
           onClick={() => setExpanded((v) => !v)}
-          aria-label={expanded ? "Collapse articles" : "Expand articles"}
+          aria-label={expanded ? 'Collapse articles' : 'Expand articles'}
           tabIndex={hasArticles ? 0 : -1}
         >
           <span
             className="inline-block transition-transform duration-500"
             style={{
-              transform: expanded ? "rotate(90deg)" : "rotate(0deg)",
+              transform: expanded ? 'rotate(90deg)' : 'rotate(0deg)',
             }}
           >
             🠞
@@ -60,11 +60,11 @@ export default function SidebarCategory({
         {/* Category button */}
         <Link
           to={`/category/${category.id}`}
-          className={`flex-1 text-left px-3 py-2 rounded font-medium transition
+          className={`flex-1 rounded px-3 py-2 text-left font-medium transition
             ${
               isActive
-                ? "bg-green-800 text-white"
-                : "bg-neutral-800 text-gray-100 hover:bg-neutral-700"
+                ? 'bg-green-800 text-white'
+                : 'bg-neutral-800 text-gray-100 hover:bg-neutral-700'
             }
           `}
         >
@@ -79,7 +79,7 @@ export default function SidebarCategory({
             <Link
               key={article.id}
               to={`/article/${article.id}`}
-              className="block px-3 py-1 rounded text-sm bg-neutral-700 text-gray-100 hover:bg-green-700 hover:text-white transition"
+              className="block rounded bg-neutral-700 px-3 py-1 text-sm text-gray-100 transition hover:bg-green-700 hover:text-white"
             >
               {article.title}
             </Link>
