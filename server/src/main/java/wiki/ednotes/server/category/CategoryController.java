@@ -2,6 +2,9 @@ package wiki.ednotes.server.category;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import wiki.ednotes.server.category.dto.CategoryWithChildrenResponse;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -15,14 +18,16 @@ public class CategoryController {
 
     /**
      * Constructor for CategoryController.
+     * 
      * @param categoryRepository the category repository
      */
     public CategoryController(CategoryRepository categoryRepository) {
         this.categoryRepository = categoryRepository;
     }
 
-    /**  
+    /**
      * Get all categories.
+     * 
      * @return a list of categories
      */
     @GetMapping
@@ -32,6 +37,7 @@ public class CategoryController {
 
     /**
      * Get a category by its ID.
+     * 
      * @param id the ID of the category
      * @return the category, if found
      */
@@ -44,6 +50,7 @@ public class CategoryController {
 
     /**
      * Get all child categories of a specific category.
+     * 
      * @param id the ID of the parent category
      * @return a list of child categories
      */
@@ -54,6 +61,7 @@ public class CategoryController {
 
     /**
      * Get the parent category of a specific category.
+     * 
      * @param id the ID of the category
      * @return the parent category, if found
      */
@@ -67,6 +75,7 @@ public class CategoryController {
 
     /**
      * Get all top-level categories.
+     * 
      * @return a list of top-level categories
      */
     @GetMapping("/top-level")
@@ -79,6 +88,7 @@ public class CategoryController {
 
     /**
      * Create a new category.
+     * 
      * @param category the category to create
      * @return the created category
      */
@@ -89,7 +99,8 @@ public class CategoryController {
 
     /**
      * Update an existing category.
-     * @param id the ID of the category to update
+     * 
+     * @param id       the ID of the category to update
      * @param category the updated category data
      * @return the updated category, if found
      */
@@ -104,6 +115,7 @@ public class CategoryController {
 
     /**
      * Delete a category by its ID.
+     * 
      * @param id the ID of the category to delete
      * @return a response indicating the result of the deletion
      */
@@ -114,5 +126,21 @@ public class CategoryController {
         }
         categoryRepository.deleteById(id);
         return ResponseEntity.noContent().build();
+    }
+
+    /**
+     * Get a category and its children in a single response.
+     * 
+     * @param id the ID of the parent category
+     * @return the parent category and its children
+     */
+    @GetMapping("/{id}/with-children")
+    public ResponseEntity<CategoryWithChildrenResponse> getCategoryWithChildren(@PathVariable Integer id) {
+        return categoryRepository.findById(id)
+                .map(parent -> {
+                    List<Category> children = categoryRepository.findByParentIdOrderByOrderInParentAsc(id);
+                    return ResponseEntity.ok(new CategoryWithChildrenResponse(parent, children));
+                })
+                .orElse(ResponseEntity.notFound().build());
     }
 }

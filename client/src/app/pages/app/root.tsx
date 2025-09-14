@@ -1,6 +1,6 @@
 import { Outlet } from 'react-router';
 
-import { MainLayout } from '@/components/layouts';
+import { ContentLayout } from '@/components/layouts';
 
 export const ErrorBoundary = () => {
   return <div>Something went wrong!</div>;
@@ -8,9 +8,9 @@ export const ErrorBoundary = () => {
 
 const AppRoot = () => {
   return (
-    <MainLayout>
+    <ContentLayout title="EdNotes">
       <Outlet />
-    </MainLayout>
+    </ContentLayout>
   );
 };
 

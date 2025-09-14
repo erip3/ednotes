@@ -4,16 +4,27 @@ import { api } from '@/lib/api-client';
 import { QueryConfig } from '@/lib/react-query';
 import { Category } from '@/types/aliases';
 
-type GetCategoriesParams = { parentId: number } | { topLevel: true };
+type GetCategoriesParams =
+  | { parentId: number; getParentInfo?: boolean }
+  | { topLevel: true };
+
+type CategoriesWithParent = {
+  parent: Category;
+  children: Category[];
+};
 
 // Fetch categories by parent category ID
 export const getCategories = (
   params: GetCategoriesParams,
-): Promise<{ data: Category[] }> => {
+): Promise<{ data: Category[] } | CategoriesWithParent> => {
   if ('topLevel' in params && params.topLevel) {
-    return api.get('/categories/top-level');
+    return api.get('categories/top-level');
   } else if ('parentId' in params) {
-    return api.get('/categories', { params: { parentId: params.parentId } });
+    if (params.getParentInfo) {
+      // Call the new backend endpoint
+      return api.get(`categories/${params.parentId}/with-children`);
+    }
+    return api.get(`categories/${params.parentId}/children`);
   }
   throw new Error('Invalid params for getCategories');
 };
@@ -24,7 +35,7 @@ export const getCategoriesQueryOptions = (params: GetCategoriesParams) => {
     'topLevel' in params && params.topLevel
       ? ['categories', 'top-level']
       : 'parentId' in params
-        ? ['categories', params.parentId]
+        ? ['categories', params.parentId, params.getParentInfo]
         : ['categories', undefined];
 
   return queryOptions({
@@ -36,6 +47,7 @@ export const getCategoriesQueryOptions = (params: GetCategoriesParams) => {
 // Options for the useCategories hook
 type UseCategoriesOptions = {
   parentId?: number | null;
+  getParentInfo?: boolean;
   topLevel?: boolean;
   queryConfig?: QueryConfig<typeof getCategoriesQueryOptions>;
 };
@@ -43,13 +55,14 @@ type UseCategoriesOptions = {
 // Custom hook to fetch categories
 export const useCategories = ({
   parentId,
+  getParentInfo,
   topLevel,
   queryConfig,
 }: UseCategoriesOptions) => {
   const params: GetCategoriesParams = topLevel
     ? { topLevel: true }
-    : parentId
-      ? { parentId }
+    : parentId !== undefined && parentId !== null
+      ? { parentId, getParentInfo }
       : (() => {
           throw new Error('Either topLevel or parentId required');
         })();
