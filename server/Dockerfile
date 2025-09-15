@@ -1,18 +1,5 @@
-FROM eclipse-temurin:24-jdk-alpine AS build
-
-WORKDIR /app
-
-COPY mvnw* pom.xml ./
-COPY .mvn .mvn
-RUN ./mvnw dependency:go-offline
-
-COPY src ./src
-RUN ./mvnw package -DskipTests
-
 FROM eclipse-temurin:24-jdk-alpine
 WORKDIR /app
-
-COPY --from=build /app/target/*.jar app.jar
-
+COPY server.jar app.jar
 EXPOSE 8080
 CMD ["java", "-jar", "app.jar"]
