@@ -34,7 +34,7 @@ export const clientLoader =
       queryClient.getQueryData(articlesQuery.queryKey) ??
       (await queryClient.fetchQuery(articlesQuery));
 
-    return { parent, children, articles };
+    return { parent, children: children ?? [], articles };
   };
 
 const CategoryPage = () => {

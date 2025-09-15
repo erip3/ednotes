@@ -14,15 +14,16 @@ type CategoryGridProps = {
  */
 export const CategoryGrid = ({ categories }: CategoryGridProps) => {
   const navigate = useNavigate();
+  const safeCategories = Array.isArray(categories) ? categories : [];
 
-  if (!categories || categories.length === 0) {
+  if (safeCategories.length === 0) {
     return null;
   }
 
   return (
     <div className="flex w-full justify-center">
       <div className="flex max-w-6xl flex-wrap justify-center gap-3">
-        {categories.map((category) =>
+        {safeCategories.map((category) =>
           category.title === 'Personal' ? (
             <CategoryCard
               key={category.id}

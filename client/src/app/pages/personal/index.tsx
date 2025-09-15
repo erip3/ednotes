@@ -18,17 +18,17 @@ export const clientLoader = (queryClient: QueryClient) => async () => {
   });
   const { children } = (queryClient.getQueryData(categoriesQuery.queryKey) ??
     (await queryClient.fetchQuery(categoriesQuery))) as {
-      children: Array<Category>;
-    };
+    children: Array<Category>;
+  };
 
   // Fetch personal projects
   const projectsQuery = getProjectsQueryOptions();
   const projects = (queryClient.getQueryData(projectsQuery.queryKey) ??
     (await queryClient.fetchQuery(projectsQuery))) as {
-      projects: Array<Project>;
-    };
+    projects: Array<Project>;
+  };
 
-  return { children, projects };
+  return { children: children ?? [], projects: projects ?? [] };
 };
 
 const programmingLanguages = [
