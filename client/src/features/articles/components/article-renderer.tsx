@@ -7,6 +7,7 @@ import type { ArticleBlock } from '../types/article-content';
 
 import { ImageResource } from './image-resource';
 
+import blubImage from '@/assets/images/blub.jpg';
 import { BubbleSortDemo } from '@/features/demos/bubble-sort';
 import { ImageTo3DSurface } from '@/features/demos/image-surface';
 
@@ -19,6 +20,11 @@ type DemoComponentProps = {
 const demoRegistry: Record<string, React.ComponentType<DemoComponentProps>> = {
   bubbleSort: BubbleSortDemo,
   imageToSurface: ImageTo3DSurface,
+};
+
+// Map filenames to imported images
+const imageAssetMap: Record<string, string> = {
+  'blub.jpg': blubImage,
 };
 
 // Props for ArticleRenderer component
@@ -47,7 +53,8 @@ export const ArticleRenderer = ({ content }: ArticleRendererProps) => {
   // Initialize image resources from blocks
   blocks.forEach((block) => {
     if (block.type === 'imageResource' && block.id) {
-      initialImages[block.id] = block.src;
+      // If src matches a known asset filename, use the imported asset
+      initialImages[block.id] = imageAssetMap[block.src] ?? block.src;
     }
   });
 
