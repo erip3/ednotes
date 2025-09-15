@@ -1,10 +1,10 @@
-// Store to manage the current category using Zustand
+// Zustand store for managing the current category state
 
 import { create } from 'zustand';
 
 type Category = {
   id: number;
-  name: string;
+  title: string;
   isTopic?: boolean;
   parentId?: number | null;
 } | null;

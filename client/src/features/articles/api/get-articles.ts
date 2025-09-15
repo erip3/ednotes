@@ -6,7 +6,11 @@ import { Article } from '@/types/aliases';
 
 type GetArticlesParams = { categoryId: number } | { articleId: number };
 
-// Fetch articles by category ID or a single article by ID
+/**
+ * Fetch articles by category ID or a single article by ID.
+ * @param params - Parameters to fetch articles by categoryId or articleId.
+ * @returns A promise that resolves to the fetched articles or a single article.
+ */
 export const getArticles = (
   params: GetArticlesParams,
 ): Promise<{ data: Article[] } | { data: Article }> => {
@@ -18,7 +22,11 @@ export const getArticles = (
   throw new Error('Invalid params for getArticles');
 };
 
-// Generate query options for react-query
+/**
+ * Generate query options for react-query based on parameters.
+ * @param params - Parameters to fetch articles by categoryId or articleId.
+ * @returns Query options for react-query.
+ */
 export const getArticlesQueryOptions = (params: GetArticlesParams) => {
   const queryKey =
     'categoryId' in params
@@ -46,7 +54,11 @@ type UseArticlesOptions =
       queryConfig?: QueryConfig<typeof getArticlesQueryOptions>;
     };
 
-// Custom hook to fetch articles
+/**
+ * Custom hook to fetch articles.
+ * @param options - Options including either parentId or articleId and optional queryConfig.
+ * @returns useQuery result for articles.
+ */
 export const useArticles = ({
   parentId,
   articleId,

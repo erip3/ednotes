@@ -7,15 +7,28 @@ export type HeaderProps = {
   onBack?: () => void;
 };
 
+/**
+ * Header component that displays navigation buttons.
+ * @param props - Props including onHome and onBack handlers.
+ * @returns A styled header component.
+ */
 export const Header = ({ onHome, onBack }: HeaderProps) => {
   return (
-    <header className="flex h-14 items-center border bg-background px-4">
-      <Button
-        variant="ghost"
-        icon={<ArrowLeftIcon />}
-        onClick={onBack}
-      ></Button>
-      <Button variant="ghost" icon={<HomeIcon />} onClick={onHome}></Button>
+    <header className="flex h-14 items-center border-b bg-background px-4">
+      <div className="flex gap-x-2">
+        <Button
+          variant="ghost"
+          size="icon"
+          icon={<ArrowLeftIcon />}
+          onClick={onBack}
+        />
+        <Button
+          variant="ghost"
+          size="icon"
+          icon={<HomeIcon />}
+          onClick={onHome}
+        />
+      </div>
     </header>
   );
 };

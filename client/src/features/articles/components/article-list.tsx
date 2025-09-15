@@ -8,6 +8,11 @@ type ArticleListProps = {
   articles: Article[];
 };
 
+/**
+ * ArticleList component to display a list of articles.
+ * @param props- Props containing an array of articles.
+ * @returns JSX.Element
+ */
 export const ArticleList = ({ articles }: ArticleListProps) => {
   const navigate = useNavigate();
   return (

@@ -17,16 +17,5 @@ export const paths = {
   personal: {
     path: '/personal',
     getHref: () => '/personal',
-
-    projects: {
-      list: {
-        path: '/personal/projects',
-        getHref: () => '/personal/projects',
-      },
-      detail: {
-        path: '/personal/projects/:projectId',
-        getHref: (projectId: string) => `/personal/projects/${projectId}`,
-      },
-    },
   },
 } as const;

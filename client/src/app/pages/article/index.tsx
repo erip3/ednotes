@@ -27,6 +27,7 @@ const ArticlePage = () => {
       title={article.title}
       parentId={article.categoryId}
       centered={false}
+      isArticle={true}
     >
       <ArticleRenderer content={article.content} />
     </ContentLayout>

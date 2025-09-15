@@ -26,7 +26,7 @@ api.interceptors.request.use(authRequestInterceptor); // Add request interceptor
 
 // Add response interceptor to handle responses and errors globally
 api.interceptors.response.use(
-  // On success, simply return the response data
+  // On success, return the response data
   (response) => {
     return response.data;
   },

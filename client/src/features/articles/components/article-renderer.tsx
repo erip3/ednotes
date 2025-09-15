@@ -5,10 +5,10 @@ import ReactMarkdown from 'react-markdown';
 
 import type { ArticleBlock } from '../types/article-content';
 
-import ImageResource from './image-resource';
+import { ImageResource } from './image-resource';
 
-import BubbleSortDemo from '@/features/demos/bubble-sort';
-import ImageTo3DSurface from '@/features/demos/image-surface';
+import { BubbleSortDemo } from '@/features/demos/bubble-sort';
+import { ImageTo3DSurface } from '@/features/demos/image-surface';
 
 // Props for demo components
 type DemoComponentProps = {
@@ -28,7 +28,7 @@ interface ArticleRendererProps {
 
 /**
  * ArticleRenderer component renders article blocks with appropriate styling and behavior.
- * @param ArticleRendererProps - Props for the component
+ * @param props - Props for the component
  * @returns JSX.Element
  */
 export const ArticleRenderer = ({ content }: ArticleRendererProps) => {
@@ -63,6 +63,7 @@ export const ArticleRenderer = ({ content }: ArticleRendererProps) => {
     <div className="article-content mx-auto max-w-3xl px-4 pb-4">
       {blocks.map((block, i) => {
         switch (block.type) {
+          // Render headers with appropriate levels and styles
           case 'header': {
             const Tag = `h${block.level}` as keyof JSX.IntrinsicElements;
             return React.createElement(
@@ -83,6 +84,7 @@ export const ArticleRenderer = ({ content }: ArticleRendererProps) => {
             );
           }
 
+          // Render paragraphs with markdown support
           case 'paragraph':
             return (
               <div key={i} className="mb-4 text-lg leading-relaxed">
@@ -99,6 +101,7 @@ export const ArticleRenderer = ({ content }: ArticleRendererProps) => {
               </div>
             );
 
+          // Render code blocks with syntax highlighting
           case 'code':
             return (
               <pre
@@ -111,6 +114,7 @@ export const ArticleRenderer = ({ content }: ArticleRendererProps) => {
               </pre>
             );
 
+          // Render notes with different styles based on note type
           case 'note':
             return (
               <div
@@ -129,6 +133,7 @@ export const ArticleRenderer = ({ content }: ArticleRendererProps) => {
               </div>
             );
 
+          // Render figures with images and captions
           case 'figure':
             return (
               <figure key={i} className="mb-4 flex flex-col items-center">
@@ -143,6 +148,7 @@ export const ArticleRenderer = ({ content }: ArticleRendererProps) => {
               </figure>
             );
 
+          // Render mathematical equations using KaTeX
           case 'equation':
             return (
               <div
@@ -153,6 +159,7 @@ export const ArticleRenderer = ({ content }: ArticleRendererProps) => {
               </div>
             );
 
+          // Render image resources with upload capability
           case 'imageResource':
             return (
               <ImageResource
@@ -164,6 +171,7 @@ export const ArticleRenderer = ({ content }: ArticleRendererProps) => {
               />
             );
 
+          // Render interactive demos based on demo type
           case 'demo': {
             const DemoComponent = demoRegistry[block.demoType];
             if (!DemoComponent) {

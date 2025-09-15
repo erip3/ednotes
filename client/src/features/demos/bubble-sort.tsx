@@ -8,7 +8,7 @@ function getRandomArray(size = 10) {
   }));
 }
 
-export default function BubbleSortDemo() {
+export const BubbleSortDemo = () => {
   const [array, setArray] = useState(getRandomArray());
   const [i, setI] = useState(0);
   const [j, setJ] = useState(0);
@@ -157,4 +157,4 @@ export default function BubbleSortDemo() {
       </div>
     </div>
   );
-}
+};

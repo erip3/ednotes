@@ -17,6 +17,10 @@ export default meta;
 
 type Story = StoryObj<typeof Accordion>;
 
+/**
+ * DemoAccordion component showcases the usage of the Accordion component.
+ * @returns A demo Accordion component showcasing its usage.
+ */
 const DemoAccordion = () => (
   <div className="dark min-h-screen bg-background p-8">
     <AccordionRoot>

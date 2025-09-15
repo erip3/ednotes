@@ -25,12 +25,12 @@ export type ArticleBlock =
     }
   | {
       type: 'equation';
-      content: string; // could later refine to a MathJax/LaTeX AST
+      content: string;
     }
   | {
       type: 'demo';
       demoType: string;
-      imageId?: string; // ID of the associated image resource
+      imageId?: string; // Optional image resource ID for demos that need an image
     }
   | {
       type: 'imageResource';

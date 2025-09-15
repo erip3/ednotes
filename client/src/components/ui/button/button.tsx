@@ -15,6 +15,11 @@ export type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> &
     icon?: React.ReactNode;
   };
 
+/**
+ * Button component that supports various variants, sizes, loading state, and icons.
+ * @param props - Props including variant, size, asChild, isLoading, icon, and other button attributes.
+ * @returns A styled button component.
+ */
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   (
     {
@@ -32,13 +37,22 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     const Comp = asChild ? Slot : 'button';
     return (
       <Comp
-        className={cn(buttonVariants({ variant, size, className }))}
+        className={cn(
+          buttonVariants({ variant, size, className }),
+          'flex items-center justify-center', // Add this for centering
+        )}
         ref={ref}
         {...props}
       >
         {isLoading && <Spinner size="sm" className="text-current" />}
-        {!isLoading && icon && <span className="mr-2">{icon}</span>}
-        <span className="mx-2">{children}</span>
+        {!isLoading && icon && !children && icon}
+        {!isLoading && icon && children && (
+          <>
+            <span className="mr-2">{icon}</span>
+            <span>{children}</span>
+          </>
+        )}
+        {!isLoading && !icon && children}
       </Comp>
     );
   },

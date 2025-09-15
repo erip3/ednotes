@@ -7,7 +7,12 @@ interface ImageResourceProps {
   onUpdate: (id: string, newSrc: string) => void;
 }
 
-export default function ImageResource({ id, onUpdate }: ImageResourceProps) {
+/**
+ * ImageResource component to display and manage an image resource.
+ * @param props - Props for the ImageResource component
+ * @returns JSX.Element
+ */
+export const ImageResource = ({ id, onUpdate }: ImageResourceProps) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
@@ -38,4 +43,4 @@ export default function ImageResource({ id, onUpdate }: ImageResourceProps) {
       />
     </div>
   );
-}
+};

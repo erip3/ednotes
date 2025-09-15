@@ -18,6 +18,11 @@ export type SpinnerProps = {
   className?: string;
 };
 
+/**
+ * Spinner component that displays a loading indicator.
+ * @param props Props for the spinner component including size, variant, and additional class names.
+ * @returns A styled spinner component.
+ */
 export const Spinner = ({
   size = 'md',
   variant = 'primary',

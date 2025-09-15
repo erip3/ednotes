@@ -116,6 +116,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/categories/{id}/with-children": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getCategoryWithChildren"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/categories/{id}/parent": {
         parameters: {
             query?: never;
@@ -187,12 +203,12 @@ export interface components {
         Category: {
             /** Format: int32 */
             id?: number;
-            name?: string;
+            title?: string;
             /** Format: int32 */
             parentId?: number;
-            comingSoon?: boolean;
+            published?: boolean;
             /** Format: int32 */
-            orderInParent?: number;
+            order?: number;
             /** Format: int32 */
             topicId?: number;
             topic?: boolean;
@@ -204,9 +220,9 @@ export interface components {
             content?: string;
             /** Format: int32 */
             categoryId?: number;
-            isPublished?: boolean;
+            published?: boolean;
             /** Format: int32 */
-            orderInCategory?: number;
+            order?: number;
         };
         Project: {
             /** Format: int32 */
@@ -234,6 +250,10 @@ export interface components {
             name?: string;
             articles?: components["schemas"]["ArticleSummary"][];
             comingSoon?: boolean;
+        };
+        CategoryWithChildrenResponse: {
+            parent?: components["schemas"]["Category"];
+            children?: components["schemas"]["Category"][];
         };
     };
     responses: never;
@@ -490,7 +510,9 @@ export interface operations {
     };
     getNavigationTree: {
         parameters: {
-            query?: never;
+            query?: {
+                categoryId?: number;
+            };
             header?: never;
             path?: never;
             cookie?: never;
@@ -526,6 +548,28 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["ArticleSummary"][];
+                };
+            };
+        };
+    };
+    getCategoryWithChildren: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["CategoryWithChildrenResponse"];
                 };
             };
         };

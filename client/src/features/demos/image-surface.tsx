@@ -6,7 +6,7 @@ import Plot from 'react-plotly.js';
  * select a pixel area, and visualize it as a 3D surface plot.
  * @returns JSX.Element
  */
-export default function ImageTo3DSurface({ imageSrc }: { imageSrc?: string }) {
+export const ImageTo3DSurface = ({ imageSrc }: { imageSrc?: string }) => {
   const [surfaceData, setSurfaceData] = useState<number[][] | null>(null); // 2D array for surface plot
   const [img, setImg] = useState<HTMLImageElement | null>(null);
   const [selection, setSelection] = useState<{
@@ -175,4 +175,4 @@ export default function ImageTo3DSurface({ imageSrc }: { imageSrc?: string }) {
       </p>
     </div>
   );
-}
+};

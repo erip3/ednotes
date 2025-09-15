@@ -48,7 +48,7 @@ public class ArticleController {
      */
     @GetMapping("/category/{categoryId}")
     public List<Article> getArticlesByCategoryId(@PathVariable Integer categoryId) {
-        return articleRepository.findByCategoryIdOrderByOrderInCategoryAsc(categoryId);
+        return articleRepository.findByCategoryIdOrderByOrderAsc(categoryId);
     }
 
     /**
@@ -89,5 +89,4 @@ public class ArticleController {
         articleRepository.deleteById(id);
         return ResponseEntity.noContent().build();
     }
-
 }

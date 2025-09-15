@@ -9,6 +9,7 @@ const meta: Meta<typeof Button> = {
 export default meta;
 type Story = StoryObj<typeof Button>;
 
+// Default story for the Button component
 export const Default: Story = {
   args: {
     children: 'Button',

@@ -6,7 +6,7 @@ const icons = {
   warning: (
     <CircleAlert className="size-6 text-yellow-500" aria-hidden="true" />
   ),
-  error: <CircleX className="size-6 text-red-500" aria-hidden="true" />,
+  error: <CircleX className="size-6 text-red-600" aria-hidden="true" />,
 };
 
 export type NotificationProps = {
@@ -19,6 +19,11 @@ export type NotificationProps = {
   onDismiss: (id: string) => void;
 };
 
+/**
+ * Notification component that displays a notification message.
+ * @param props - Props including notification details and onDismiss handler.
+ * @returns A styled notification component.
+ */
 export const Notification = ({
   notification: { id, type, title, message },
   onDismiss,

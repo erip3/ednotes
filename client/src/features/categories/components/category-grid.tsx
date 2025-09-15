@@ -9,6 +9,9 @@ type CategoryGridProps = {
   categories: Category[];
 };
 
+/**
+ * CategoryGrid component displays a grid of category cards using flex layout.
+ */
 export const CategoryGrid = ({ categories }: CategoryGridProps) => {
   const navigate = useNavigate();
 
@@ -18,20 +21,21 @@ export const CategoryGrid = ({ categories }: CategoryGridProps) => {
 
   return (
     <div className="flex w-full justify-center">
-      <div className="grid max-w-6xl grid-cols-[repeat(auto-fit,minmax(16rem,1fr))] justify-items-center gap-3">
+      <div className="flex max-w-6xl flex-wrap justify-center gap-3">
         {categories.map((category) =>
-          category.name === 'Personal' ? (
+          category.title === 'Personal' ? (
             <CategoryCard
               key={category.id}
-              name={category.name}
+              title={category.title}
               onClick={() => navigate('/personal')}
+              published={category.published}
             />
           ) : (
             <CategoryCard
               key={category.id}
-              name={category.name}
+              title={category.title}
               onClick={() => navigate(`/categories/${category.id}`)}
-              comingSoon={category.comingSoon}
+              published={category.published}
             />
           ),
         )}

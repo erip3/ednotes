@@ -7,23 +7,35 @@ import { Header } from '@/components/ui/header';
 type ContentLayoutProps = {
   children: React.ReactNode;
   title?: string;
+  subtitle?: string;
   parentId?: number;
   footerContent?: string;
   centered?: boolean;
+  isArticle?: boolean;
 };
 
+/**
+ * ContentLayout component provides a layout structure with a header, footer, and main content area.
+ * @param props - Props including children, title, parentId, footerContent, and centered flag.
+ * @returns JSX.Element
+ */
 export const ContentLayout = ({
   children,
   title,
+  subtitle,
   parentId,
   footerContent,
   centered = true,
+  isArticle = false,
 }: ContentLayoutProps) => {
   const navigate = useNavigate();
 
+  // Handlers for navigation
   const handleBack = () => {
     if (parentId !== null && parentId !== undefined) {
       navigate(`/categories/${parentId}`);
+    } else if (isArticle) {
+      navigate('/personal');
     } else {
       navigate('/');
     }
@@ -53,12 +65,17 @@ export const ContentLayout = ({
           <h1
             className={
               centered
-                ? 'text-5xl font-semibold'
-                : 'mb-8 mt-8 text-left text-4xl font-semibold'
+                ? 'pb-4 text-5xl font-semibold'
+                : 'mb-8 mt-8 pb-4 text-left text-4xl font-semibold'
             }
           >
             {title}
           </h1>
+          {subtitle && (
+            <h2 className="pb-4 text-lg font-semibold text-secondary-foreground">
+              {subtitle}
+            </h2>
+          )}
           <div className={centered ? 'py-6' : 'py-0'}>{children}</div>
         </div>
       </main>

@@ -16,8 +16,9 @@ public class NavigationController {
     }
 
     @GetMapping("/tree")
-    public ResponseEntity<List<CategoryTreeNode>> getNavigationTree() {
-        List<CategoryTreeNode> tree = navigationService.getNavigationTree();
+    public ResponseEntity<List<CategoryTreeNode>> getNavigationTree(
+            @RequestParam(value = "categoryId", required = false) Integer categoryId) {
+        List<CategoryTreeNode> tree = navigationService.getNavigationTree(categoryId);
         return ResponseEntity.ok(tree);
     }
 

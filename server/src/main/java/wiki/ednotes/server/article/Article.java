@@ -18,11 +18,11 @@ public class Article {
     @Column(name = "category_id")
     private Integer categoryId;
 
-    @Column(name = "is_published")
-    private Boolean isPublished;
+    @Column(name = "published")
+    private Boolean published;
 
-    @Column(name = "order_in_category")
-    private Integer orderInCategory;
+    @Column(name = "order")
+    private Integer order;
 
     public Integer getId() {
         return id;
@@ -56,19 +56,19 @@ public class Article {
         this.categoryId = categoryId;
     }
 
-    public Boolean getIsPublished() {
-        return isPublished;
+    public Boolean getPublished() {
+        return published;
     }
 
-    public void setIsPublished(Boolean isPublished) {
-        this.isPublished = isPublished;
+    public void setPublished(Boolean published) {
+        this.published = published;
     }
 
-    public Integer getOrderInCategory() {
-        return orderInCategory;
+    public Integer getOrder() {
+        return order;
     }
 
-    public void setOrderInCategory(Integer orderInCategory) {
-        this.orderInCategory = orderInCategory;
+    public void setOrder(Integer order) {
+        this.order = order;
     }
 }

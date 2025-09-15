@@ -16,13 +16,11 @@ import java.util.stream.Collectors;
  */
 @Service
 public class NavigationService {
-    private final CategoryRepository categoryRepository; // Repository for category data
-    private final ArticleRepository articleRepository; // Repository for article data
+    private final CategoryRepository categoryRepository;
+    private final ArticleRepository articleRepository;
 
     /**
      * Constructor for NavigationService.
-     * @param categoryRepository
-     * @param articleRepository
      */
     public NavigationService(CategoryRepository categoryRepository, ArticleRepository articleRepository) {
         this.categoryRepository = categoryRepository;
@@ -30,7 +28,8 @@ public class NavigationService {
     }
 
     /**
-     * Get the navigation tree structure.
+     * Get the navigation tree structure (all root categories).
+     * 
      * @return A list of root categories with their subcategories and articles.
      */
     public List<CategoryTreeNode> getNavigationTree() {
@@ -41,50 +40,102 @@ public class NavigationService {
         Map<Integer, List<ArticleSummary>> articlesByCategory = allArticles.stream()
                 .collect(Collectors.groupingBy(
                         a -> a.getCategoryId() != null ? a.getCategoryId() : null,
-                        Collectors.mapping(a -> new ArticleSummary(a.getId(), a.getTitle(), a.getIsPublished() != null && a.getIsPublished()), Collectors.toList())));
+                        Collectors.mapping(
+                                a -> new ArticleSummary(a.getId(), a.getTitle(),
+                                        a.getPublished() != null
+                                                && a.getPublished()),
+                                Collectors.toList())));
 
-        // Map categoryId -> list of child categories
+        // Map parentId -> list of child categories
         Map<Integer, List<Category>> childrenByParent = allCategories.stream()
                 .filter(c -> c.getParentId() != null)
                 .collect(Collectors.groupingBy(Category::getParentId));
 
-        // Build tree recursively
-        List<CategoryTreeNode> roots = allCategories.stream()
+        // Build tree recursively for all root categories
+        return allCategories.stream()
                 .filter(c -> c.getParentId() == null)
                 .map(c -> buildNode(c, childrenByParent, articlesByCategory))
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
-
-        return roots;
     }
 
     /**
+     * Get the navigation tree structure starting from a specific category.
      * 
-     * @param categoryId
-     * @return
+     * @param categoryId The root category ID (nullable).
+     * @return A list with the specified category as the root, or all root
+     *         categories if null.
      */
-    public List<ArticleSummary> getArticleSummariesByCategory(Integer categoryId) {
-        List<Article> articles = articleRepository.findByCategoryIdOrderByOrderInCategoryAsc(categoryId);
-        return articles.stream()
-                .map(a -> new ArticleSummary(a.getId(), a.getTitle(), a.getIsPublished() != null && a.getIsPublished()))
-                .collect(Collectors.toList());
+    public List<CategoryTreeNode> getNavigationTree(Integer categoryId) {
+        List<Category> allCategories = categoryRepository.findAll();
+        List<Article> allArticles = articleRepository.findAll();
+
+        Map<Integer, List<ArticleSummary>> articlesByCategory = allArticles.stream()
+                .collect(Collectors.groupingBy(
+                        a -> a.getCategoryId() != null ? a.getCategoryId() : null,
+                        Collectors.mapping(
+                                a -> new ArticleSummary(a.getId(), a.getTitle(),
+                                        a.getPublished() != null
+                                                && a.getPublished()),
+                                Collectors.toList())));
+
+        Map<Integer, List<Category>> childrenByParent = allCategories.stream()
+                .filter(c -> c.getParentId() != null)
+                .collect(Collectors.groupingBy(Category::getParentId));
+
+        if (categoryId != null) {
+            // Find the category by ID
+            Optional<Category> rootOpt = allCategories.stream()
+                    .filter(c -> c.getId().equals(categoryId))
+                    .findFirst();
+            if (rootOpt.isPresent()) {
+                CategoryTreeNode node = buildNode(rootOpt.get(), childrenByParent, articlesByCategory);
+                return node != null ? List.of(node) : List.of();
+            } else {
+                return List.of(); // Not found
+            }
+        } else {
+            // Original behavior: all root categories
+            return allCategories.stream()
+                    .filter(c -> c.getParentId() == null)
+                    .map(c -> buildNode(c, childrenByParent, articlesByCategory))
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toList());
+        }
     }
 
     /**
      * Get the article summaries for a specific category.
-     * @param cat
-     * @param childrenByParent
-     * @param articlesByCategory
-     * @return CategoryTreeNode
+     * 
+     * @param categoryId The category ID.
+     * @return List of ArticleSummary.
      */
-    private CategoryTreeNode buildNode(Category cat, Map<Integer, List<Category>> childrenByParent,
-        Map<Integer, List<ArticleSummary>> articlesByCategory) {
-        if (cat.isComingSoon()) {
-                return null; // Skip "coming soon" categories
+    public List<ArticleSummary> getArticleSummariesByCategory(Integer categoryId) {
+        List<Article> articles = articleRepository.findByCategoryIdOrderByOrderAsc(categoryId);
+        return articles.stream()
+                .map(a -> new ArticleSummary(a.getId(), a.getTitle(),
+                        a.getPublished() != null && a.getPublished()))
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Build a CategoryTreeNode recursively.
+     * 
+     * @param cat                The category.
+     * @param childrenByParent   Map of parentId to child categories.
+     * @param articlesByCategory Map of categoryId to articles.
+     * @return CategoryTreeNode or null if not published.
+     */
+    private CategoryTreeNode buildNode(
+            Category cat,
+            Map<Integer, List<Category>> childrenByParent,
+            Map<Integer, List<ArticleSummary>> articlesByCategory) {
+        if (!cat.isPublished()) {
+            return null; // Skip "coming soon" categories
         }
         CategoryTreeNode node = new CategoryTreeNode();
         node.setId(cat.getId());
-        node.setName(cat.getName());
+        node.setName(cat.getTitle());
         node.setChildren(
                 childrenByParent.getOrDefault(cat.getId(), Collections.emptyList())
                         .stream()

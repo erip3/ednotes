@@ -18,7 +18,6 @@ public class CategoryController {
 
     /**
      * Constructor for CategoryController.
-     * 
      * @param categoryRepository the category repository
      */
     public CategoryController(CategoryRepository categoryRepository) {
@@ -27,7 +26,6 @@ public class CategoryController {
 
     /**
      * Get all categories.
-     * 
      * @return a list of categories
      */
     @GetMapping
@@ -37,7 +35,6 @@ public class CategoryController {
 
     /**
      * Get a category by its ID.
-     * 
      * @param id the ID of the category
      * @return the category, if found
      */
@@ -50,18 +47,31 @@ public class CategoryController {
 
     /**
      * Get all child categories of a specific category.
-     * 
      * @param id the ID of the parent category
      * @return a list of child categories
      */
     @GetMapping("/{id}/children")
     public List<Category> getChildCategories(@PathVariable Integer id) {
-        return categoryRepository.findByParentIdOrderByOrderInParentAsc(id);
+        return categoryRepository.findByParentIdOrderByOrderAsc(id);
+    }
+
+    /**
+     * Get a category and its children in a single response.
+     * @param id the ID of the parent category
+     * @return the parent category and its children
+     */
+    @GetMapping("/{id}/with-children")
+    public ResponseEntity<CategoryWithChildrenResponse> getCategoryWithChildren(@PathVariable Integer id) {
+        return categoryRepository.findById(id)
+                .map(parent -> {
+                    List<Category> children = categoryRepository.findByParentIdOrderByOrderAsc(id);
+                    return ResponseEntity.ok(new CategoryWithChildrenResponse(parent, children));
+                })
+                .orElse(ResponseEntity.notFound().build());
     }
 
     /**
      * Get the parent category of a specific category.
-     * 
      * @param id the ID of the category
      * @return the parent category, if found
      */
@@ -75,15 +85,14 @@ public class CategoryController {
 
     /**
      * Get all top-level categories.
-     * 
      * @return a list of top-level categories
      */
     @GetMapping("/top-level")
     public List<Category> getTopLevelCategories(@RequestParam(defaultValue = "true") boolean includeComingSoon) {
         if (includeComingSoon) {
-            return categoryRepository.findByParentIdOrderByOrderInParentAsc(null);
+            return categoryRepository.findByParentIdOrderByOrderAsc(null);
         }
-        return categoryRepository.findByParentIdAndComingSoonIsFalseOrderByOrderInParentAsc(null);
+        return categoryRepository.findByParentIdAndPublishedIsTrueOrderByOrderAsc(null);
     }
 
     /**
@@ -126,21 +135,5 @@ public class CategoryController {
         }
         categoryRepository.deleteById(id);
         return ResponseEntity.noContent().build();
-    }
-
-    /**
-     * Get a category and its children in a single response.
-     * 
-     * @param id the ID of the parent category
-     * @return the parent category and its children
-     */
-    @GetMapping("/{id}/with-children")
-    public ResponseEntity<CategoryWithChildrenResponse> getCategoryWithChildren(@PathVariable Integer id) {
-        return categoryRepository.findById(id)
-                .map(parent -> {
-                    List<Category> children = categoryRepository.findByParentIdOrderByOrderInParentAsc(id);
-                    return ResponseEntity.ok(new CategoryWithChildrenResponse(parent, children));
-                })
-                .orElse(ResponseEntity.notFound().build());
     }
 }

@@ -7,6 +7,6 @@ import java.util.List;
  * Repository interface for managing categories.
  */
 public interface CategoryRepository extends JpaRepository<Category, Integer> {
-    List<Category> findByParentIdOrderByOrderInParentAsc(Integer parentId);
-    List<Category> findByParentIdAndComingSoonIsFalseOrderByOrderInParentAsc(Integer parentId);
+    List<Category> findByParentIdOrderByOrderAsc(Integer parentId);
+    List<Category> findByParentIdAndPublishedIsTrueOrderByOrderAsc(Integer parentId);
 }

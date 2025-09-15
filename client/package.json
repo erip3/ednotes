@@ -10,7 +10,8 @@
     "preview": "vite preview",
     "prepare": "husky",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "generate:types": "openapi-typescript http://localhost:8080/v3/api-docs --output src/types/api.ts"
   },
   "dependencies": {
     "@mswjs/data": "^0.16.2",

@@ -24,8 +24,8 @@ export const clientLoader =
     const { parent, children } = (queryClient.getQueryData(
       categoriesQuery.queryKey,
     ) ?? (await queryClient.fetchQuery(categoriesQuery))) as {
-      parent: { id: number; name: string; parentId?: number | null };
-      children: Array<{ id: number; name: string; parentId?: number | null }>;
+      parent: { id: number; title: string; parentId?: number | null };
+      children: Array<{ id: number; title: string; parentId?: number | null }>;
     };
 
     // Fetch articles for this category
@@ -39,7 +39,7 @@ export const clientLoader =
 
 const CategoryPage = () => {
   const { parent, children, articles } = useLoaderData() as {
-    parent: { id: number; name: string; parentId?: number | null };
+    parent: { id: number; title: string; parentId?: number | null };
     children: Array<Category>;
     articles: Array<Article>;
   };
@@ -50,7 +50,10 @@ const CategoryPage = () => {
   }, [parent, setCurrentCategory]);
 
   return (
-    <ContentLayout title={parent.name} parentId={parent.parentId || null}>
+    <ContentLayout
+      title={parent.title}
+      parentId={parent.parentId || null || undefined}
+    >
       <CategoryGrid categories={children} />
       <div className="mt-8">
         {articles.length > 0 && (

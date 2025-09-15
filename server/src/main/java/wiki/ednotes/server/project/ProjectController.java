@@ -22,6 +22,6 @@ public class ProjectController {
      */
     @GetMapping
     public List<Project> getAllProjects() {
-        return projectRepository.findAll();
+        return projectRepository.findAllByOrderByOrderAsc();
     }
 }

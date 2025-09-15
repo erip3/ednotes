@@ -13,7 +13,11 @@ type CategoriesWithParent = {
   children: Category[];
 };
 
-// Fetch categories by parent category ID
+/**
+ * Fetch categories by parent category ID or get top-level categories.
+ * @param params - Parameters to fetch top-level categories or child categories by parentId.
+ * @returns A promise that resolves to the fetched categories.
+ */
 export const getCategories = (
   params: GetCategoriesParams,
 ): Promise<{ data: Category[] } | CategoriesWithParent> => {
@@ -29,7 +33,11 @@ export const getCategories = (
   throw new Error('Invalid params for getCategories');
 };
 
-// Generate query options for react-query
+/**
+ * Generate query options for react-query based on parameters.
+ * @param params - Parameters to fetch top-level categories or child categories by parentId.
+ * @returns Query options for react-query.
+ */
 export const getCategoriesQueryOptions = (params: GetCategoriesParams) => {
   const queryKey =
     'topLevel' in params && params.topLevel
@@ -52,7 +60,11 @@ type UseCategoriesOptions = {
   queryConfig?: QueryConfig<typeof getCategoriesQueryOptions>;
 };
 
-// Custom hook to fetch categories
+/**
+ * Custom hook to fetch categories.
+ * @param options - Options including either topLevel or parentId, getParentInfo, and optional queryConfig.
+ * @returns useQuery result for categories.
+ */
 export const useCategories = ({
   parentId,
   getParentInfo,

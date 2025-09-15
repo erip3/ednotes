@@ -12,17 +12,17 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "name", nullable = false)
-    private String name;
+    @Column(name = "title", nullable = false)
+    private String title;
 
     @Column(name = "parent_id")
     private Integer parentId;
 
-    @Column(name = "coming_soon", nullable = false)
-    private boolean comingSoon;
+    @Column(name = "published", nullable = false)
+    private boolean published;
 
-    @Column(name = "order_in_parent")
-    private Integer orderInParent;
+    @Column(name = "order")
+    private Integer order;
 
     @Column(name = "is_topic", nullable = false)
     private boolean isTopic;
@@ -32,12 +32,12 @@ public class Category {
 
     protected Category() {}
 
-    public Category(Integer id, String name, Integer parentId, boolean comingSoon, Integer orderInParent, boolean isTopic) {
+    public Category(Integer id, String title, Integer parentId, boolean published, Integer order, boolean isTopic) {
         this.id = id;
-        this.name = name;
+        this.title = title;
         this.parentId = parentId;
-        this.comingSoon = comingSoon;
-        this.orderInParent = orderInParent;
+        this.published = published;
+        this.order = order;
         this.isTopic = isTopic;
     }
 
@@ -49,12 +49,12 @@ public class Category {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getTitle() {
+        return title;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public Integer getParentId() {
@@ -65,20 +65,20 @@ public class Category {
         this.parentId = parentId;
     }
 
-    public boolean isComingSoon() {
-        return comingSoon;
+    public boolean isPublished() {
+        return published;
     }
 
-    public void setComingSoon(boolean comingSoon) {
-        this.comingSoon = comingSoon;
+    public void setPublished(boolean published) {
+        this.published = published;
     }
 
-    public Integer getOrderInParent() {
-        return orderInParent;
+    public Integer getOrder() {
+        return order;
     }
 
-    public void setOrderInParent(Integer orderInParent) {
-        this.orderInParent = orderInParent;
+    public void setOrder(Integer order) {
+        this.order = order;
     }
 
     public boolean isTopic() {

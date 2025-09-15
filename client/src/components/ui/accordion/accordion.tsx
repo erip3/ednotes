@@ -7,7 +7,7 @@ const Accordion = AccordionPrimitive.Root;
 
 const AccordionItem = AccordionPrimitive.Item;
 
-// The header of the Accordion, typically containing the title and close button
+// The header of the Accordion, usually contains the title and close button
 const AccordionHeader = React.forwardRef<
   React.ComponentRef<typeof AccordionPrimitive.Header>,
   React.ComponentPropsWithoutRef<typeof AccordionPrimitive.Header>
@@ -57,6 +57,7 @@ const AccordionContent = React.forwardRef<
 ));
 AccordionContent.displayName = AccordionPrimitive.Content.displayName;
 
+// The root Accordion component that wraps everything
 const AccordionRoot = React.forwardRef<
   React.ComponentRef<typeof AccordionPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof AccordionPrimitive.Content>
