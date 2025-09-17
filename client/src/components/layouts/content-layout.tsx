@@ -51,8 +51,8 @@ export const ContentLayout = ({
       <main
         className={
           centered
-            ? 'flex min-h-screen flex-col items-center justify-center'
-            : 'flex min-h-screen flex-col'
+            ? 'flex min-h-screen flex-col items-center justify-center pt-8'
+            : 'flex min-h-screen flex-col pt-8'
         }
       >
         <div

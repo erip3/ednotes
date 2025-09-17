@@ -28,6 +28,11 @@ const ArticlePage = () => {
       parentId={article.categoryId}
       centered={false}
       isArticle={true}
+      footerContent={
+        article.published
+          ? 'These are my notes, so they could contain inaccuracies. If you find an error or have any suggestions, send me an email'
+          : 'This article is a work in progress. Content may be incomplete or contain errors. If you find an error or have any suggestions, send me an email'
+      }
     >
       <ArticleRenderer content={article.content} />
     </ContentLayout>

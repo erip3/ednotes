@@ -23,7 +23,7 @@ export const ProjectContainer: React.FC<ProjectContainerProps> = ({
   projects,
 }) => {
   return (
-    <ScrollContainer className="h-100 mb-8 w-full rounded-md">
+    <ScrollContainer className="mb-8 h-96 w-full rounded-md">
       <ScrollContainerViewport>
         <div className="flex flex-col gap-4 overflow-y-auto py-2">
           {projects.map((project) => (

@@ -38,8 +38,8 @@ const programmingLanguages = [
   'TypeScript',
   'Verilog',
 ];
-const frameworks = ['React'];
-const databases = ['SQL', 'SQLite', 'Postgres'];
+const frameworks = ['React', 'Spring Boot'];
+const databases = ['SQL', 'SQLite', 'PostgreSQL'];
 const misc = ['GitHub', 'VSCode'];
 
 const skillClass =
@@ -54,10 +54,21 @@ const PersonalPage = () => {
   return (
     <ContentLayout title="About Me" centered={false} isArticle={false}>
       <div className="text-medium mb-6 font-medium text-primary-foreground">
-        I'm a senior at Penn State majoring in Computer Science with a focus on
-        software engineering and growing interest in machine learning and AI.
-        I’m exploring different areas of computing to build a versatile
-        foundation and apply what I learn through projects.
+        <p className="mb-4">
+          I'm a senior at Penn State majoring in Computer Science. I'm primarily
+          interested in software engineering, but I also enjoy exploring broader
+          areas of computing, including embedded systems, low-level programming,
+          artificial intelligence, and computer vision. I'm planning to pursue a
+          Master’s degree in Software Engineering after graduation.
+        </p>
+        <p className="mb-4">
+          I’ve gained hands-on experience through my coursework and projects.
+          Right now, I’m building EdNotes to act as my personal website and as a
+          platform for sharing notes on different topics. I've also had the
+          opportunity to intern with Internal Audit at ATI, where I developed a
+          Python tool with Pandas and SQL to identify duplicate payments using
+          invoice data. I've included a listing of my projects and skills below.
+        </p>
       </div>
 
       {/* Resume Download */}
@@ -71,6 +82,10 @@ const PersonalPage = () => {
         </Button>
       </div>
 
+      {/* Projects */}
+      <div className="py-4">
+        <h2 className="mb-2 text-xl font-semibold">Projects</h2>
+      </div>
       <ProjectContainer projects={projects} />
 
       {/* Skills */}

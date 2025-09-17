@@ -57,6 +57,11 @@ export const Footer = React.forwardRef<HTMLElement, FooterProps>(
           <EnvelopeClosedIcon width={28} height={28} />
         </Button>
       </div>
+      <div>
+        <span className="mt-2 text-sm text-secondary-foreground">
+          edrip222@gmail.com
+        </span>
+      </div>
     </footer>
   ),
 );

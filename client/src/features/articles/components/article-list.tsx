@@ -21,6 +21,7 @@ export const ArticleList = ({ articles }: ArticleListProps) => {
         <ArticleListing
           key={article.id}
           title={article.title}
+          published={article.published}
           onClick={() => navigate(`/articles/${article.id}`)}
         />
       ))}
