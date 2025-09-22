@@ -31,7 +31,7 @@ const ArticlePage = () => {
       footerContent={
         article.published
           ? 'These are my notes, so they could contain inaccuracies. If you find an error or have any suggestions, send me an email'
-          : 'This article is a work in progress. Content may be incomplete or contain errors. If you find an error or have any suggestions, send me an email'
+          : "This article is a work in progress, so it's probably incomplete and could contain errors."
       }
     >
       <ArticleRenderer content={article.content} />

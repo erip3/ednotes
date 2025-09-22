@@ -19,6 +19,7 @@ export type ArticleBlock =
       content: string;
     }
   | {
+      content: any;
       type: 'figure';
       src: string;
       caption?: string;
@@ -28,11 +29,18 @@ export type ArticleBlock =
       content: string;
     }
   | {
+      type: 'list';
+      ordered: boolean;
+      items: string[];
+    }
+  | {
+      args: {};
       type: 'demo';
       demoType: string;
       imageId?: string; // Optional image resource ID for demos that need an image
     }
   | {
+      upload: boolean;
       type: 'imageResource';
       id: string;
       src: string;

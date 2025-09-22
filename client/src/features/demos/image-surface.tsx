@@ -91,7 +91,6 @@ export const ImageTo3DSurface = ({ imageSrc }: { imageSrc?: string }) => {
       const ex = dragEnd.x;
       const ey = dragEnd.y;
       ctx.save();
-      ctx.strokeStyle = '#0074D9';
       ctx.lineWidth = 2;
       ctx.setLineDash([6, 4]);
       ctx.strokeRect(
@@ -112,12 +111,11 @@ export const ImageTo3DSurface = ({ imageSrc }: { imageSrc?: string }) => {
       !dragEnd
     ) {
       ctx.save();
-      ctx.strokeStyle = '#0074D9';
-      ctx.lineWidth = 2;
+      ctx.lineWidth = 1;
       ctx.setLineDash([6, 4]);
       ctx.strokeRect(
-        selection.x + 0.5,
-        selection.y + 0.5,
+        selection.x,
+        selection.y,
         selection.width,
         selection.height,
       );
@@ -145,7 +143,7 @@ export const ImageTo3DSurface = ({ imageSrc }: { imageSrc?: string }) => {
   }, [imageSrc]);
 
   return (
-    <div>
+    <div className="flex flex-col items-center">
       {/* Canvas for image display and selection */}
       <div>
         <canvas
@@ -154,6 +152,7 @@ export const ImageTo3DSurface = ({ imageSrc }: { imageSrc?: string }) => {
             border: '1px solid #ccc',
             margin: '1rem 0',
             cursor: img ? 'crosshair' : 'default',
+            filter: 'grayscale(1)', // <-- Add this line
           }}
           onMouseDown={handleCanvasMouseDown}
           onMouseMove={handleCanvasMouseMove}
@@ -164,13 +163,31 @@ export const ImageTo3DSurface = ({ imageSrc }: { imageSrc?: string }) => {
       {/* 3D Surface Plot */}
       {surfaceData && (
         <Plot
-          data={[{ z: surfaceData, type: 'surface' }]}
-          layout={{ width: 500, height: 400, title: { text: '3D Surface' } }}
+          data={[
+            {
+              z: surfaceData,
+              type: 'surface',
+              colorscale: [
+                [0, 'rgb(0,0,0)'], // Black at the start of the scale
+                [0.5, 'rgb(128,128,128)'], // Gray in the middle
+                [1, 'rgb(255,255,255)'], // White at the end of the scale
+              ],
+            },
+          ]}
+          layout={{
+            width: 500,
+            height: 400,
+            title: { text: '3D Surface' },
+            scene: {
+              xaxis: { visible: false },
+              yaxis: { visible: false },
+            },
+          }}
         />
       )}
       <p className="mt-2 text-sm text-gray-500">
         {img
-          ? 'Click on the image to select the top-left corner of a 15x15 area. The selected area will be outlined in blue.'
+          ? 'Click and drag to select an area of the image. The selected area will be visualized as a 3D surface plot.'
           : 'Upload an image to begin.'}
       </p>
     </div>

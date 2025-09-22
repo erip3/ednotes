@@ -7,25 +7,37 @@ import type { ArticleBlock } from '../types/article-content';
 
 import { ImageResource } from './image-resource';
 
-import blubImage from '@/assets/images/blub.jpg';
 import { BubbleSortDemo } from '@/features/demos/bubble-sort';
+import { ConvolutionDemo } from '@/features/demos/convolution';
+import { DFADemo } from '@/features/demos/dfa';
 import { ImageTo3DSurface } from '@/features/demos/image-surface';
 
-// Props for demo components
-type DemoComponentProps = {
-  imageSrc?: string;
-};
-
 // Registry of demo components
-const demoRegistry: Record<string, React.ComponentType<DemoComponentProps>> = {
+const demoRegistry: Record<string, React.ComponentType<any>> = {
   bubbleSort: BubbleSortDemo,
   imageToSurface: ImageTo3DSurface,
+  convolution: ConvolutionDemo,
+  dfa: DFADemo,
 };
 
 // Map filenames to imported images
-const imageAssetMap: Record<string, string> = {
-  'blub.jpg': blubImage,
-};
+const images = import.meta.glob('@/assets/images/*', {
+  eager: true,
+  query: '?url',
+  import: 'default',
+});
+
+// Helper to get image URL by filename
+function getImageUrl(filename: string | undefined): string | undefined {
+  if (!filename) return undefined;
+  const justName = filename.split('/').pop();
+  for (const path in images) {
+    if (path.endsWith(justName!)) {
+      return images[path] as string;
+    }
+  }
+  return undefined;
+}
 
 // Props for ArticleRenderer component
 interface ArticleRendererProps {
@@ -54,7 +66,7 @@ export const ArticleRenderer = ({ content }: ArticleRendererProps) => {
   blocks.forEach((block) => {
     if (block.type === 'imageResource' && block.id) {
       // If src matches a known asset filename, use the imported asset
-      initialImages[block.id] = imageAssetMap[block.src] ?? block.src;
+      initialImages[block.id] = getImageUrl(block.src) ?? block.src;
     }
   });
 
@@ -142,12 +154,30 @@ export const ArticleRenderer = ({ content }: ArticleRendererProps) => {
 
           // Render figures with images and captions
           case 'figure':
+            // If figure has text content, render TODO in red
+            if (block.content) {
+              return (
+                <div
+                  key={i}
+                  className="mb-4 rounded bg-red-100 p-4 font-bold text-red-700"
+                >
+                  TODO: {block.content}
+                </div>
+              );
+            }
+            // Otherwise, render the image and caption as before
             return (
               <figure key={i} className="mb-4 flex flex-col items-center">
                 <img
-                  src={block.src}
+                  src={getImageUrl(block.src) ?? block.src}
                   alt={block.caption}
                   className="max-w-full rounded shadow"
+                  style={{
+                    maxWidth: '600px',
+                    maxHeight: '400px',
+                    width: 'auto',
+                    height: 'auto',
+                  }}
                 />
                 <figcaption className="mt-2 text-sm text-gray-500">
                   {block.caption}
@@ -175,6 +205,7 @@ export const ArticleRenderer = ({ content }: ArticleRendererProps) => {
                 src={imageResources[block.id]}
                 alt={block.alt}
                 onUpdate={handleUpdateImage}
+                upload={block.upload !== false}
               />
             );
 
@@ -201,12 +232,33 @@ export const ArticleRenderer = ({ content }: ArticleRendererProps) => {
                   ? imageResources[imageResourceIds[0]]
                   : undefined;
             }
+            // Pass args as props
             return (
               <div key={i} className="mb-4">
-                <DemoComponent imageSrc={imageSrc} />
+                <DemoComponent imageSrc={imageSrc} {...(block.args ?? {})} />
               </div>
             );
           }
+
+          // Render lists as ordered or unordered
+          case 'list':
+            return block.ordered ? (
+              <ol key={i} className="mb-4 ml-6 list-decimal">
+                {block.items.map((item: string, idx: number) => (
+                  <li key={idx} className="mb-2">
+                    {item}
+                  </li>
+                ))}
+              </ol>
+            ) : (
+              <ul key={i} className="mb-4 ml-6 list-disc">
+                {block.items.map((item: string, idx: number) => (
+                  <li key={idx} className="mb-2">
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            );
           default:
             return null;
         }

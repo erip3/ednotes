@@ -20,10 +20,10 @@ export const Footer = React.forwardRef<HTMLElement, FooterProps>(
   ({ content = 'EdNotes', className, ...props }, ref) => (
     <footer
       ref={ref}
-      className={`flex h-28 flex-col items-center justify-center border-t bg-primary px-4 py-4 ${className ?? ''}`}
+      className={`flex min-h-28 w-full flex-col items-center justify-center border-t bg-primary px-4 py-4 ${className ?? ''}`}
       {...props}
     >
-      <p className="mb-2 text-center font-medium text-secondary-foreground">
+      <p className="mb-2 max-w-full truncate break-words text-center font-medium text-secondary-foreground">
         {content}
       </p>
       <div className="flex space-x-4">
