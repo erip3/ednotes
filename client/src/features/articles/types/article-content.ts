@@ -25,6 +25,7 @@ export type ArticleBlock =
       caption?: string;
     }
   | {
+      caption: any;
       type: 'equation';
       content: string;
     }

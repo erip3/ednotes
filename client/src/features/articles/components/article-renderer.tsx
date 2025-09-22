@@ -190,9 +190,14 @@ export const ArticleRenderer = ({ content }: ArticleRendererProps) => {
             return (
               <div
                 key={i}
-                className="mb-4 rounded border-l-4 border-green-400 bg-neutral-100 p-4 font-mono text-green-800"
+                className="mb-4 flex flex-col items-center rounded border-l-4 border-green-400 bg-neutral-100 p-4 font-mono text-green-800"
               >
                 <BlockMath math={block.content} />
+                {block.caption && (
+                  <div className="mt-2 text-center text-sm text-gray-500">
+                    {block.caption}
+                  </div>
+                )}
               </div>
             );
 
