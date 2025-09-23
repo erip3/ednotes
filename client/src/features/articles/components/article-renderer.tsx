@@ -167,7 +167,7 @@ export const ArticleRenderer = ({ content }: ArticleRendererProps) => {
             }
             // Otherwise, render the image and caption as before
             return (
-              <figure key={i} className="mb-4 flex flex-col items-center">
+              <figure key={i} className="mb-4 flex flex-col items-center pt-4">
                 <img
                   src={getImageUrl(block.src) ?? block.src}
                   alt={block.caption}
