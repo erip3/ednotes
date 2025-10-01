@@ -40,7 +40,6 @@ const programmingLanguages = [
 ];
 const frameworks = ['React', 'Spring Boot'];
 const databases = ['SQL', 'SQLite', 'PostgreSQL'];
-const misc = ['GitHub', 'VSCode'];
 
 const skillClass =
   'bg-green-200 rounded px-3 py-1 text-sm text-green-950 font-medium';
@@ -114,14 +113,6 @@ const PersonalPage = () => {
           {databases.map((db) => (
             <li key={db} className={skillClass}>
               {db}
-            </li>
-          ))}
-        </ul>
-        <h3 className="text-l mb-2 text-neutral-400">Misc</h3>
-        <ul className="mb-4 flex flex-wrap gap-2">
-          {misc.map((item) => (
-            <li key={item} className={skillClass}>
-              {item}
             </li>
           ))}
         </ul>
