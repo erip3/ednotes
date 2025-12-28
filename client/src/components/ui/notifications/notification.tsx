@@ -1,3 +1,19 @@
+/**
+ * @module components/ui/notifications/notification
+ * @description Renders a visually distinct notification card with an icon based on type,
+ * accessible labeling, and a dismiss button that calls back to the notifications store.
+ *
+ * Features:
+ * - **Type-based icons**: Info, success, warning, error
+ * - **Dismiss control**: Calls `onDismiss(id)` to remove from the store
+ * - **Responsive**: Layout adjusts alignment between mobile and larger screens
+ *
+ * @example
+ * <Notification
+ *   notification={{ id: '1', type: 'success', title: 'Saved!', message: 'Your changes were saved.' }}
+ *   onDismiss={(id) => console.log('dismiss', id)}
+ * />
+ */
 import { Info, CircleAlert, CircleX, CircleCheck } from 'lucide-react';
 
 const icons = {
@@ -20,9 +36,19 @@ export type NotificationProps = {
 };
 
 /**
- * Notification component that displays a notification message.
- * @param props - Props including notification details and onDismiss handler.
- * @returns A styled notification component.
+ * Notification card component for a single message.
+ *
+ * Displays an icon based on `type`, a title, optional message, and a close button. The
+ * component is wrapped to align properly within the `Notifications` container and uses
+ * semantic roles and labels for accessibility.
+ *
+ * @param {NotificationProps} props - Notification data and dismiss callback.
+ * @returns {JSX.Element} Styled notification card with dismiss control.
+ *
+ * @remarks
+ * - The close button calls `onDismiss(id)` to remove the notification
+ * - Uses `role="alert"` and `aria-label` to announce the notification
+ * - Icons are decorative (`aria-hidden="true"`) and not announced
  */
 export const Notification = ({
   notification: { id, type, title, message },

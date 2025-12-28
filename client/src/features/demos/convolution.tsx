@@ -1,5 +1,42 @@
+/**
+ * @module features/demos/convolution
+ * @description Step-by-step visualization of 2D discrete convolution operation.
+ * Demonstrates how a kernel is applied to an input matrix to produce an output matrix,
+ * with support for various border handling methods.
+ *
+ * Features:
+ * - **Step-by-step execution**: Manual stepping or auto-play through convolution
+ * - **Visual highlighting**: Shows current kernel position on input matrix
+ * - **Border methods**: Zero-padding, replicate, reflect, wrap
+ * - **Kernel rotation**: Automatically rotates kernel 180° for convolution
+ *
+ * Border handling methods:
+ * - `zero`: Pads with zeros outside boundaries
+ * - `replicate`: Repeats edge pixels
+ * - `reflect`: Mirrors pixels at boundaries
+ * - `wrap`: Wraps around to opposite edge
+ *
+ * @example
+ * // With custom kernel
+ * <ConvolutionDemo
+ *   size={5}
+ *   kernel={[[1, 0, -1], [1, 0, -1], [1, 0, -1]]}
+ *   borderMethod="zero"
+ *   interval={300}
+ * />
+ */
 import React, { useState, useEffect, useRef } from 'react';
 
+import { Button } from '@/components/ui/button';
+
+/**
+ * Props for ConvolutionDemo component.
+ * @interface ConvolutionDemoProps
+ * @property {number} [size=5] - Size of the input/output matrices (n×n)
+ * @property {number[][]} [kernel] - Convolution kernel (default: sharpening kernel)
+ * @property {'zero' | 'replicate' | 'reflect' | 'wrap'} [borderMethod='zero'] - Border handling method
+ * @property {number} [interval=500] - Milliseconds between auto-play steps
+ */
 interface ConvolutionDemoProps {
   size?: number;
   kernel?: number[][];
@@ -7,12 +44,18 @@ interface ConvolutionDemoProps {
   interval?: number; // ms between steps
 }
 
-function generateMatrix(size: number): number[][] {
-  return Array.from({ length: size }, () =>
-    Array.from({ length: size }, () => Math.floor(Math.random() * 10)),
-  );
-}
-
+/**
+ * Rotates a 2D kernel matrix 180 degrees.
+ *
+ * This transformation converts a correlation kernel into a convolution kernel
+ * by reversing both rows and columns. Required for proper convolution operation.
+ *
+ * @param {number[][]} kernel - Input kernel matrix
+ * @returns {number[][]} Kernel rotated 180 degrees
+ *
+ * @example
+ * rotateKernel([[1, 2], [3, 4]]) // Returns [[4, 3], [2, 1]]
+ */
 function rotateKernel(kernel: number[][]): number[][] {
   return kernel
     .map((row) => [...row])
@@ -28,6 +71,38 @@ const defaultMatrix = [
   [1, 2, 3, 4, 5],
 ];
 
+/**
+ * Interactive 2D convolution demo with step-by-step visualization.
+ *
+ * Displays three matrices side-by-side:
+ * 1. **Input Matrix**: Highlights current kernel window position
+ * 2. **Kernel**: Shows the 180° rotated convolution kernel
+ * 3. **Output Matrix**: Fills progressively as convolution proceeds
+ *
+ * Controls allow stepping through the operation manually, auto-playing,
+ * or resetting. The current step and border method are displayed below.
+ *
+ * @component
+ * @param {ConvolutionDemoProps} props - Component props
+ * @param {number} [props.size=5] - Matrix dimensions (n×n)
+ * @param {number[][]} [props.kernel] - Convolution kernel (default: sharpening)
+ * @param {'zero' | 'replicate' | 'reflect' | 'wrap'} [props.borderMethod='zero'] - Border handling
+ * @param {number} [props.interval=500] - Auto-play step interval in ms
+ * @returns {JSX.Element} Convolution visualization with controls
+ *
+ * @remarks
+ * - Kernel is automatically rotated 180° for proper convolution
+ * - Highlighted cells show the current convolution window
+ * - Step counter shows progress through n² total steps
+ * - Border method determines how out-of-bounds pixels are handled
+ *
+ * @example
+ * // Edge detection kernel
+ * <ConvolutionDemo
+ *   kernel={[[-1, -1, -1], [-1, 8, -1], [-1, -1, -1]]}
+ *   borderMethod="replicate"
+ * />
+ */
 export const ConvolutionDemo: React.FC<ConvolutionDemoProps> = ({
   size = 5,
   kernel = [
@@ -121,18 +196,9 @@ export const ConvolutionDemo: React.FC<ConvolutionDemoProps> = ({
     label?: string,
   ) {
     return (
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          margin: '0.5rem',
-        }}
-      >
-        <div style={{ fontWeight: 'bold', marginBottom: '0.25rem' }}>
-          {label}
-        </div>
-        <table style={{ borderCollapse: 'collapse' }}>
+      <div className="m-2 flex flex-col items-center">
+        <div className="mb-1 font-bold">{label}</div>
+        <table className="border-collapse">
           <tbody>
             {matrix.map((row, y) => (
               <tr key={y}>
@@ -143,15 +209,11 @@ export const ConvolutionDemo: React.FC<ConvolutionDemoProps> = ({
                   return (
                     <td
                       key={x}
-                      style={{
-                        border: '1px solid #888',
-                        width: 32,
-                        height: 32,
-                        textAlign: 'center',
-                        background: isHighlighted ? '#ffeeba' : '#fff',
-                        fontWeight: isHighlighted ? 'bold' : 'normal',
-                        color: 'black',
-                      }}
+                      className={`
+                        h-8 w-8 border border-border text-center
+                        ${isHighlighted ? 'bg-accent-background font-bold' : 'bg-primary-background'}
+                        text-card-foreground
+                      `}
                     >
                       {val}
                     </td>
@@ -201,77 +263,31 @@ export const ConvolutionDemo: React.FC<ConvolutionDemoProps> = ({
 
   return (
     <div>
-      <div
-        style={{
-          display: 'flex',
-          flexWrap: 'wrap',
-          justifyContent: 'center',
-          gap: '2rem',
-        }}
-      >
+      <div className="flex flex-wrap justify-center gap-8">
         {renderMatrix(input, highlight, 'Input Matrix')}
         {renderMatrix(rotatedKernel, undefined, 'Kernel (rotated 180°)')}
         {renderMatrix(output, undefined, 'Output Matrix')}
       </div>
-      <div
-        style={{
-          display: 'flex',
-          flexWrap: 'wrap',
-          gap: '1rem',
-          justifyContent: 'center',
-          alignItems: 'center',
-          marginTop: '1.5rem',
-        }}
-      >
-        <button
-          type="button"
+      <div className="mt-6 flex flex-wrap items-center justify-center gap-4">
+        <Button
           onClick={stepConvolution}
           disabled={step >= size * size || playing}
-          style={{
-            padding: '0.5rem 1rem',
-            fontWeight: 'bold',
-            color: 'black',
-            borderRadius: '6px',
-            border: '1px solid #888',
-            background: step >= size * size || playing ? '#eee' : '#fff',
-            cursor: step >= size * size || playing ? 'not-allowed' : 'pointer',
-          }}
+          variant="outline"
         >
           Step
-        </button>
-        <button
-          type="button"
+        </Button>
+        <Button
           onClick={handlePlayPause}
           disabled={step >= size * size}
-          style={{
-            padding: '0.5rem 1rem',
-            fontWeight: 'bold',
-            color: 'black',
-            borderRadius: '6px',
-            border: '1px solid #888',
-            background: step >= size * size ? '#eee' : '#fff',
-            cursor: step >= size * size ? 'not-allowed' : 'pointer',
-          }}
+          variant="outline"
         >
           {playing ? 'Pause' : 'Play'}
-        </button>
-        <button
-          type="button"
-          onClick={handleReset}
-          style={{
-            padding: '0.5rem 1rem',
-            fontWeight: 'bold',
-            color: 'black',
-            borderRadius: '6px',
-            border: '1px solid #888',
-            background: '#fff',
-            cursor: 'pointer',
-          }}
-        >
+        </Button>
+        <Button onClick={handleReset} variant="outline">
           Reset
-        </button>
-        <span>Step: {step}</span>
-        <span>Border: {borderMethod}</span>
+        </Button>
+        <span className="text-sm">Step: {step}</span>
+        <span className="text-sm">Border: {borderMethod}</span>
       </div>
     </div>
   );

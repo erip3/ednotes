@@ -3,7 +3,7 @@ import { Meta, StoryObj } from '@storybook/react-vite';
 import { Notification } from './notification';
 
 const meta: Meta<typeof Notification> = {
-  title: 'Components/Notifications',
+  title: 'UI/Notifications',
   component: Notification,
   parameters: {
     controls: { expanded: true },

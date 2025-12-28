@@ -1,3 +1,28 @@
+/**
+ * @module app/pages/personal
+ * @description Page with personal info
+ *
+ * Functionality:
+ * - **Data loading**: Pre-fetches personal subcategories and projects via React Query
+ * - **Content**: Displays background, projects, skills, etc.
+ * - **Resume**: Provides downloadable PDF resume link
+ * - **Related content**: Displays subcategories under the Personal root category
+ *
+ * Data flow:
+ * 1. `clientLoader` fetches subcategories of Personal root (ID=1)
+ * 2. `clientLoader` fetches all projects via `getProjectsQueryOptions`
+ * 3. Loader returns `{ categories, projects }` consumed by `useLoaderData()`
+ * 4. Component renders bio, projects, skills, and category grid
+ *
+ * @example
+ * // In route configuration (create-router.tsx)
+ * {
+ *   path: '/personal',
+ *   lazy: () => import('./pages/personal').then(convert(queryClient)),
+ *   errorElement: <MainErrorFallback />
+ * }
+ */
+
 import { QueryClient } from '@tanstack/react-query';
 import { useLoaderData } from 'react-router-dom';
 
@@ -11,24 +36,44 @@ import { ProjectContainer } from '@/features/personal/components/project-contain
 import { Project } from '@/types/aliases';
 import { Category } from '@/types/aliases';
 
+/**
+ * Client-side data loader for the personal page.
+ *
+ * Fetches subcategories under the Personal root category (ID=1) and all personal projects.
+ * Uses React Query for caching and deduplication to avoid redundant API calls.
+ *
+ * @param {QueryClient} queryClient - TanStack Query client instance for cache management.
+ * @returns {() => Promise<{ categories: Category[], projects: Project[] }>} Async loader function
+ * that returns categories and projects data.
+ *
+ * @remarks
+ * - Hardcodes Personal root category ID as 1 (matches database).
+ * - Prefers cached data via `getQueryData` and falls back to `fetchQuery` as needed.
+ * - Always returns objects with array defaults.
+ */
+// eslint-disable-next-line react-refresh/only-export-components
 export const clientLoader = (queryClient: QueryClient) => async () => {
-  // Fetch categories
+  const PERSONAL_CATEGORY_ID = 1;
+
+  // Fetch subcategories under the Personal root
   const categoriesQuery = getCategoriesQueryOptions({
-    parentId: 3,
+    parentId: PERSONAL_CATEGORY_ID,
   });
-  const { children } = (queryClient.getQueryData(categoriesQuery.queryKey) ??
-    (await queryClient.fetchQuery(categoriesQuery))) as {
-    children: Array<Category>;
-  };
+  const categories =
+    (queryClient.getQueryData(categoriesQuery.queryKey) as
+      | Array<Category>
+      | undefined) ??
+    ((await queryClient.fetchQuery(categoriesQuery)) as Array<Category>);
 
   // Fetch personal projects
   const projectsQuery = getProjectsQueryOptions();
-  const projects = (queryClient.getQueryData(projectsQuery.queryKey) ??
-    (await queryClient.fetchQuery(projectsQuery))) as {
-    projects: Array<Project>;
-  };
+  const cachedProjects = queryClient.getQueryData<{ data: Project[] }>(
+    projectsQuery.queryKey,
+  );
+  const { data: projects } =
+    cachedProjects ?? (await queryClient.fetchQuery(projectsQuery));
 
-  return { children: children ?? [], projects: projects ?? [] };
+  return { categories: categories ?? [], projects: projects ?? [] };
 };
 
 const programmingLanguages = [
@@ -42,17 +87,28 @@ const frameworks = ['React', 'Spring Boot'];
 const databases = ['SQL', 'SQLite', 'PostgreSQL'];
 
 const skillClass =
-  'bg-green-200 rounded px-3 py-1 text-sm text-green-950 font-medium';
+  'bg-primary-background rounded px-3 py-1 text-sm text-primary-foreground font-medium';
 
+/**
+ * PersonalPage component - Displays personal information, projects, skills, and related categories.
+ *
+ * @returns {JSX.Element} Personal page with bio, projects, skills, and categories.
+ *
+ * @example
+ * // Rendered by React Router when navigating to /personal
+ * const { categories, projects } = useLoaderData();
+ * // Component then renders all sections with the provided data
+ */
 const PersonalPage = () => {
-  const { children, projects } = useLoaderData() as {
-    children: Array<Category>;
+  const { categories, projects } = useLoaderData() as {
+    categories: Array<Category>;
     projects: Array<Project>;
   };
 
   return (
     <ContentLayout title="About Me" centered={false} isArticle={false}>
-      <div className="text-medium mb-6 font-medium text-primary-foreground">
+      {/* About Me */}
+      <div className="text-medium mb-6 font-medium text-foreground">
         <p className="mb-4">
           I'm a senior at Penn State majoring in Computer Science. I'm primarily
           interested in software engineering, but I also enjoy exploring broader
@@ -88,9 +144,9 @@ const PersonalPage = () => {
       <ProjectContainer projects={projects} />
 
       {/* Skills */}
-      <div className="py-4">
+      <div className="py-4 text-foreground">
         <h2 className="mb-2 text-xl font-semibold">Skills</h2>
-        <h3 className="text-l mb-2 text-neutral-400">Programming Languages</h3>
+        <h3 className="text-l mb-2">Programming Languages</h3>
         <ul className="mb-4 flex flex-wrap gap-2">
           {programmingLanguages.map((lang) => (
             <li key={lang} className={skillClass}>
@@ -98,7 +154,7 @@ const PersonalPage = () => {
             </li>
           ))}
         </ul>
-        <h3 className="text-l mb-2 text-neutral-400">Frameworks</h3>
+        <h3 className="text-l mb-2">Frameworks</h3>
         <ul className="mb-4 flex flex-wrap gap-2">
           {frameworks.map((fw) => (
             <li key={fw} className={skillClass}>
@@ -106,9 +162,7 @@ const PersonalPage = () => {
             </li>
           ))}
         </ul>
-        <h3 className="text-l mb-2 text-neutral-400">
-          Data Tools and Databases
-        </h3>
+        <h3 className="text-l mb-2">Data Tools and Databases</h3>
         <ul className="mb-4 flex flex-wrap gap-2">
           {databases.map((db) => (
             <li key={db} className={skillClass}>
@@ -118,7 +172,13 @@ const PersonalPage = () => {
         </ul>
       </div>
 
-      <CategoryGrid categories={children} />
+      {/* More */}
+      {categories.length > 0 && (
+        <div className="py-4">
+          <h2 className="mb-2 text-xl font-semibold">More</h2>
+          <CategoryGrid categories={categories} />
+        </div>
+      )}
     </ContentLayout>
   );
 };

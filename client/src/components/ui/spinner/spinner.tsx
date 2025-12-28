@@ -1,3 +1,24 @@
+/**
+ * @module components/ui/spinner
+ * @description A lightweight, animated SVG spinner for indicating loading states. Supports
+ * configurable sizes (sm, md, lg, xl) and color variants (light, primary).
+ *
+ * Features:
+ * - **Flexible sizing**: sm (16px), md (32px), lg (64px), xl (96px)
+ * - **Color variants**: light (white), primary (slate-600)
+ *
+ * @example
+ * // Default medium primary spinner
+ * <Spinner />
+ *
+ * @example
+ * // Large light spinner
+ * <Spinner size="lg" variant="light" />
+ *
+ * @example
+ * // Custom color via className
+ * <Spinner size="md" className="text-green-500" />
+ */
 import { cn } from '@/utils/cn';
 
 const sizes = {
@@ -12,16 +33,31 @@ const variants = {
   primary: 'text-slate-600',
 };
 
+/**
+ * Props for the Spinner component.
+ */
 export type SpinnerProps = {
+  /** Size of the spinner icon: 'sm' (16px), 'md' (32px), 'lg' (64px), 'xl' (96px). Defaults to 'md'. */
   size?: keyof typeof sizes;
+  /** Color variant: 'light' (white), 'primary' (slate-600). Defaults to 'primary'. */
   variant?: keyof typeof variants;
+  /** Additional Tailwind classes for customization (e.g., to override color). */
   className?: string;
 };
 
 /**
- * Spinner component that displays a loading indicator.
- * @param props Props for the spinner component including size, variant, and additional class names.
- * @returns A styled spinner component.
+ * Loading spinner component for async operations.
+ *
+ * Combines Tailwind size and color tokens, and merges with `cn()` for safe class composition.
+ *
+ * @param {SpinnerProps} props - Size, variant, and custom className options.
+ * @returns {JSX.Element} Animated spinner with accessibility text.
+ *
+ * @remarks
+ * - Uses CSS `animate-spin` utility for the animation
+ * - Size defaults to 'md' (32px), variant defaults to 'primary'
+ * - Custom className is merged safely via `cn()` to override color if needed
+ * - Screen reader will announce "Loading" when spinner is focused or near interactive elements
  */
 export const Spinner = ({
   size = 'md',

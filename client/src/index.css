@@ -5,30 +5,29 @@
 @layer base {
   /* CSS root variables (light mode) */
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --background: 0 0% 95%;
+    --foreground: 0 0% 0%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-    --card-shadow: 140 0% 45%;
-    --card-shadow-active: 140 100% 50%;
+    --marginal-background: 0 0% 90%;
+    --marginal-border: 0 0% 65%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    --primary-background: 0 0% 70%;
+    --primary-foreground: 0 0% 0%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --card-shadow: 0 0% 45%;
+    --card-shadow-active: 25 0% 40%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted-background: 0 0% 60%;
+    --muted-foreground: 0 0% 0%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent-background: 140 100% 90%;
+    --accent-foreground: 0 0% 0%;
+    
+    --warning-background: 140 0% 95%;
+    --warning-foreground: 0 60% 50%;
 
-    --warning: 0 84.2% 60.2%;
-    --warning-foreground: 210 40% 98%;
-
-    --border: 214.3 31.8% 91.4%;
+    --border: 0 0% 100%;
+    --muted-border: 0 0% 50%;
 
     --radius: 0.5rem;
   }
@@ -36,30 +35,30 @@
   /* Dark mode CSS root variables */
   .dark {
     --background: 140 0% 15%;
-    --background-secondary: 140 0% 7.5%;
     --foreground: 140 0% 95%;
 
-    --card: 140 0% 10%;
-    --card-foreground: 140 0% 95%;
+    --marginal-background: 140 0% 5%;
+    --marginal-border: 140 0% 20%;
+
+    --primary-background: 140 0% 5%;
+    --primary-foreground: 140 0% 95%;
+
     --card-shadow: 140 0% 35%;
     --card-shadow-active: 140 100% 20%;
 
-    --primary: 140 0% 10%;
-    --primary-foreground: 140 0% 95%;
+    --muted-background: 140 0% 20%;
+    --muted-foreground: 140 0% 65%;
 
-    --secondary: 140 0% 20%;
-    --secondary-foreground: 140 0% 70%;
+    --accent-background: 140 100% 10%;
+    --accent-foreground: 0 0% 0%;
 
-    --muted: 140 0% 25%;
-    --muted-foreground: 140 0% 70%;
-
-    --accent: 140 100% 10%;
-    --accent-foreground: 140 40% 90%;
-
-    --warning: 0 62.8% 30.6%;
-    --warning-foreground: 210 40% 98%;
+    --warning-background: 140 0% 95%;
+    --warning-foreground: 0 60% 50%;
 
     --border: 140 0% 20%;
+    --muted-border: 140 0% 50%;
+
+    --radius: 0.5rem;
   }
 }
 
@@ -70,7 +69,22 @@
   }
   body {
     @apply text-foreground;
-    @apply bg-grid;
+    @apply bg-light;
+    min-height: 100vh;
+    transition:
+      background-color 0.3s ease,
+      background-image 0.3s ease;
+  }
+
+  /* Ensure Storybook and app roots inherit full-height backgrounds */
+  #root,
+  #storybook-root,
+  #storybook-docs-root {
+    min-height: 100vh;
+  }
+
+  .dark body {
+    @apply bg-dark;
   }
 }
 
@@ -79,7 +93,34 @@
   .accordion-content {
     transition: max-height 0.3s cubic-bezier(0.87, 0, 0.13, 1);
   }
-  .bg-grid {
+
+  /* Light mode background */
+  .bg-light {
+    background-image:
+      repeating-linear-gradient(
+        0deg,
+        hsl(0 0% 90%),
+        1px,
+        transparent 1px,
+        transparent 80px
+      ),
+      repeating-linear-gradient(
+        90deg,
+        hsl(0 0% 90%) 0,
+        1px,
+        transparent 1px,
+        transparent 80px
+      ),
+      linear-gradient(135deg, #e2e2e2 0%, #dadada 100%);
+    background-size:
+      80px 80px,
+      80px 80px,
+      cover;
+    background-repeat: repeat, repeat, no-repeat;
+  }
+
+  /* Dark mode background */
+  .bg-dark {
     background-image:
       repeating-linear-gradient(
         0deg,
@@ -96,6 +137,11 @@
         transparent 80px
       ),
       linear-gradient(135deg, #27272a 0%, #0f1110 100%);
+    background-size:
+      80px 80px,
+      80px 80px,
+      cover;
+    background-repeat: repeat, repeat, no-repeat;
   }
 }
 

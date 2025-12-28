@@ -1,7 +1,11 @@
 import type { Preview } from '@storybook/react-vite';
+
+import { themeDecorator } from './theme-decorator';
+
 import '../src/index.css';
 
 const preview: Preview = {
+  decorators: [themeDecorator],
   parameters: {
     controls: {
       matchers: {

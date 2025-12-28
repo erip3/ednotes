@@ -24,30 +24,28 @@ export default {
         ring: 'hsl(var(--ring))',
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
+        marginal: {
+          background: 'hsl(var(--marginal-background))',
+          foreground: 'hsl(var(--marginal-foreground))',
+          border: 'hsl(var(--marginal-border))',
+        },
         primary: {
-          DEFAULT: 'hsl(var(--primary))',
+          background: 'hsl(var(--primary-background))',
           foreground: 'hsl(var(--primary-foreground))',
         },
-        secondary: {
-          DEFAULT: 'hsl(var(--secondary))',
-          foreground: 'hsl(var(--secondary-foreground))',
-        },
         warning: {
-          DEFAULT: 'hsl(var(--warning))',
+          background: 'hsl(var(--warning-background))',
           foreground: 'hsl(var(--warning-foreground))',
         },
         muted: {
-          DEFAULT: 'hsl(var(--muted))',
+          background: 'hsl(var(--muted-background))',
           foreground: 'hsl(var(--muted-foreground))',
+          border: 'hsl(var(--muted-border))',
         },
         accent: {
-          DEFAULT: 'hsl(var(--accent))',
+          background: 'hsl(var(--accent-background))',
           foreground: 'hsl(var(--accent-foreground))',
-        },
-        card: {
-          DEFAULT: 'hsl(var(--card))',
-          foreground: 'hsl(var(--card-foreground))',
-        },
+        }
       },
       boxShadow: {
         card: '0 10px 15px -3px hsl(var(--card-shadow))',
@@ -56,25 +54,12 @@ export default {
       },
       borderColor: {
         border: 'hsl(var(--border))',
+        'muted-border': 'hsl(var(--muted-border))',
       },
       borderRadius: {
         lg: 'var(--radius)',
         md: 'calc(var(--radius) - 2px)',
         sm: 'calc(var(--radius) - 4px)',
-      },
-      keyframes: {
-        'accordion-down': {
-          from: { height: '0' },
-          to: { height: 'var(--radix-accordion-content-height)' },
-        },
-        'accordion-up': {
-          from: { height: 'var(--radix-accordion-content-height)' },
-          to: { height: '0' },
-        },
-      },
-      animation: {
-        'accordion-down': 'accordion-down 0.2s ease-out',
-        'accordion-up': 'accordion-up 0.2s ease-out',
       },
     },
   },
