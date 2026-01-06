@@ -62,15 +62,21 @@ export const ImageTo3DSurface = ({ imageSrc }: { imageSrc?: string }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [, setScale] = useState(1);
 
-  // Sample image fallback from assets (or Picsum)
-  const imageModules = import.meta.glob('/src/assets/images/*', {
+  // Sample image fallback from client assets
+  const imageModules = import.meta.glob('@/assets/images/*', {
     eager: true,
     query: '?url',
     import: 'default',
   });
+  // Safe inline SVG gradient (same-origin via data URL) to avoid CORS taint
+  const gradientSvg =
+    '<svg xmlns="http://www.w3.org/2000/svg" width="600" height="400">\
+    <defs><linearGradient id="g" x1="0" x2="1" y1="0" y2="1">\
+    <stop offset="0%" stop-color="black"/><stop offset="100%" stop-color="white"/>\
+    </linearGradient></defs><rect width="100%" height="100%" fill="url(#g)"/></svg>';
   const fallbackImage =
     (Object.values(imageModules)[0] as string) ??
-    'https://picsum.photos/600/400';
+    `data:image/svg+xml;charset=utf-8,${encodeURIComponent(gradientSvg)}`;
 
   const handleCanvasPointerDown = useCallback(
     (e: React.PointerEvent<HTMLCanvasElement>) => {
@@ -138,7 +144,18 @@ export const ImageTo3DSurface = ({ imageSrc }: { imageSrc?: string }) => {
     // Clear canvas and redraw image to get clean pixels without selection rectangle
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-    const imgData = ctx.getImageData(sx, sy, width, height).data;
+    let imgData: Uint8ClampedArray;
+    try {
+      imgData = ctx.getImageData(sx, sy, width, height).data;
+    } catch (e) {
+      console.error(
+        'Failed to read pixels from canvas. Possibly CORS-tainted image.',
+        e,
+      );
+      // Show a graceful message and abort surface generation
+      setSurfaceData(null);
+      return;
+    }
 
     // Downsample large selections to keep plot performant
     const MAX_POINTS = 50000; // cap grid cells
@@ -218,6 +235,8 @@ export const ImageTo3DSurface = ({ imageSrc }: { imageSrc?: string }) => {
     const src = imageSrc || fallbackImage;
     if (!src) return;
     const image = new window.Image();
+    // Allow reading pixels when source allows CORS; harmless for data URLs/same-origin
+    image.crossOrigin = 'anonymous';
     image.onload = () => {
       setImg(image);
       const canvas = canvasRef.current;

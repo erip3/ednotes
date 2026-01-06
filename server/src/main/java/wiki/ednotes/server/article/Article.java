@@ -1,6 +1,8 @@
 package wiki.ednotes.server.article;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 @Entity
 @Table(name = "articles")
@@ -13,6 +15,7 @@ public class Article {
     private String title;
 
     @Column(name = "content", nullable = false)
+    @JdbcTypeCode(SqlTypes.JSON)
     private String content;
 
     @Column(name = "category_id")
@@ -21,7 +24,7 @@ public class Article {
     @Column(name = "published")
     private Boolean published;
 
-    @Column(name = "order")
+    @Column(name = "\"order\"")
     private Integer order;
 
     public Integer getId() {

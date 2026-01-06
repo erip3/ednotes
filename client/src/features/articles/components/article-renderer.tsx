@@ -38,6 +38,7 @@ import ReactMarkdown from 'react-markdown';
 
 import type { ArticleBlock } from '../types/article-content';
 
+import { TabContainer } from '@/components/ui/tab-container/tab-container';
 import { BubbleSortDemo } from '@/features/demos/bubble-sort';
 import { ConvolutionDemo } from '@/features/demos/convolution';
 import { ImageTo3DSurface } from '@/features/demos/image-surface';
@@ -45,7 +46,7 @@ import { ImageTo3DSurface } from '@/features/demos/image-surface';
 // Registry of demo components by name
 const demoRegistry: Record<string, React.ComponentType<any>> = {
   bubbleSort: BubbleSortDemo,
-  imageToSurface: ImageTo3DSurface,
+  imageSurface: ImageTo3DSurface,
   convolution: ConvolutionDemo,
 };
 
@@ -186,12 +187,12 @@ export const ArticleRenderer = ({ content }: ArticleRendererProps) => {
                 key={i}
                 className={`mb-4 rounded border-l-4 p-4 ${
                   block.style === 'info'
-                    ? 'border-blue-400 bg-blue-50 text-blue-800'
+                    ? 'border-blue-400 bg-blue-50 text-blue-800 dark:bg-blue-950 dark:text-blue-200'
                     : block.style === 'warning'
-                      ? 'border-yellow-400 bg-yellow-50 text-yellow-800'
+                      ? 'border-yellow-400 bg-yellow-50 text-yellow-800 dark:bg-yellow-950 dark:text-yellow-200'
                       : block.style === 'error'
-                        ? 'border-red-400 bg-red-50 text-red-800'
-                        : 'border-gray-400 bg-gray-50 text-gray-800'
+                        ? 'border-red-400 bg-red-50 text-red-800 dark:bg-red-950 dark:text-red-200'
+                        : 'border-gray-400 bg-gray-50 text-gray-800 dark:bg-gray-900 dark:text-gray-200'
                 }`}
               >
                 {block.content}
@@ -225,13 +226,13 @@ export const ArticleRenderer = ({ content }: ArticleRendererProps) => {
             return (
               <div
                 key={i}
-                className="mb-4 flex max-w-full flex-col items-center rounded border-l-4 border-green-400 bg-neutral-100 p-4 font-mono text-green-800"
+                className="mb-4 flex max-w-full flex-col items-center rounded border-l-4 border-green-400 bg-neutral-100 p-4 font-mono text-green-800 dark:bg-neutral-900 dark:text-green-200"
               >
                 <div className="max-w-full overflow-x-auto">
                   <BlockMath math={block.content} />
                 </div>
                 {block.caption && (
-                  <div className="mt-2 text-center text-sm text-gray-500">
+                  <div className="mt-2 text-center text-sm text-gray-500 dark:text-gray-400">
                     {block.caption}
                   </div>
                 )}
@@ -282,6 +283,25 @@ export const ArticleRenderer = ({ content }: ArticleRendererProps) => {
                 ))}
               </ul>
             );
+          case 'tabs': {
+            const tabs = block.tabs.map((tab) => ({
+              value: tab.value,
+              label: tab.label,
+              description: tab.description,
+              content: (
+                <ArticleRenderer
+                  // Render nested blocks for each tab
+                  content={JSON.stringify(tab.blocks ?? [])}
+                />
+              ),
+            }));
+
+            return (
+              <div key={i} className="mb-6">
+                <TabContainer tabs={tabs} defaultValue={block.defaultValue} />
+              </div>
+            );
+          }
           default:
             return null;
         }

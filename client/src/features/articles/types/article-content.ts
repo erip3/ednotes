@@ -54,22 +54,35 @@ export type ArticleBlock =
     }
   /** Figure block rendering an image with optional caption */
   | {
-      content: any;
       type: 'figure';
       src: string;
       caption?: string;
     }
   /** Equation block rendered with KaTeX; optional caption */
   | {
-      caption: any;
       type: 'equation';
       content: string;
+      caption?: string;
     }
   /** List block; ordered or unordered items */
   | {
       type: 'list';
       ordered: boolean;
       items: string[];
+    }
+  /**
+   * Tabs block using the shared TabContainer component.
+   * Each tab supplies a label and a nested set of article blocks rendered with ArticleRenderer.
+   */
+  | {
+      type: 'tabs';
+      defaultValue?: string;
+      tabs: Array<{
+        value: string;
+        label: string;
+        description?: string;
+        blocks: ArticleBlock[];
+      }>;
     }
   /**
    * Demo block embedding interactive components.

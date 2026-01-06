@@ -5,6 +5,7 @@ import tailwindcssAnimate from 'tailwindcss-animate';
 import typography from '@tailwindcss/typography';
 
 export default {
+  darkMode: 'class',
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   theme: {
     container: {
@@ -45,7 +46,7 @@ export default {
         accent: {
           background: 'hsl(var(--accent-background))',
           foreground: 'hsl(var(--accent-foreground))',
-        }
+        },
       },
       boxShadow: {
         card: '0 10px 15px -3px hsl(var(--card-shadow))',
