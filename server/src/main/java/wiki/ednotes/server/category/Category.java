@@ -1,51 +1,56 @@
 package wiki.ednotes.server.category;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 /**
  * Entity representing a category.
  */
 @Entity
-@Table(name = "categories")
+@Table(name = "Categories")
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @Column(name = "title", nullable = false)
     private String title;
 
     @Column(name = "parent_id")
-    private Integer parentId;
+    private Long parentId;
 
     @Column(name = "published", nullable = false)
     private boolean published;
 
     @Column(name = "order")
-    private Integer order;
+    private Long order;
 
-    @Column(name = "is_topic", nullable = false)
-    private boolean isTopic;
+    @Column(name = "topic", nullable = false)
+    private boolean topic;
 
     @Column(name = "topic_id")
-    private Integer topicId;
+    private Long topicId;
 
     protected Category() {}
 
-    public Category(Integer id, String title, Integer parentId, boolean published, Integer order, boolean isTopic) {
+    public Category(Long id, String title, Long parentId, boolean published, Long order, boolean topic) {
         this.id = id;
         this.title = title;
         this.parentId = parentId;
         this.published = published;
         this.order = order;
-        this.isTopic = isTopic;
+        this.topic = topic;
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -57,15 +62,15 @@ public class Category {
         this.title = title;
     }
 
-    public Integer getParentId() {
+    public Long getParentId() {
         return parentId;
     }
 
-    public void setParentId(Integer parentId) {
+    public void setParentId(Long parentId) {
         this.parentId = parentId;
     }
 
-    public boolean isPublished() {
+    public boolean getPublished() {
         return published;
     }
 
@@ -73,27 +78,27 @@ public class Category {
         this.published = published;
     }
 
-    public Integer getOrder() {
+    public Long getOrder() {
         return order;
     }
 
-    public void setOrder(Integer order) {
+    public void setOrder(Long order) {
         this.order = order;
     }
 
-    public boolean isTopic() {
-        return isTopic;
+    public boolean getTopic() {
+        return topic;
     }
 
-    public boolean setIsTopic() {
-        return isTopic;
+    public void setTopic(boolean topic) {
+        this.topic = topic;
     }
 
-    public Integer getTopicId() {
+    public Long getTopicId() {
         return topicId;
     }
 
-    public void setTopicId(Integer topicId) {
+    public void setTopicId(Long topicId) {
         this.topicId = topicId;
     }
 }

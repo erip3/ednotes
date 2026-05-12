@@ -1,92 +1,38 @@
 package wiki.ednotes.server.article;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import java.util.List;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestMapping;
+import wiki.ednotes.server.navigation.NavigationService;
+import wiki.ednotes.server.navigation.dto.ArticleContent;
 
 /**
- * Controller for managing articles.
+ * Controller for reading articles (reader API).
  */
 @RestController
 @RequestMapping("/api/articles")
 public class ArticleController {
-    private final ArticleRepository articleRepository; // Article repository for CRUD operations
+    private final NavigationService navigationService;
 
     /**
      * Constructor for ArticleController.
-     * @param articleRepository Article repository for CRUD operations
+     * @param navigationService the navigation service
      */
-    public ArticleController(ArticleRepository articleRepository) {
-        this.articleRepository = articleRepository;
+    public ArticleController(NavigationService navigationService) {
+        this.navigationService = navigationService;
     }
 
     /**
-     * Get all articles.
-     * @return a list of all articles
-     */
-    @GetMapping
-    public List<Article> getAllArticles() {
-        return articleRepository.findAll();
-    }
-
-    /**
-     * Get an article by it's ID.
+     * Get an article with its breadcrumbs and background references.
      * @param id the ID of the article
-     * @return the article with the specified ID
+     * @return ArticleContent containing article, breadcrumbs, and background articles
      */
     @GetMapping("/{id}")
-    public ResponseEntity<Article> getArticleById(@PathVariable Integer id) {
-        return articleRepository.findById(id)
+    public ResponseEntity<ArticleContent> getArticleById(@PathVariable Long id) {
+        return navigationService.getArticleContent(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
-    }
-
-    /**
-     * Get articles by category ID.
-     * @param categoryId the ID of the category
-     * @return a list of articles in the specified category
-     */
-    @GetMapping("/category/{categoryId}")
-    public List<Article> getArticlesByCategoryId(@PathVariable Integer categoryId) {
-        return articleRepository.findByCategoryIdOrderByOrderAsc(categoryId);
-    }
-
-    /**
-     * Create a new article.
-     * @param article the article to create
-     * @return the created article
-     */
-    @PostMapping
-    public Article createArticle(@RequestBody Article article) {
-        return articleRepository.save(article);
-    }
-
-    /**
-     * Update an existing article.
-     * @param id the ID of the article to update
-     * @param article the updated article
-     * @return the updated article
-     */
-    @PutMapping("/{id}")
-    public ResponseEntity<Article> updateArticle(@PathVariable Integer id, @RequestBody Article article) {
-        if (!articleRepository.existsById(id)) {
-            return ResponseEntity.notFound().build();
-        }
-        article.setId(id);
-        return ResponseEntity.ok(articleRepository.save(article));
-    }
-
-    /**
-     * Delete an article by its ID.
-     * @param id the ID of the article to delete
-     * @return a response indicating the result of the deletion
-     */
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteArticle(@PathVariable Integer id) {
-        if (!articleRepository.existsById(id)) {
-            return ResponseEntity.notFound().build();
-        }
-        articleRepository.deleteById(id);
-        return ResponseEntity.noContent().build();
     }
 }

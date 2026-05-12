@@ -1,139 +1,67 @@
 package wiki.ednotes.server.category;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import wiki.ednotes.server.category.dto.CategoryWithChildrenResponse;
-
-import java.util.List;
-import java.util.Optional;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Controller for managing categories.
  */
 @RestController
-@RequestMapping("/api/categories")
+@RequestMapping("/api/editor/categories")
 public class CategoryController {
-    private final CategoryRepository categoryRepository; // Category repository for database operations
+    private final CategoryService categoryService; // Category service for business logic
 
     /**
      * Constructor for CategoryController.
-     * @param categoryRepository the category repository
+     * 
+     * @param categoryService the category service
      */
-    public CategoryController(CategoryRepository categoryRepository) {
-        this.categoryRepository = categoryRepository;
-    }
-
-    /**
-     * Get all categories.
-     * @return a list of categories
-     */
-    @GetMapping
-    public List<Category> getAllCategories() {
-        return categoryRepository.findAll();
-    }
-
-    /**
-     * Get a category by its ID.
-     * @param id the ID of the category
-     * @return the category, if found
-     */
-    @GetMapping("/{id}")
-    public ResponseEntity<Category> getCategoryById(@PathVariable Integer id) {
-        return categoryRepository.findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
-    }
-
-    /**
-     * Get all child categories of a specific category.
-     * @param id the ID of the parent category
-     * @return a list of child categories
-     */
-    @GetMapping("/{id}/children")
-    public List<Category> getChildCategories(@PathVariable Integer id) {
-        return categoryRepository.findByParentIdOrderByOrderAsc(id);
-    }
-
-    /**
-     * Get a category and its children in a single response.
-     * @param id the ID of the parent category
-     * @return the parent category and its children
-     */
-    @GetMapping("/{id}/with-children")
-    public ResponseEntity<CategoryWithChildrenResponse> getCategoryWithChildren(@PathVariable Integer id) {
-        return categoryRepository.findById(id)
-                .map(parent -> {
-                    List<Category> children = categoryRepository.findByParentIdOrderByOrderAsc(id);
-                    return ResponseEntity.ok(new CategoryWithChildrenResponse(parent, children));
-                })
-                .orElse(ResponseEntity.notFound().build());
-    }
-
-    /**
-     * Get the parent category of a specific category.
-     * @param id the ID of the category
-     * @return the parent category, if found
-     */
-    @GetMapping("/{id}/parent")
-    public ResponseEntity<Optional<Category>> getParentCategory(@PathVariable Integer id) {
-        return categoryRepository.findById(id)
-                .map(category -> categoryRepository.findById(category.getParentId()))
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
-    }
-
-    /**
-     * Get all top-level categories.
-     * @return a list of top-level categories
-     */
-    @GetMapping("/top-level")
-    public List<Category> getTopLevelCategories(@RequestParam(defaultValue = "true") boolean includeComingSoon) {
-        if (includeComingSoon) {
-            return categoryRepository.findByParentIdOrderByOrderAsc(null);
-        }
-        return categoryRepository.findByParentIdAndPublishedIsTrueOrderByOrderAsc(null);
+    public CategoryController(CategoryService categoryService) {
+        this.categoryService = categoryService;
     }
 
     /**
      * Create a new category.
-     * 
+     *
      * @param category the category to create
      * @return the created category
      */
     @PostMapping
-    public Category createCategory(@RequestBody Category category) {
-        return categoryRepository.save(category);
+    public ResponseEntity<Category> createCategory(@RequestBody Category category) {
+        return ResponseEntity.ok(categoryService.create(category));
     }
 
     /**
      * Update an existing category.
-     * 
+     *
      * @param id       the ID of the category to update
      * @param category the updated category data
      * @return the updated category, if found
      */
     @PutMapping("/{id}")
-    public ResponseEntity<Category> updateCategory(@PathVariable Integer id, @RequestBody Category category) {
-        if (!categoryRepository.existsById(id)) {
-            return ResponseEntity.notFound().build();
-        }
-        category.setId(id);
-        return ResponseEntity.ok(categoryRepository.save(category));
+    public ResponseEntity<Category> updateCategory(@PathVariable Long id, @RequestBody Category category) {
+        return categoryService.update(id, category)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     /**
      * Delete a category by its ID.
-     * 
+     *
      * @param id the ID of the category to delete
      * @return a response indicating the result of the deletion
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCategory(@PathVariable Integer id) {
-        if (!categoryRepository.existsById(id)) {
-            return ResponseEntity.notFound().build();
+    public ResponseEntity<Void> deleteCategory(@PathVariable Long id) {
+        if (categoryService.delete(id)) {
+            return ResponseEntity.noContent().build();
         }
-        categoryRepository.deleteById(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.notFound().build();
     }
 }

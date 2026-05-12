@@ -1,34 +1,34 @@
 package wiki.ednotes.server.navigation.dto;
 
 public class ArticleSummary {
-    private Integer id;
+    private Long id;
     private String title;
-    private boolean isPublished;
+    private boolean published;
 
 
     public ArticleSummary() {
     }
 
-    public ArticleSummary(Integer id, String title, boolean isPublished) {
+    public ArticleSummary(Long id, String title, boolean published) {
         this.id = id;
         this.title = title;
-        this.isPublished = isPublished;
+        this.published = published;
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public boolean getIsPublished() {
-        return isPublished;
+    public boolean getPublished() {
+        return published;
     }
 
-    public void setIsPublished(boolean published) {
-        isPublished = published;
+    public void setPublished(boolean published) {
+        this.published = published;
     }
 
     public String getTitle() {
