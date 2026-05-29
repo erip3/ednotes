@@ -7,11 +7,12 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
 
 jobs:
   build-and-deploy:
     runs-on: self-hosted
-    environment: production # Forces the manual approval gate in GitHub UI
+    environment: production
 
     steps:
       - name: Checkout Code
@@ -21,7 +22,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '24'
 
       - name: Build Vite Assets
         run: |
@@ -53,7 +54,7 @@ jobs:
           push: true
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/backend:latest
 
-      # --- 4. REMOTE DEPLOYMENT TO DROplet ---
+      # --- 4. REMOTE DEPLOYMENT TO DROPLET ---
       - name: Deploy to DigitalOcean via SSH
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -61,13 +62,8 @@ jobs:
           username: ${{ secrets.DROPLET_USER }}
           key: ${{ secrets.DROPLET_SSH_KEY }}
           script: |
-            # Authenticate remote host with the registry
             echo "${{ secrets.GITHUB_TOKEN }}" | docker login ${{ env.REGISTRY }} -u ${{ github.actor }} --password-stdin
-            
-            # Stream the pre-baked image layers down
             docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/backend:latest
-            
-            # Restart the container stack seamlessly
             cd /opt/ednotes
             docker compose down
             docker compose up -d
