@@ -1,6 +1,7 @@
 FROM --platform=$BUILDPLATFORM eclipse-temurin:24-jdk-alpine AS build
 WORKDIR /app
 COPY . .
+RUN chmod +x ./mvnw && sed -i 's/\r$//' ./mvnw
 ENV MAVEN_OPTS="-Xmx1024m -XX:+UseSerialGC"
 RUN ./mvnw clean package -DskipTests
 
