@@ -12,13 +12,13 @@ env:
 jobs:
   build-and-deploy:
     runs-on: self-hosted
-    environment: production
+    environment: production # Secure manual approval gate for your public portfolio
 
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      # --- 1. FRONTEND VITE BUILD ---
+      # --- 1. FRONTEND VITE BUILD ON PI 5 ---
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
@@ -26,11 +26,11 @@ jobs:
 
       - name: Build Vite Assets
         run: |
-          cd frontend
+          cd apps/web-client
           npm ci
           npm run build
 
-      # --- 2. MULTI-PLATFORM CONFIG ---
+      # --- 2. MULTI-PLATFORM ENGINE CONFIG ---
       - name: Set up QEMU (For x86 translation)
         uses: docker/setup-qemu-action@v3
 
@@ -44,7 +44,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # --- 3. CROSS-PLATFORM IMAGE BUILDING ---
+      # --- 3. CROSS-COMPILE BACKEND IMAGE ---
       - name: Cross-Compile and Push x86 Backend Image
         uses: docker/build-push-action@v5
         with:
@@ -54,7 +54,18 @@ jobs:
           push: true
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/backend:latest
 
-      # --- 4. REMOTE DEPLOYMENT TO DROPLET ---
+      # --- 4. TRANSFER FRONTEND ASSETS TO DROPLET ---
+      - name: Copy Frontend Assets to Droplet Web Root
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.DROPLET_IP }}
+          username: ${{ secrets.DROPLET_USER }}
+          key: ${{ secrets.DROPLET_SSH_KEY }}
+          source: "frontend/dist/*"
+          target: "/var/www/ednotes.wiki"
+          strip_components: 2
+
+      # --- 5. REMOTE DEPLOYMENT & HOT-SWAP VIA SSH ---
       - name: Deploy to DigitalOcean via SSH
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -62,8 +73,13 @@ jobs:
           username: ${{ secrets.DROPLET_USER }}
           key: ${{ secrets.DROPLET_SSH_KEY }}
           script: |
+            # Log into registry on your Droplet
             echo "${{ secrets.GITHUB_TOKEN }}" | docker login ${{ env.REGISTRY }} -u ${{ github.actor }} --password-stdin
+            
+            # Pull down the pre-baked x86 backend image
             docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/backend:latest
-            cd /opt/ednotes
+            
+            # Navigate to your actual production compose path and cycle containers
+            cd /root/ednotes
             docker compose down
             docker compose up -d
