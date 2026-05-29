@@ -85,5 +85,5 @@ jobs:
             
             # Navigate to your actual production compose path and cycle containers
             cd /root/ednotes
-            docker compose down
-            docker compose up -d
+            docker-compose down
+            docker-compose up -d
