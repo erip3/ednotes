@@ -84,6 +84,6 @@ jobs:
             docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/backend:latest
             
             # Navigate to your actual production compose path and cycle containers
-            cd /root/ednotes
-            docker-compose down
-            docker-compose up -d
+            cd /opt/ednotes
+            docker compose down
+            docker compose up -d
