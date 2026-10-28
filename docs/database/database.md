@@ -1,8 +1,17 @@
 # Database Documentation
 
+## Overview
+
+EdNotes utilizes a Hybrid Knowledge Graph & Poly-Hierarchical Data Model hosted on PostgreSQL / Supabase:
+
+1. **Strict Tree Hierarchy (Categories):** Folder-style browsing organized with self-referencing `parent_id` pointers.
+2. **Directed Acyclic Graph (Article Connections):** Articles act as graph nodes linked by directed edges (`ArticleConnections`) to map prerequisite and foundational knowledge.
+3. **Contextual Topic Flow:** Major categories are designated as topics (`topic = true`), enabling recursive sidebar navigation where prerequisites are dynamically surfaced.
+4. **Project Links:** Portfolio projects link directly into articles.
+
 ## Entity Relationship Diagram
 
-The database follows a Poly-Hierarchical model to create a hierarchy of categories and articles, conceptual connections between articles, and connections between articles and projects:
+The database follows a poly-hierarchical model to create a hierarchy of categories and articles, conceptual connections between articles, and connections between articles and projects:
 
 - **Tree Structure:** Categories self-reference via parent_id. All Categories can contain Categories and Articles.
 
@@ -117,48 +126,26 @@ Holds information on projects.
 
 The articles.content field follows a structured JSON format to ensure compatibility between the Article Editor and the Web Client.
 
-{
-  "type": "doc",
-  "content": [
-    {
-      "type": "paragraph",
-      "content": [
-        { "type": "text", "text": "Example content..." }
-      ]
-    }
-  ]
-}
-
-
-## Row Level Security (RLS) Policies
-
-| Table | Policy Name | Role | Access |
-|---|---|---|---|
-| articles | Public Read | anon/auth | SELECT where published = true |
-| articles | Editor Access | auth | ALL (Insert/Update/Delete) |
-| connections | Public Read | anon/auth | SELECT all |
-
-## Critical Queries
-
-Fetching the Topic Sidebar Tree
-
 ```
-WITH RECURSIVE topic_tree AS (
-    SELECT id, title, parent_id, is_topic FROM categories WHERE id = :target_topic_id
-    UNION ALL
-    SELECT c.id, c.title, c.parent_id, c.is_topic FROM categories c
-    INNER JOIN topic_tree tt ON c.parent_id = tt.id
-)
-SELECT * FROM topic_tree;
-```
-
-Fetching Prerequisites for Sidebar
-
-```
-SELECT 
-    target.id, 
-    target.title 
-FROM article_connections conn
-JOIN articles target ON conn.target_id = target.id
-WHERE conn.source_id = :current_article_id;
+[
+  { "type": "header", "level": 1, "content": "Introduction to Convex Optimization" },
+  { "type": "paragraph", "content": "This article discusses **gradient descent** and convex cost functions." },
+  { "type": "equation", "content": "f(x) \\ge f(x_0) + \\nabla f(x_0)^T (x - x_0)", "caption": "First-order condition" },
+  { "type": "code", "language": "python", "content": "def gradient_step(x, lr, grad):\n    return x - lr * grad" },
+  { "type": "note", "style": "info", "content": "Learning rates must satisfy the Wolfe conditions for convergence." },
+  { "type": "figure", "src": "/images/convex-hull.png", "caption": "Figure 1: Convex Set" },
+  { "type": "list", "ordered": false, "items": ["Convex sets", "Convex functions", "Dual problems"] },
+  {
+    "type": "tabs",
+    "defaultValue": "python",
+    "tabs": [
+      {
+        "value": "python",
+        "label": "Python",
+        "blocks": [{ "type": "code", "language": "python", "content": "print('hello')" }]
+      }
+    ]
+  },
+  { "type": "demo", "demoType": "convolution", "args": {} }
+]
 ```

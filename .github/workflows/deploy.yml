@@ -22,7 +22,7 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      # --- 1. FRONTEND VITE BUILD ON PI 5 ---
+      # Build frontend assets on Pi
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
@@ -34,7 +34,7 @@ jobs:
           npm ci
           npm run build
 
-      # --- 2. MULTI-PLATFORM ENGINE CONFIG ---
+      # Engine config
       - name: Set up QEMU (For x86 translation)
         uses: docker/setup-qemu-action@v3
 
@@ -48,7 +48,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # --- 3. CROSS-COMPILE BACKEND IMAGE ---
+      # Cross-compile for running on x86
       - name: Cross-Compile and Push x86 Backend Image
         uses: docker/build-push-action@v5
         with:
@@ -58,7 +58,7 @@ jobs:
           push: true
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/backend:latest
 
-      # --- 4. TRANSFER FRONTEND ASSETS TO DROPLET ---
+      # Transfer frontend assets
       - name: Copy Frontend Assets to Droplet Web Root
         uses: appleboy/scp-action@v0.1.7
         with:
@@ -69,7 +69,7 @@ jobs:
           target: "/var/www/ednotes.wiki"
           strip_components: 3
 
-      # --- 5. REMOTE DEPLOYMENT & HOT-SWAP VIA SSH ---
+      # Deploy
       - name: Deploy to DigitalOcean via SSH
         uses: appleboy/ssh-action@v1.0.3
         with:
