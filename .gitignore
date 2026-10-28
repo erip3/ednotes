@@ -18,6 +18,5 @@ buildNumber.properties
 # server/src/main/resources/application.properties
 *.env
 certs/
-
 node_modules/
 dist/
